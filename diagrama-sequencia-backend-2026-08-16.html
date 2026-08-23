@@ -1,0 +1,1759 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="UTF-8">
+<title>Diagrama de Sequência do Backend</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-subtle: #f6f7f9;
+    --bg-card: #ffffff;
+    --border: #e2e4e9;
+    --text: #1c1f26;
+    --text-muted: #5b616e;
+    --accent: #2f6f4f;
+    --accent-soft: #e7f2ec;
+    --accent-strong: #1f5138;
+    --danger: #a13a3a;
+    --danger-soft: #fbeeee;
+    --role-service: #2c5f8a;
+    --role-data: #8a6a1f;
+    --shadow: 0 1px 2px rgba(20, 22, 28, 0.06), 0 4px 16px rgba(20, 22, 28, 0.05);
+    --tip-bg: #2a2e37;
+    --tip-text: #f1f2f5;
+    --tip-accent: #8fd4ac;
+    --tip-danger: #e8a3a3;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14161b;
+      --bg-subtle: #1b1e24;
+      --bg-card: #1c1f26;
+      --border: #2c303a;
+      --text: #e7e9ee;
+      --text-muted: #9aa0ac;
+      --accent: #6fbf94;
+      --accent-soft: #1e2c25;
+      --accent-strong: #8fd4ac;
+      --danger: #d97a7a;
+      --danger-soft: #2b1d1d;
+      --role-service: #7fb0e6;
+      --role-data: #e0b563;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.35);
+      --tip-bg: #eef0f3;
+      --tip-text: #1c1f26;
+      --tip-accent: #1f5138;
+      --tip-danger: #8a2f2f;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #14161b;
+    --bg-subtle: #1b1e24;
+    --bg-card: #1c1f26;
+    --border: #2c303a;
+    --text: #e7e9ee;
+    --text-muted: #9aa0ac;
+    --accent: #6fbf94;
+    --accent-soft: #1e2c25;
+    --accent-strong: #8fd4ac;
+    --danger: #d97a7a;
+    --danger-soft: #2b1d1d;
+    --role-service: #7fb0e6;
+    --role-data: #e0b563;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.35);
+    --tip-bg: #eef0f3;
+    --tip-text: #1c1f26;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 36px 24px 80px;
+  }
+
+  header.hero {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 0 0 6px;
+  }
+
+  .updated-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    font-size: 0.74rem;
+    font-weight: 600;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    line-height: 1.25;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .hint {
+    margin: 0 0 20px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    max-width: 74ch;
+  }
+
+  .actor-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    margin: 0 0 28px;
+    padding: 10px 16px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.78rem;
+    color: var(--text);
+  }
+  .actor-key .k { display: flex; align-items: center; gap: 6px; }
+  .actor-key .swatch {
+    width: 18px; height: 18px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; flex: none;
+  }
+  .actor-key .swatch svg { width: 12px; height: 12px; }
+
+  .diagram-block { margin-bottom: 40px; }
+
+  h2 {
+    font-size: 1.05rem;
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  h2 .tag {
+    display: inline-block;
+    margin-right: 8px;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    vertical-align: middle;
+  }
+  h2 .tag.ok { background: var(--accent-soft); color: var(--accent-strong); }
+  h2 .tag.err { background: var(--danger-soft); color: var(--danger); }
+
+  figure {
+    position: relative;
+    margin: 0;
+    padding: 18px 20px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow-x: auto;
+    overflow-y: visible;
+  }
+  figure svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    color: var(--text);
+    overflow: visible;
+  }
+  figure text { fill: currentColor; }
+  figcaption {
+    margin-top: 10px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+
+  /* Cabeçalho de cada raia: ícone + nome, sempre visíveis */
+  .lane-icon circle { fill: var(--bg-card); stroke: var(--border); stroke-width: 1.4; }
+  .lane-name { font-size: 12px; font-weight: 700; text-anchor: middle; }
+
+  /* Rótulos ficam sempre visíveis; passar o mouse revela um balão com detalhes extras */
+  .step, .note { cursor: help; }
+  .step .hit { stroke: transparent; fill: none; pointer-events: stroke; }
+  .note .hit { fill: transparent; stroke: none; pointer-events: fill; }
+
+  .tip { opacity: 0; transition: opacity .12s ease; pointer-events: none; }
+  .step:hover .tip, .step:focus-visible .tip,
+  .note:hover .tip, .note:focus-visible .tip { opacity: 1; }
+  .tip.show { opacity: 1; }
+
+  /* Camada de interação: sempre por cima de tudo no diagrama, garante que o hover funcione
+     mesmo quando outro elemento visual estaria sobreposto na mesma região. */
+  .hitlayer > * { fill: transparent; stroke: transparent; pointer-events: all; cursor: help; }
+
+  .tip rect { fill: var(--tip-bg); rx: 6; }
+  .tip text { fill: var(--tip-text); }
+  .tip .tip-label {
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    fill: var(--tip-accent);
+  }
+  .tip.tip-danger .tip-label { fill: var(--tip-danger); }
+  .tip .tip-detail { font-size: 9.5px; }
+
+  /* Elemento em destaque enquanto o mouse está sobre ele (via camada de interação) */
+  .main.hl { stroke: var(--accent) !important; stroke-width: 2.6 !important; }
+  .main[stroke="var(--danger)"].hl { stroke: var(--danger) !important; stroke-width: 2.6 !important; }
+  .note-box.hl { stroke: var(--accent) !important; stroke-width: 2 !important; opacity: 1; }
+  .note-box[stroke="var(--danger)"].hl { stroke: var(--danger) !important; opacity: 1; }
+
+  .note-box {
+    fill: transparent;
+    stroke: var(--text-muted);
+    stroke-width: 1;
+    opacity: 0.7;
+    pointer-events: fill;
+  }
+  .note.danger .note-box { stroke: var(--danger); }
+
+  /* Botão de tela cheia por diagrama */
+  .fs-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font: inherit;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 10px;
+    cursor: pointer;
+    opacity: 0.85;
+    z-index: 2;
+  }
+  .fs-btn:hover { opacity: 1; }
+
+  figure:fullscreen {
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 28px;
+    border-radius: 0;
+  }
+  figure:fullscreen svg { max-height: 86vh; width: auto; max-width: 96vw; }
+  figure:fullscreen figcaption { max-width: 900px; font-size: 0.95rem; }
+  figure:-webkit-full-screen { background: var(--bg); }
+  figure:-webkit-full-screen svg { max-height: 86vh; width: auto; max-width: 96vw; }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    margin: 16px 0 0;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+  .legend strong { color: var(--text); }
+
+  .wrap[contenteditable="true"] {
+    outline: 2px dashed var(--accent);
+    outline-offset: 8px;
+    border-radius: 8px;
+  }
+
+  #editToolbar {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 10px 8px 16px;
+    box-shadow: var(--shadow);
+    font-size: 0.85rem;
+  }
+  #editToolbar button {
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--bg);
+    background: var(--accent);
+    border: none;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  #editToolbar button.secondary {
+    color: var(--text);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+  }
+  #editToolbar #editStatus {
+    color: var(--text-muted);
+    max-width: 240px;
+  }
+
+  /* Impressão: só os diagramas, uma raia de cada vez, em A4 paisagem */
+  @media print {
+    #editToolbar, .fs-btn, .hint { display: none !important; }
+
+    @page {
+      size: A4 landscape;
+      margin: 10mm 12mm;
+    }
+
+    html, body { background: #ffffff !important; }
+    body { color: #1c1f26 !important; }
+
+    .wrap { max-width: none; padding: 0; }
+    .wrap[contenteditable] { outline: none; }
+
+    header.hero, .legend { display: none !important; }
+    .tip, .hitlayer { display: none !important; }
+
+    .diagram-block {
+      margin: 0;
+      page-break-after: always;
+      break-after: page;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .diagram-block:last-of-type {
+      page-break-after: auto;
+      break-after: auto;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+      margin: 0 0 10px;
+      color: #1c1f26 !important;
+    }
+    h2 .tag.ok { background: #e7f2ec !important; color: #1f5138 !important; }
+    h2 .tag.err { background: #fbeeee !important; color: #a13a3a !important; }
+
+    figure {
+      background: #ffffff !important;
+      border-color: #e2e4e9 !important;
+      box-shadow: none !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      break-inside: avoid;
+    }
+    figure svg { color: #1c1f26 !important; }
+    .lane-icon circle { fill: #ffffff !important; stroke: #e2e4e9 !important; }
+    figcaption { display: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="icon-tela" viewBox="0 0 24 24">
+      <rect x="2" y="3" width="20" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"></rect>
+      <line x1="8" y1="21" x2="16" y2="21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></line>
+      <line x1="12" y1="17" x2="12" y2="21" stroke="currentColor" stroke-width="1.6"></line>
+    </symbol>
+    <symbol id="icon-controller" viewBox="0 0 24 24">
+      <rect x="5" y="3" width="14" height="19" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"></rect>
+      <rect x="9" y="1.3" width="6" height="3" rx="1" fill="none" stroke="currentColor" stroke-width="1.6"></rect>
+      <path d="M8.3 13 L10.8 15.5 L16 9.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+    </symbol>
+    <symbol id="icon-service" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+      <g stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+        <line x1="12" y1="2.3" x2="12" y2="5.2"></line>
+        <line x1="12" y1="18.8" x2="12" y2="21.7"></line>
+        <line x1="2.3" y1="12" x2="5.2" y2="12"></line>
+        <line x1="18.8" y1="12" x2="21.7" y2="12"></line>
+        <line x1="5.3" y1="5.3" x2="7.3" y2="7.3"></line>
+        <line x1="16.7" y1="16.7" x2="18.7" y2="18.7"></line>
+        <line x1="18.7" y1="5.3" x2="16.7" y2="7.3"></line>
+        <line x1="7.3" y1="16.7" x2="5.3" y2="18.7"></line>
+      </g>
+    </symbol>
+    <symbol id="icon-banco" viewBox="0 0 24 24">
+      <ellipse cx="12" cy="5.3" rx="8" ry="2.8" fill="none" stroke="currentColor" stroke-width="1.6"></ellipse>
+      <path d="M4 5.3 V18.3 A8 2.8 0 0 0 20 18.3 V5.3" fill="none" stroke="currentColor" stroke-width="1.6"></path>
+      <path d="M4 11.8 A8 2.8 0 0 0 20 11.8" fill="none" stroke="currentColor" stroke-width="1.6"></path>
+    </symbol>
+    <symbol id="icon-repo" viewBox="0 0 24 24">
+      <rect x="3" y="4" width="18" height="6" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.6"></rect>
+      <rect x="3" y="14" width="18" height="6" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.6"></rect>
+      <line x1="7" y1="7" x2="7" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+      <line x1="7" y1="17" x2="7" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+    </symbol>
+    <symbol id="icon-erro" viewBox="0 0 24 24">
+      <path d="M12 3 L22 20 H2 Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path>
+      <line x1="12" y1="9.3" x2="12" y2="14.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></line>
+      <circle cx="12" cy="17" r="1" fill="currentColor"></circle>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div>
+      <p class="eyebrow">PIVIC · Sistema ONG Animal · Documento vivo</p>
+      <h1>Diagrama de sequência do backend</h1>
+    </div>
+    <span class="updated-badge">Última atualização: 16/08/2026</span>
+  </header>
+
+  <p class="hint">Cada coluna é uma camada do sistema (com seu ícone), e o tempo passa de cima para baixo. As setas mostram quem chama quem, na ordem em que acontece; as caixas pontilhadas são etapas internas, sem chamada a outra camada. Passe o mouse sobre qualquer seta ou caixa para ver detalhes adicionais — e use "Tela cheia" para ampliar.</p>
+
+  <div class="actor-key">
+    <span class="k"><span class="swatch" style="background:var(--text-muted)"><svg><use href="#icon-tela"></use></svg></span>Tela</span>
+    <span class="k"><span class="swatch" style="background:var(--accent)"><svg><use href="#icon-controller"></use></svg></span>Controller</span>
+    <span class="k"><span class="swatch" style="background:var(--role-service)"><svg><use href="#icon-service"></use></svg></span>Service</span>
+    <span class="k"><span class="swatch" style="background:var(--role-data)"><svg><use href="#icon-repo"></use></svg></span>Repository / Banco</span>
+    <span class="k"><span class="swatch" style="background:var(--danger)"><svg><use href="#icon-erro"></use></svg></span>Tratador de erros</span>
+  </div>
+
+  <div class="diagram-block">
+    <h2><span class="tag ok">Caminho de sucesso</span>Cadastrar um animal (POST)</h2>
+    <figure role="img" aria-label="Diagrama de sequência detalhado do caminho de sucesso ao cadastrar um animal: a tela envia um formulário, o Controller valida campo a campo e converte para entidade, o Service confere se a raça existe e, se o status for adotado, se o adotante existe, o Repository grava no banco e a resposta volta convertida para o formato de comprovante.">
+      <button type="button" class="fs-btn" data-fs>⛶ Tela cheia</button>
+      <svg viewBox="0 -34 1160 654" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrowOk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"></path>
+          </marker>
+        </defs>
+
+        <!-- lifelines -->
+        <g class="lane-icon" style="color:var(--text-muted)"><circle cx="80" cy="-16" r="15"></circle><use href="#icon-tela" x="69" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="80" y="26">Tela</text>
+        <line x1="80" y1="36" x2="80" y2="600" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--accent)"><circle cx="340" cy="-16" r="15"></circle><use href="#icon-controller" x="329" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="340" y="26">Controller</text>
+        <line x1="340" y1="36" x2="340" y2="600" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--role-service)"><circle cx="620" cy="-16" r="15"></circle><use href="#icon-service" x="609" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="620" y="26">Service</text>
+        <line x1="620" y1="36" x2="620" y2="600" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--role-data)"><circle cx="900" cy="-16" r="15"></circle><use href="#icon-repo" x="889" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="900" y="26">Repository</text>
+        <line x1="900" y1="36" x2="900" y2="600" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--role-data)"><circle cx="1080" cy="-16" r="15"></circle><use href="#icon-banco" x="1069" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="1080" y="26">Banco</text>
+        <line x1="1080" y1="36" x2="1080" y2="600" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <!-- 1 tela -> controller -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="80" y1="60" x2="340" y2="60" stroke-width="14"></line>
+          <line id="src1" class="main" x1="80" y1="60" x2="340" y2="60" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowOk)"></line>
+          <text x="210" y="51" font-size="11" text-anchor="middle">1. Usuário preenche e envia o formulário</text>
+          <g id="tip1" class="tip" transform="translate(210,20)">
+            <rect x="-118.5" y="-27" width="237" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Requisição enviada pela tela</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">POST /animais — o corpo é um DTO: um objeto</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">só com os dados do formulário de cadastro</text>
+          </g>
+        </g><!-- 2 controller valida campo a campo -->
+        <g class="note" tabindex="0">
+          <rect class="hit" x="249.5" y="66.5" width="181" height="57"></rect>
+          <rect id="src2" class="note-box" x="257.5" y="74.5" width="165" height="41" rx="4"></rect>
+          <text x="340" y="87" font-size="9.5" text-anchor="middle" opacity="0.85">Formulário é validado</text>
+          <text x="340" y="98" font-size="9" text-anchor="middle" opacity="0.65">automaticamente (nome, idade,</text>
+          <text x="340" y="109" font-size="9" text-anchor="middle" opacity="0.65">porte, sexo, status, raça)</text>
+          <g id="tip2" class="tip" transform="translate(345,4)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">O que essa caixa verifica</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">antes do código do projeto rodar, o Spring já</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">confere sozinho os campos obrigatórios do DTO</text>
+          </g>
+        </g><!-- ramo se invalido -->
+        <g class="step tip-danger" tabindex="0">
+          <path class="hit" d="M300 95 C230 95, 200 40, 90 40" stroke-width="14" fill="none"></path>
+          <path id="src3" class="main" d="M300 95 C230 95, 200 40, 90 40" fill="none" stroke="var(--danger)" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrowOk)"></path>
+          <text x="195" y="34" font-size="9" text-anchor="middle" fill="var(--danger)">se algum campo for inválido → erro 400</text>
+          <g id="tip3" class="tip tip-danger" transform="translate(150,160)">
+            <rect x="-145" y="-27" width="290" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Desvio para o caminho de erro</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">o cadastro é interrompido aqui, o Service nem</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">chega a ser chamado — ver diagrama "Formulário inválido"</text>
+          </g>
+        </g><!-- 3 controller converte dto->entidade -->
+        <g class="note" tabindex="0">
+          <rect class="hit" x="273.5" y="122" width="133" height="46"></rect>
+          <rect id="src4" class="note-box" x="281.5" y="130" width="117" height="30" rx="4"></rect>
+          <text x="340" y="142.5" font-size="9.5" text-anchor="middle" opacity="0.85">Controller converte</text>
+          <text x="340" y="153.5" font-size="9" text-anchor="middle" opacity="0.65">o DTO em entidade</text>
+          <g id="tip4" class="tip" transform="translate(340,95)">
+            <rect x="-135" y="-27" width="270" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">O que essa caixa faz</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">transforma o DTO (dados recebidos) em uma</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">entidade: o objeto que representa a linha no banco</text>
+          </g>
+        </g><!-- 4 controller -> service -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="340" y1="180" x2="620" y2="180" stroke-width="14"></line>
+          <line id="src5" class="main" x1="340" y1="180" x2="620" y2="180" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowOk)"></line>
+          <text x="480" y="171" font-size="11" text-anchor="middle">2. Controller solicita ao Service que aplique as regras</text>
+          <g id="tip5" class="tip" transform="translate(480,140)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Chamada interna (não é requisição HTTP)</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">salvar(animal) — daqui em diante o Service</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">confere as regras de negócio, uma a uma</text>
+          </g>
+        </g><!-- 5 service busca raca -->
+        <g class="note" tabindex="0">
+          <rect class="hit" x="551" y="184" width="138" height="46"></rect>
+          <rect id="src6" class="note-box" x="559" y="192" width="122" height="30" rx="4"></rect>
+          <text x="620" y="204.5" font-size="9.5" text-anchor="middle" opacity="0.85">Service busca a raça</text>
+          <text x="620" y="215.5" font-size="9" text-anchor="middle" opacity="0.65">pelo identificador</text>
+          <g id="tip6" class="tip" transform="translate(825,207)">
+            <rect x="-135" y="-27" width="270" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Por que essa checagem existe</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">o formulário só manda o id da raça, não os</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">dados dela — o Service confirma que esse id existe</text>
+          </g>
+        </g><!-- ramo raca nao existe -->
+        <g class="step tip-danger" tabindex="0">
+          <path class="hit" d="M580 207 C500 207, 460 40, 355 40" stroke-width="14" fill="none"></path>
+          <path id="src7" class="main" d="M580 207 C500 207, 460 40, 355 40" fill="none" stroke="var(--danger)" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrowOk)"></path>
+          <text x="470" y="34" font-size="9" text-anchor="middle" fill="var(--danger)">se essa raça não existe → erro</text>
+          <g id="tip7" class="tip tip-danger" transform="translate(470,5)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Desvio para o caminho de erro</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">o cadastro do animal é cancelado — ver diagrama</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">"Regra de negócio violada / não encontrado"</text>
+          </g>
+        </g><!-- 6 service checa status adotado -->
+        <g class="note" tabindex="0">
+          <rect class="hit" x="544.5" y="236.5" width="151" height="57"></rect>
+          <rect id="src8" class="note-box" x="552.5" y="244.5" width="135" height="41" rx="4"></rect>
+          <text x="620" y="257" font-size="9.5" text-anchor="middle" opacity="0.85">Service confere:</text>
+          <text x="620" y="268" font-size="9" text-anchor="middle" opacity="0.65">status "adotado" → busca</text>
+          <text x="620" y="279" font-size="9" text-anchor="middle" opacity="0.65">o adotante vinculado</text>
+          <g id="tip8" class="tip" transform="translate(830,265)">
+            <rect x="-135" y="-27" width="270" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Regra de negócio aplicada pelo Service</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">se o campo status vier como "adotado", precisa</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">vir junto o id de um adotante que exista de fato</text>
+          </g>
+        </g><!-- ramo sem adotante -->
+        <g class="step tip-danger" tabindex="0">
+          <path class="hit" d="M580 265 C480 265, 440 40, 355 40" stroke-width="14" fill="none"></path>
+          <path id="src9" class="main" d="M580 265 C480 265, 440 40, 355 40" fill="none" stroke="var(--danger)" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrowOk)"></path>
+          <text x="440" y="20" font-size="9" text-anchor="middle" fill="var(--danger)">status "adotado" sem adotante → erro</text>
+          <g id="tip9" class="tip tip-danger" transform="translate(440,8)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Desvio para o caminho de erro</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">regra de negócio violada, resposta 400 — ver</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">diagrama "Regra de negócio violada / não encontrado"</text>
+          </g>
+        </g><!-- 7 service -> repository -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="620" y1="312" x2="900" y2="312" stroke-width="14"></line>
+          <line id="src10" class="main" x1="620" y1="312" x2="900" y2="312" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowOk)"></line>
+          <text x="760" y="301" font-size="11" text-anchor="middle">3. Service solicita ao Repository que grave o cadastro</text>
+          <g id="tip10" class="tip" transform="translate(760,335)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Chamada interna (não é requisição HTTP)</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">save(animal) — pede para o Spring Data JPA gravar</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">a entidade; todas as checagens já passaram</text>
+          </g>
+        </g><!-- 8 repository -> banco -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="900" y1="344" x2="1080" y2="344" stroke-width="14"></line>
+          <line id="src11" class="main" x1="900" y1="344" x2="1080" y2="344" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowOk)"></line>
+          <text x="990" y="333" font-size="11" text-anchor="middle">4. Repository grava o novo registro</text>
+          <g id="tip11" class="tip" transform="translate(990,367)">
+            <rect x="-125" y="-27" width="250" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">O que acontece no banco</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">um comando SQL INSERT cria uma linha nova</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">na tabela de animais, com os dados enviados</text>
+          </g>
+        </g><!-- 9 banco -> repository -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="1080" y1="376" x2="900" y2="376" stroke-width="14"></line>
+          <line id="src12" class="main" x1="1080" y1="376" x2="900" y2="376" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrowOk)"></line>
+          <text x="990" y="365" font-size="10" text-anchor="middle" opacity="0.75">Banco confirma e gera o id</text>
+          <g id="tip12" class="tip" transform="translate(990,398)">
+            <rect x="-130" y="-27" width="260" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Detalhe importante</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">o banco cria sozinho um id novo e único para</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">este animal — ninguém escolhe esse número</text>
+          </g>
+        </g><!-- 10 repository -> service -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="900" y1="408" x2="620" y2="408" stroke-width="14"></line>
+          <line id="src13" class="main" x1="900" y1="408" x2="620" y2="408" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrowOk)"></line>
+          <text x="760" y="397" font-size="10" text-anchor="middle" opacity="0.75">5. Repository devolve o cadastro salvo</text>
+          <g id="tip13" class="tip" transform="translate(760,430)">
+            <rect x="-130" y="-27" width="260" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">O que volta aqui</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">a entidade completa do animal, agora já com o</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">id que o banco acabou de gerar</text>
+          </g>
+        </g><!-- 11 service -> controller -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="620" y1="440" x2="340" y2="440" stroke-width="14"></line>
+          <line id="src14" class="main" x1="620" y1="440" x2="340" y2="440" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrowOk)"></line>
+          <text x="480" y="429" font-size="10" text-anchor="middle" opacity="0.75">6. Service devolve o resultado ao Controller</text>
+          <g id="tip14" class="tip" transform="translate(480,462)">
+            <rect x="-135" y="-27" width="270" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Neste ponto</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">o trabalho do Service termina aqui: as regras de</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">negócio já foram checadas e o dado já foi salvo</text>
+          </g>
+        </g><!-- 12 controller monta comprovante -->
+        <g class="note" tabindex="0">
+          <rect class="hit" x="262" y="444" width="156" height="46"></rect>
+          <rect id="src15" class="note-box" x="270" y="452" width="140" height="30" rx="4"></rect>
+          <text x="340" y="464.5" font-size="9.5" text-anchor="middle" opacity="0.85">Controller converte</text>
+          <text x="340" y="475.5" font-size="9" text-anchor="middle" opacity="0.65">a entidade em comprovante</text>
+          <g id="tip15" class="tip" transform="translate(125,470)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Por que converter de novo</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">"comprovante" é como chamamos aqui o DTO de</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">resposta — só os dados que a tela precisa mostrar</text>
+          </g>
+        </g><!-- 13 controller -> tela -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="340" y1="502" x2="80" y2="502" stroke-width="14"></line>
+          <line id="src16" class="main" x1="340" y1="502" x2="80" y2="502" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowOk)"></line>
+          <text x="210" y="491" font-size="11" text-anchor="middle">7. Controller responde à Tela com o comprovante</text>
+          <g id="tip16" class="tip" transform="translate(210,525)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Resposta HTTP enviada à tela</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">código 201 Created — "criado com sucesso" — e no</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">corpo da resposta vai o comprovante (DTO)</text>
+          </g>
+        </g><text x="80" y="555" font-size="11" text-anchor="middle" opacity="0.6">Usuário vê a confirmação</text>
+      
+        <g class="hitlayer">
+          <line data-tip="tip1" x1="80" y1="60" x2="340" y2="60" stroke-width="14"></line>
+          <rect data-tip="tip2" x="249.5" y="66.5" width="181" height="57"></rect>
+          <path data-tip="tip3" d="M300 95 C230 95, 200 40, 90 40" stroke-width="14" fill="none"></path>
+          <rect data-tip="tip4" x="273.5" y="122" width="133" height="46"></rect>
+          <line data-tip="tip5" x1="340" y1="180" x2="620" y2="180" stroke-width="14"></line>
+          <rect data-tip="tip6" x="551" y="184" width="138" height="46"></rect>
+          <path data-tip="tip7" d="M580 207 C500 207, 460 40, 355 40" stroke-width="14" fill="none"></path>
+          <rect data-tip="tip8" x="544.5" y="236.5" width="151" height="57"></rect>
+          <path data-tip="tip9" d="M580 265 C480 265, 440 40, 355 40" stroke-width="14" fill="none"></path>
+          <line data-tip="tip10" x1="620" y1="312" x2="900" y2="312" stroke-width="14"></line>
+          <line data-tip="tip11" x1="900" y1="344" x2="1080" y2="344" stroke-width="14"></line>
+          <line data-tip="tip12" x1="1080" y1="376" x2="900" y2="376" stroke-width="14"></line>
+          <line data-tip="tip13" x1="900" y1="408" x2="620" y2="408" stroke-width="14"></line>
+          <line data-tip="tip14" x1="620" y1="440" x2="340" y2="440" stroke-width="14"></line>
+          <rect data-tip="tip15" x="262" y="444" width="156" height="46"></rect>
+          <line data-tip="tip16" x1="340" y1="502" x2="80" y2="502" stroke-width="14"></line>
+        </g>
+      </svg>
+      <figcaption>Setas sólidas: caminho feliz. Setas tracejadas: pontos onde o fluxo pode desviar para o caminho de erro. Passe o mouse sobre qualquer seta ou caixa para ver mais detalhes.</figcaption>
+    </figure>
+  </div>
+
+  <div class="diagram-block">
+    <h2><span class="tag ok">Caminho de sucesso</span>Atualizar um animal (PUT)</h2>
+    <figure role="img" aria-label="Diagrama de sequência do caminho de sucesso ao atualizar um animal: o Controller busca o cadastro existente pelo identificador, copia os campos do formulário sobre o cadastro encontrado, reaplica as mesmas regras de negócio do cadastro e grava a atualização.">
+      <button type="button" class="fs-btn" data-fs>⛶ Tela cheia</button>
+      <svg viewBox="0 -34 1160 560" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrowOk2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"></path>
+          </marker>
+        </defs>
+
+        <g class="lane-icon" style="color:var(--text-muted)"><circle cx="80" cy="-16" r="15"></circle><use href="#icon-tela" x="69" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="80" y="26">Tela</text>
+        <line x1="80" y1="36" x2="80" y2="500" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--accent)"><circle cx="340" cy="-16" r="15"></circle><use href="#icon-controller" x="329" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="340" y="26">Controller</text>
+        <line x1="340" y1="36" x2="340" y2="500" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--role-service)"><circle cx="620" cy="-16" r="15"></circle><use href="#icon-service" x="609" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="620" y="26">Service</text>
+        <line x1="620" y1="36" x2="620" y2="500" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--role-data)"><circle cx="900" cy="-16" r="15"></circle><use href="#icon-repo" x="889" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="900" y="26">Repository</text>
+        <line x1="900" y1="36" x2="900" y2="500" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--role-data)"><circle cx="1080" cy="-16" r="15"></circle><use href="#icon-banco" x="1069" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="1080" y="26">Banco</text>
+        <line x1="1080" y1="36" x2="1080" y2="500" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <!-- 1 -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="80" y1="60" x2="340" y2="60" stroke-width="14"></line>
+          <line id="src17" class="main" x1="80" y1="60" x2="340" y2="60" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowOk2)"></line>
+          <text x="210" y="51" font-size="11" text-anchor="middle">1. Usuário edita e envia o formulário</text>
+          <g id="tip17" class="tip" transform="translate(210,20)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Requisição enviada pela tela</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">PUT /animais/{id} — corpo é um DTO com os</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">dados editados, validado do mesmo jeito que no cadastro</text>
+          </g>
+        </g><!-- 2 controller -> service busca existente -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="340" y1="92" x2="620" y2="92" stroke-width="14"></line>
+          <line id="src18" class="main" x1="340" y1="92" x2="620" y2="92" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowOk2)"></line>
+          <text x="480" y="83" font-size="11" text-anchor="middle">2. Controller solicita ao Service o cadastro atual</text>
+          <g id="tip18" class="tip" transform="translate(480,138)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Chamada interna (não é requisição HTTP)</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">buscarPorId(id) — antes de mudar qualquer</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">coisa, o Service confirma que o animal existe</text>
+          </g>
+        </g><g class="step tip-danger" tabindex="0">
+          <path class="hit" d="M480 104 C560 104, 590 40, 355 40" stroke-width="14" fill="none"></path>
+          <path id="src19" class="main" d="M480 104 C560 104, 590 40, 355 40" fill="none" stroke="var(--danger)" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrowOk2)"></path>
+          <text x="500" y="118" font-size="9" text-anchor="middle" fill="var(--danger)">se esse id de animal não existe → erro 404</text>
+          <g id="tip19" class="tip tip-danger" transform="translate(500,20)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Desvio para o caminho de erro</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">usuário tentou editar um animal que não existe</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">mais — ver diagrama "Regra de negócio... / não encontrado"</text>
+          </g>
+        </g><!-- 3 service -> controller devolve existente -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="620" y1="150" x2="340" y2="150" stroke-width="14"></line>
+          <line id="src20" class="main" x1="620" y1="150" x2="340" y2="150" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrowOk2)"></line>
+          <text x="480" y="141" font-size="10" text-anchor="middle" opacity="0.75">3. Service devolve o cadastro atual</text>
+          <g id="tip20" class="tip" transform="translate(760,150)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">O que volta aqui</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">a entidade do animal como ela está salva hoje</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">no banco, antes de receber a alteração</text>
+          </g>
+        </g><!-- 4 controller copia campos -->
+        <g class="note" tabindex="0">
+          <rect class="hit" x="257.5" y="154" width="165" height="46"></rect>
+          <rect id="src21" class="note-box" x="265.5" y="162" width="149" height="30" rx="4"></rect>
+          <text x="340" y="174.5" font-size="9.5" text-anchor="middle" opacity="0.85">Controller copia os novos</text>
+          <text x="340" y="185.5" font-size="9" text-anchor="middle" opacity="0.65">valores sobre o cadastro</text>
+          <g id="tip21" class="tip" transform="translate(340,252)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Como isso é feito</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">o utilitário BeanUtils.copyProperties sobrescreve</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">os campos antigos com os novos, mantendo o id original</text>
+          </g>
+        </g><!-- 5 controller -> service salvar -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="340" y1="222" x2="620" y2="222" stroke-width="14"></line>
+          <line id="src22" class="main" x1="340" y1="222" x2="620" y2="222" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowOk2)"></line>
+          <text x="480" y="211" font-size="11" text-anchor="middle">4. Controller solicita ao Service que reaplique as regras</text>
+          <g id="tip22" class="tip" transform="translate(480,246)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Chamada interna (não é requisição HTTP)</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">salvar(animal) — a mesma checagem de regras do</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">diagrama "Cadastrar um animal (POST)" roda de novo</text>
+          </g>
+        </g><g class="note" tabindex="0">
+          <rect class="hit" x="551" y="226" width="138" height="46"></rect>
+          <rect id="src23" class="note-box" x="559" y="234" width="122" height="30" rx="4"></rect>
+          <text x="620" y="246.5" font-size="9.5" text-anchor="middle" opacity="0.85">Service confere raça</text>
+          <text x="620" y="257.5" font-size="9" text-anchor="middle" opacity="0.65">e adotante de novo</text>
+          <g id="tip23" class="tip tip-danger" transform="translate(830,250)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Também pode falhar aqui</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">se o usuário trocou a raça ou o adotante para um id</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">que não existe, a atualização é recusada</text>
+          </g>
+        </g><!-- 6 service -> repository -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="620" y1="284" x2="900" y2="284" stroke-width="14"></line>
+          <line id="src24" class="main" x1="620" y1="284" x2="900" y2="284" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowOk2)"></line>
+          <text x="760" y="273" font-size="11" text-anchor="middle">5. Service solicita ao Repository que grave a atualização</text>
+          <g id="tip24" class="tip" transform="translate(760,308)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Chamada interna (não é requisição HTTP)</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">save(animal) — como a entidade já tem o id original,</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">o JPA sabe que é para atualizar, não criar de novo</text>
+          </g>
+        </g><!-- 7 repository -> banco -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="900" y1="316" x2="1080" y2="316" stroke-width="14"></line>
+          <line id="src25" class="main" x1="900" y1="316" x2="1080" y2="316" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowOk2)"></line>
+          <text x="990" y="305" font-size="11" text-anchor="middle">6. Repository atualiza o registro existente</text>
+          <g id="tip25" class="tip" transform="translate(990,339)">
+            <rect x="-130" y="-27" width="260" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">O que acontece no banco</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">um comando SQL UPDATE sobrescreve a linha já</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">existente na tabela de animais (não cria linha nova)</text>
+          </g>
+        </g><!-- banco -> repository (confirma) -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="1080" y1="348" x2="900" y2="348" stroke-width="14"></line>
+          <line id="src33" class="main" x1="1080" y1="348" x2="900" y2="348" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrowOk2)"></line>
+          <text x="990" y="337" font-size="10" text-anchor="middle" opacity="0.75">Banco confirma a atualização</text>
+          <g id="tip33" class="tip" transform="translate(990,368)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Em seguida</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">a resposta sobe de volta na mesma ordem do</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">cadastro: Repository → Service → Controller → Tela</text>
+          </g>
+        </g><!-- 7 repository -> service -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="900" y1="410" x2="620" y2="410" stroke-width="14"></line>
+          <line id="src69" class="main" x1="900" y1="410" x2="620" y2="410" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrowOk2)"></line>
+          <text x="760" y="401" font-size="10" text-anchor="middle" opacity="0.75">7. Repository devolve o cadastro atualizado</text>
+          <g id="tip69" class="tip" transform="translate(760,375)">
+            <rect x="-135" y="-27" width="270" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">O que volta aqui</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">a mesma entidade do animal, mas agora já com</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">os valores novos gravados no banco</text>
+          </g>
+        </g><!-- 8 service -> controller -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="620" y1="445" x2="340" y2="445" stroke-width="14"></line>
+          <line id="src70" class="main" x1="620" y1="445" x2="340" y2="445" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrowOk2)"></line>
+          <text x="480" y="436" font-size="10" text-anchor="middle" opacity="0.75">8. Service devolve o resultado ao Controller</text>
+          <g id="tip70" class="tip" transform="translate(480,410)">
+            <rect x="-130" y="-27" width="260" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Neste ponto</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">o trabalho do Service termina aqui — a atualização</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">já está salva no banco</text>
+          </g>
+        </g><!-- 9 controller -> tela -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="340" y1="480" x2="80" y2="480" stroke-width="14"></line>
+          <line id="src71" class="main" x1="340" y1="480" x2="80" y2="480" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowOk2)"></line>
+          <text x="210" y="471" font-size="11" text-anchor="middle">9. Controller responde à Tela com o comprovante</text>
+          <g id="tip71" class="tip" transform="translate(210,518)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Resposta HTTP enviada à tela</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">código 200 OK — "deu certo" — com o comprovante</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">(DTO de resposta) já com os dados atualizados</text>
+          </g>
+        </g>
+
+        <text x="80" y="530" font-size="11" text-anchor="middle" opacity="0.6">Usuário vê a atualização confirmada</text>
+
+        <g class="hitlayer">
+          <line data-tip="tip17" x1="80" y1="60" x2="340" y2="60" stroke-width="14"></line>
+          <line data-tip="tip18" x1="340" y1="92" x2="620" y2="92" stroke-width="14"></line>
+          <path data-tip="tip19" d="M480 104 C560 104, 590 40, 355 40" stroke-width="14" fill="none"></path>
+          <line data-tip="tip20" x1="620" y1="150" x2="340" y2="150" stroke-width="14"></line>
+          <rect data-tip="tip21" x="257.5" y="154" width="165" height="46"></rect>
+          <line data-tip="tip22" x1="340" y1="222" x2="620" y2="222" stroke-width="14"></line>
+          <rect data-tip="tip23" x="551" y="226" width="138" height="46"></rect>
+          <line data-tip="tip24" x1="620" y1="284" x2="900" y2="284" stroke-width="14"></line>
+          <line data-tip="tip25" x1="900" y1="316" x2="1080" y2="316" stroke-width="14"></line>
+          <line data-tip="tip33" x1="1080" y1="348" x2="900" y2="348" stroke-width="14"></line>
+          <line data-tip="tip69" x1="900" y1="410" x2="620" y2="410" stroke-width="14"></line>
+          <line data-tip="tip70" x1="620" y1="445" x2="340" y2="445" stroke-width="14"></line>
+          <line data-tip="tip71" x1="340" y1="480" x2="80" y2="480" stroke-width="14"></line>
+        </g>
+      </svg>
+      <figcaption>Diferença em relação ao cadastro: a atualização primeiro busca o registro existente pelo identificador (podendo falhar com 404) antes de copiar os novos valores e reaplicar as mesmas regras de negócio.</figcaption>
+    </figure>
+  </div>
+
+  <div class="diagram-block">
+    <h2><span class="tag ok">Caminho de sucesso</span>Excluir um animal (DELETE)</h2>
+    <figure role="img" aria-label="Diagrama de sequência do caminho de exclusão de um animal: o Controller pede ao Service para excluir, o Service confirma que o cadastro existe antes de prosseguir, o Repository tenta remover o registro no banco, e a exclusão é confirmada de volta até a tela. Dois desvios são possíveis: cadastro não encontrado (404) e exclusão bloqueada por vínculo (409).">
+      <button type="button" class="fs-btn" data-fs>⛶ Tela cheia</button>
+      <svg viewBox="0 -34 1160 460" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrowDel" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"></path>
+          </marker>
+        </defs>
+
+        <g class="lane-icon" style="color:var(--text-muted)"><circle cx="80" cy="-16" r="15"></circle><use href="#icon-tela" x="69" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="80" y="26">Tela</text>
+        <line x1="80" y1="36" x2="80" y2="420" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--accent)"><circle cx="340" cy="-16" r="15"></circle><use href="#icon-controller" x="329" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="340" y="26">Controller</text>
+        <line x1="340" y1="36" x2="340" y2="420" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--role-service)"><circle cx="620" cy="-16" r="15"></circle><use href="#icon-service" x="609" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="620" y="26">Service</text>
+        <line x1="620" y1="36" x2="620" y2="420" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--role-data)"><circle cx="900" cy="-16" r="15"></circle><use href="#icon-repo" x="889" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="900" y="26">Repository</text>
+        <line x1="900" y1="36" x2="900" y2="420" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--role-data)"><circle cx="1080" cy="-16" r="15"></circle><use href="#icon-banco" x="1069" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="1080" y="26">Banco</text>
+        <line x1="1080" y1="36" x2="1080" y2="420" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <!-- 1 tela -> controller -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="80" y1="60" x2="340" y2="60" stroke-width="14"></line>
+          <line id="src36" class="main" x1="80" y1="60" x2="340" y2="60" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowDel)"></line>
+          <text x="210" y="51" font-size="11" text-anchor="middle">1. Usuário confirma a exclusão</text>
+          <g id="tip36" class="tip" transform="translate(210,20)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Requisição enviada pela tela</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">DELETE /animais/{id} — não tem corpo, só o id</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">do animal a excluir, na própria rota</text>
+          </g>
+        </g>
+
+        <!-- 2 controller -> service -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="340" y1="95" x2="620" y2="95" stroke-width="14"></line>
+          <line id="src37" class="main" x1="340" y1="95" x2="620" y2="95" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowDel)"></line>
+          <text x="480" y="86" font-size="11" text-anchor="middle">2. Controller solicita a exclusão</text>
+          <g id="tip37" class="tip" transform="translate(480,133)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Chamada interna (não é requisição HTTP)</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">excluir(id) — o Controller não decide nada sozinho,</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">só repassa o pedido para o Service</text>
+          </g>
+        </g>
+
+        <!-- note: service busca cadastro -->
+        <g class="note" tabindex="0">
+          <rect class="hit" x="537.5" y="99" width="165" height="46"></rect>
+          <rect id="src38" class="note-box" x="545.5" y="107" width="149" height="30" rx="4"></rect>
+          <text x="620" y="119.5" font-size="9.5" text-anchor="middle" opacity="0.85">Service busca o cadastro</text>
+          <text x="620" y="130.5" font-size="9" text-anchor="middle" opacity="0.65">pelo id informado</text>
+          <g id="tip38" class="tip" transform="translate(830,150)">
+            <rect x="-135" y="-27" width="270" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Por que essa checagem existe</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">o Service confirma que o animal ainda existe,</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">antes de mandar o banco apagar qualquer coisa</text>
+          </g>
+        </g>
+
+        <!-- ramo nao encontrado -->
+        <g class="step tip-danger" tabindex="0">
+          <path class="hit" d="M580 122 C500 122, 460 40, 355 40" stroke-width="14" fill="none"></path>
+          <path id="src39" class="main" d="M580 122 C500 122, 460 40, 355 40" fill="none" stroke="var(--danger)" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrowDel)"></path>
+          <text x="470" y="34" font-size="9" text-anchor="middle" fill="var(--danger)">se esse id de animal não existe → erro 404</text>
+          <g id="tip39" class="tip tip-danger" transform="translate(470,0)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Desvio para o caminho de erro</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">a exclusão para aqui, nada é apagado — ver diagrama</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">"Regra de negócio violada / não encontrado"</text>
+          </g>
+        </g>
+
+        <!-- 3 service -> repository -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="620" y1="180" x2="900" y2="180" stroke-width="14"></line>
+          <line id="src40" class="main" x1="620" y1="180" x2="900" y2="180" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowDel)"></line>
+          <text x="760" y="171" font-size="11" text-anchor="middle">3. Service solicita ao Repository que exclua</text>
+          <g id="tip40" class="tip" transform="translate(760,145)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Chamada interna (não é requisição HTTP)</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">delete(animal) — pede ao Spring Data JPA para</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">remover esse registro do banco</text>
+          </g>
+        </g>
+
+        <!-- 4 repository -> banco -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="900" y1="215" x2="1080" y2="215" stroke-width="14"></line>
+          <line id="src41" class="main" x1="900" y1="215" x2="1080" y2="215" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowDel)"></line>
+          <text x="990" y="206" font-size="11" text-anchor="middle">4. Repository executa a exclusão (DELETE)</text>
+          <g id="tip41" class="tip" transform="translate(990,180)">
+            <rect x="-135" y="-27" width="270" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">O que acontece no banco</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">um comando SQL DELETE tenta remover a linha</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">desse animal na tabela — pode ser recusado (veja ao lado)</text>
+          </g>
+        </g>
+
+        <!-- ramo exclusao bloqueada -->
+        <g class="step tip-danger" tabindex="0">
+          <path class="hit" d="M900 215 C820 215, 780 40, 700 40" stroke-width="14" fill="none"></path>
+          <path id="src42" class="main" d="M900 215 C820 215, 780 40, 700 40" fill="none" stroke="var(--danger)" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrowDel)"></path>
+          <text x="800" y="30" font-size="9" text-anchor="middle" fill="var(--danger)">se outro cadastro depende dele → erro 409</text>
+          <g id="tip42" class="tip tip-danger" transform="translate(700,5)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Desvio para o caminho de erro</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">o próprio banco recusa apagar se algo ainda aponta</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">para este animal — ver diagrama "Regra de negócio..."</text>
+          </g>
+        </g>
+
+        <!-- 5 banco -> repository -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="1080" y1="250" x2="900" y2="250" stroke-width="14"></line>
+          <line id="src43" class="main" x1="1080" y1="250" x2="900" y2="250" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrowDel)"></line>
+          <text x="990" y="241" font-size="10" text-anchor="middle" opacity="0.75">confirma exclusão</text>
+          <g id="tip43" class="tip" transform="translate(990,290)">
+            <rect x="-135" y="-27" width="270" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Detalhe importante</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">esta seta só acontece se nada mais referenciar o</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">animal — caso contrário, o caminho é o de erro (409)</text>
+          </g>
+        </g>
+
+        <!-- 6 repository -> service -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="900" y1="285" x2="620" y2="285" stroke-width="14"></line>
+          <line id="src44" class="main" x1="900" y1="285" x2="620" y2="285" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrowDel)"></line>
+          <text x="760" y="276" font-size="10" text-anchor="middle" opacity="0.75">5. Repository devolve a confirmação ao Service</text>
+          <g id="tip44" class="tip" transform="translate(760,245)">
+            <rect x="-130" y="-27" width="260" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Em seguida</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">o Repository só avisa que terminou — não devolve</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">nenhum dado, pois o registro já não existe mais</text>
+          </g>
+        </g>
+
+        <!-- 7 service -> controller -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="620" y1="320" x2="340" y2="320" stroke-width="14"></line>
+          <line id="src45" class="main" x1="620" y1="320" x2="340" y2="320" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrowDel)"></line>
+          <text x="480" y="311" font-size="10" text-anchor="middle" opacity="0.75">6. Service confirma a exclusão ao Controller</text>
+          <g id="tip45" class="tip" transform="translate(480,360)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Neste ponto</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">o trabalho do Service termina aqui — diferente do</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">cadastro e da atualização, não há nada para devolver</text>
+          </g>
+        </g>
+
+        <!-- 8 controller -> tela -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="340" y1="355" x2="80" y2="355" stroke-width="14"></line>
+          <line id="src46" class="main" x1="340" y1="355" x2="80" y2="355" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowDel)"></line>
+          <text x="210" y="346" font-size="11" text-anchor="middle">7. Controller responde 204 No Content</text>
+          <g id="tip46" class="tip" transform="translate(210,393)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Resposta HTTP enviada à tela</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">código 204 No Content — "deu certo, mas não</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">tem nada para te mostrar" (não há comprovante aqui)</text>
+          </g>
+        </g>
+
+        <text x="80" y="405" font-size="11" text-anchor="middle" opacity="0.6">exclusão concluída</text>
+
+        <g class="hitlayer">
+          <line data-tip="tip36" x1="80" y1="60" x2="340" y2="60" stroke-width="14"></line>
+          <line data-tip="tip37" x1="340" y1="95" x2="620" y2="95" stroke-width="14"></line>
+          <rect data-tip="tip38" x="537.5" y="99" width="165" height="46"></rect>
+          <path data-tip="tip39" d="M580 122 C500 122, 460 40, 355 40" stroke-width="14" fill="none"></path>
+          <line data-tip="tip40" x1="620" y1="180" x2="900" y2="180" stroke-width="14"></line>
+          <line data-tip="tip41" x1="900" y1="215" x2="1080" y2="215" stroke-width="14"></line>
+          <path data-tip="tip42" d="M900 215 C820 215, 780 40, 700 40" stroke-width="14" fill="none"></path>
+          <line data-tip="tip43" x1="1080" y1="250" x2="900" y2="250" stroke-width="14"></line>
+          <line data-tip="tip44" x1="900" y1="285" x2="620" y2="285" stroke-width="14"></line>
+          <line data-tip="tip45" x1="620" y1="320" x2="340" y2="320" stroke-width="14"></line>
+          <line data-tip="tip46" x1="340" y1="355" x2="80" y2="355" stroke-width="14"></line>
+        </g>
+      </svg>
+      <figcaption>Setas sólidas: caminho de sucesso. Setas tracejadas: pontos onde a exclusão pode ser recusada — cadastro inexistente (404) ou vínculo com outro registro (409).</figcaption>
+    </figure>
+  </div>
+
+  <div class="diagram-block">
+    <h2><span class="tag ok">Caminho de sucesso</span>Listar todos os animais (GET)</h2>
+    <figure role="img" aria-label="Diagrama de sequência do caminho de sucesso ao listar todos os animais: o Controller pede ao Service todos os cadastros, o Repository consulta a tabela inteira no banco (sem paginação), e a lista é convertida item a item e devolvida à tela.">
+      <button type="button" class="fs-btn" data-fs>⛶ Tela cheia</button>
+      <svg viewBox="0 -34 1160 475" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrowList" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"></path>
+          </marker>
+        </defs>
+
+        <g class="lane-icon" style="color:var(--text-muted)"><circle cx="80" cy="-16" r="15"></circle><use href="#icon-tela" x="69" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="80" y="26">Tela</text>
+        <line x1="80" y1="36" x2="80" y2="435" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--accent)"><circle cx="340" cy="-16" r="15"></circle><use href="#icon-controller" x="329" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="340" y="26">Controller</text>
+        <line x1="340" y1="36" x2="340" y2="435" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--role-service)"><circle cx="620" cy="-16" r="15"></circle><use href="#icon-service" x="609" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="620" y="26">Service</text>
+        <line x1="620" y1="36" x2="620" y2="435" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--role-data)"><circle cx="900" cy="-16" r="15"></circle><use href="#icon-repo" x="889" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="900" y="26">Repository</text>
+        <line x1="900" y1="36" x2="900" y2="435" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--role-data)"><circle cx="1080" cy="-16" r="15"></circle><use href="#icon-banco" x="1069" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="1080" y="26">Banco</text>
+        <line x1="1080" y1="36" x2="1080" y2="435" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <!-- 1 -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="80" y1="60" x2="340" y2="60" stroke-width="14"></line>
+          <line id="src47" class="main" x1="80" y1="60" x2="340" y2="60" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowList)"></line>
+          <text x="210" y="51" font-size="11" text-anchor="middle">1. Usuário abre a lista de animais</text>
+          <g id="tip47" class="tip" transform="translate(210,20)">
+            <rect x="-135" y="-27" width="270" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Requisição enviada pela tela</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">GET /animais — sem corpo, é só um pedido de</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">leitura, não envia nem altera nenhum dado</text>
+          </g>
+        </g>
+
+        <!-- 2 -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="340" y1="95" x2="620" y2="95" stroke-width="14"></line>
+          <line id="src48" class="main" x1="340" y1="95" x2="620" y2="95" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowList)"></line>
+          <text x="480" y="86" font-size="11" text-anchor="middle">2. Controller solicita a lista completa</text>
+          <g id="tip48" class="tip" transform="translate(480,133)">
+            <rect x="-135" y="-27" width="270" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Chamada interna (não é requisição HTTP)</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">listar() — não recebe nenhum filtro nem</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">parâmetro, pede tudo de uma vez</text>
+          </g>
+        </g>
+
+        <!-- 3 -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="620" y1="130" x2="900" y2="130" stroke-width="14"></line>
+          <line id="src49" class="main" x1="620" y1="130" x2="900" y2="130" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowList)"></line>
+          <text x="760" y="121" font-size="11" text-anchor="middle">3. Service solicita todos os registros</text>
+          <g id="tip49" class="tip" transform="translate(760,95)">
+            <rect x="-135" y="-27" width="270" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Chamada interna (não é requisição HTTP)</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">findAll() — método já pronto do Spring Data JPA,</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">ninguém no projeto precisou escrever essa consulta</text>
+          </g>
+        </g>
+
+        <!-- 4 -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="900" y1="165" x2="1080" y2="165" stroke-width="14"></line>
+          <line id="src50" class="main" x1="900" y1="165" x2="1080" y2="165" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowList)"></line>
+          <text x="990" y="156" font-size="11" text-anchor="middle">4. Repository consulta a tabela inteira</text>
+          <g id="tip50" class="tip" transform="translate(990,200)">
+            <rect x="-135" y="-27" width="270" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">O que acontece no banco</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">um comando SQL SELECT sem nenhum filtro busca</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">todas as linhas da tabela de animais</text>
+          </g>
+        </g>
+
+        <!-- note: sem paginacao -->
+        <g class="note" tabindex="0">
+          <rect class="hit" x="912" y="177" width="176" height="46"></rect>
+          <rect id="src68" class="note-box" x="920" y="185" width="160" height="30" rx="4"></rect>
+          <text x="1000" y="197.5" font-size="9.5" text-anchor="middle" opacity="0.85">Sem paginação:</text>
+          <text x="1000" y="208.5" font-size="9" text-anchor="middle" opacity="0.65">traz tudo de uma vez</text>
+          <g id="tip68" class="tip" transform="translate(830,240)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Ponto de atenção (limitação atual)</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">não existe "página 1, página 2" — se a tabela tiver</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">muitos animais, a resposta fica mais pesada e lenta</text>
+          </g>
+        </g>
+
+        <!-- 5 banco -> repository -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="1080" y1="255" x2="900" y2="255" stroke-width="14"></line>
+          <line id="src51" class="main" x1="1080" y1="255" x2="900" y2="255" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrowList)"></line>
+          <text x="990" y="246" font-size="10" text-anchor="middle" opacity="0.75">devolve todas as linhas</text>
+          <g id="tip51" class="tip" transform="translate(990,295)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Detalhe importante</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">se não houver nenhum animal cadastrado, isso não</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">é erro — a lista simplesmente volta vazia</text>
+          </g>
+        </g>
+
+        <!-- 6 repository -> service -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="900" y1="290" x2="620" y2="290" stroke-width="14"></line>
+          <line id="src52" class="main" x1="900" y1="290" x2="620" y2="290" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrowList)"></line>
+          <text x="760" y="281" font-size="10" text-anchor="middle" opacity="0.75">5. Repository devolve a lista de entidades</text>
+          <g id="tip52" class="tip" transform="translate(760,325)">
+            <rect x="-135" y="-27" width="270" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">O que volta aqui</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">a lista de entidades — o objeto que representa</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">cada linha do banco, ainda não é o formato da tela</text>
+          </g>
+        </g>
+
+        <!-- 7 service -> controller -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="620" y1="325" x2="340" y2="325" stroke-width="14"></line>
+          <line id="src53" class="main" x1="620" y1="325" x2="340" y2="325" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrowList)"></line>
+          <text x="480" y="316" font-size="10" text-anchor="middle" opacity="0.75">6. Service devolve o resultado ao Controller</text>
+          <g id="tip53" class="tip" transform="translate(480,290)">
+            <rect x="-135" y="-27" width="270" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Neste ponto</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">como não há regra de negócio para uma listagem</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">simples, o Service só repassa a lista adiante</text>
+          </g>
+        </g>
+
+        <!-- note: controller converte cada item -->
+        <g class="note" tabindex="0">
+          <rect class="hit" x="257" y="337" width="166" height="46"></rect>
+          <rect id="src54" class="note-box" x="265" y="345" width="150" height="30" rx="4"></rect>
+          <text x="340" y="357.5" font-size="9.5" text-anchor="middle" opacity="0.85">Controller converte</text>
+          <text x="340" y="368.5" font-size="9" text-anchor="middle" opacity="0.65">cada item em comprovante</text>
+          <g id="tip54" class="tip" transform="translate(150,385)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Por que converter cada um</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">cada entidade da lista vira um DTO de saída (o</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">"comprovante"), no mesmo formato usado ao buscar um só</text>
+          </g>
+        </g>
+
+        <!-- 8 controller -> tela -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="340" y1="405" x2="80" y2="405" stroke-width="14"></line>
+          <line id="src55" class="main" x1="340" y1="405" x2="80" y2="405" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowList)"></line>
+          <text x="210" y="396" font-size="11" text-anchor="middle">7. Controller responde 200 OK com a lista</text>
+          <g id="tip55" class="tip" transform="translate(210,443)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Resposta HTTP enviada à tela</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">código 200 OK — "deu certo" — e no corpo vai a</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">lista de comprovantes, um DTO para cada animal</text>
+          </g>
+        </g>
+
+        <text x="80" y="455" font-size="11" text-anchor="middle" opacity="0.6">lista exibida</text>
+
+        <g class="hitlayer">
+          <line data-tip="tip47" x1="80" y1="60" x2="340" y2="60" stroke-width="14"></line>
+          <line data-tip="tip48" x1="340" y1="95" x2="620" y2="95" stroke-width="14"></line>
+          <line data-tip="tip49" x1="620" y1="130" x2="900" y2="130" stroke-width="14"></line>
+          <line data-tip="tip50" x1="900" y1="165" x2="1080" y2="165" stroke-width="14"></line>
+          <rect data-tip="tip68" x="912" y="177" width="176" height="46"></rect>
+          <line data-tip="tip51" x1="1080" y1="255" x2="900" y2="255" stroke-width="14"></line>
+          <line data-tip="tip52" x1="900" y1="290" x2="620" y2="290" stroke-width="14"></line>
+          <line data-tip="tip53" x1="620" y1="325" x2="340" y2="325" stroke-width="14"></line>
+          <rect data-tip="tip54" x="257" y="337" width="166" height="46"></rect>
+          <line data-tip="tip55" x1="340" y1="405" x2="80" y2="405" stroke-width="14"></line>
+        </g>
+      </svg>
+      <figcaption>Fluxo mais simples do CRUD: não há corpo enviado nem regras de negócio a conferir — apenas buscar tudo e converter cada item para o formato de comprovante.</figcaption>
+    </figure>
+  </div>
+
+  <div class="diagram-block">
+    <h2><span class="tag ok">Caminho de sucesso</span>Buscar um animal por id (GET)</h2>
+    <figure role="img" aria-label="Diagrama de sequência do caminho de sucesso ao buscar um animal específico: o Controller confere se o identificador é um número válido, pede ao Service o cadastro por esse identificador, o Repository consulta o banco, e o comprovante é devolvido à tela. Dois desvios são possíveis: identificador inválido e cadastro não encontrado (404).">
+      <button type="button" class="fs-btn" data-fs>⛶ Tela cheia</button>
+      <svg viewBox="0 -34 1160 480" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrowGet" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"></path>
+          </marker>
+        </defs>
+
+        <g class="lane-icon" style="color:var(--text-muted)"><circle cx="80" cy="-16" r="15"></circle><use href="#icon-tela" x="69" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="80" y="26">Tela</text>
+        <line x1="80" y1="36" x2="80" y2="440" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--accent)"><circle cx="340" cy="-16" r="15"></circle><use href="#icon-controller" x="329" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="340" y="26">Controller</text>
+        <line x1="340" y1="36" x2="340" y2="440" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--role-service)"><circle cx="620" cy="-16" r="15"></circle><use href="#icon-service" x="609" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="620" y="26">Service</text>
+        <line x1="620" y1="36" x2="620" y2="440" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--role-data)"><circle cx="900" cy="-16" r="15"></circle><use href="#icon-repo" x="889" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="900" y="26">Repository</text>
+        <line x1="900" y1="36" x2="900" y2="440" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--role-data)"><circle cx="1080" cy="-16" r="15"></circle><use href="#icon-banco" x="1069" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="1080" y="26">Banco</text>
+        <line x1="1080" y1="36" x2="1080" y2="440" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <!-- 1 -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="80" y1="60" x2="340" y2="60" stroke-width="14"></line>
+          <line id="src56" class="main" x1="80" y1="60" x2="340" y2="60" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowGet)"></line>
+          <text x="210" y="51" font-size="11" text-anchor="middle">1. Usuário abre os detalhes de um animal</text>
+          <g id="tip56" class="tip" transform="translate(210,20)">
+            <rect x="-135" y="-27" width="270" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Requisição enviada pela tela</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">GET /animais/{id} — o id do animal vai dentro</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">do endereço da rota, sem corpo na requisição</text>
+          </g>
+        </g>
+
+        <!-- note: controller confere o id -->
+        <g class="note" tabindex="0">
+          <rect class="hit" x="257" y="72" width="166" height="46"></rect>
+          <rect id="src66" class="note-box" x="265" y="80" width="150" height="30" rx="4"></rect>
+          <text x="340" y="92.5" font-size="9.5" text-anchor="middle" opacity="0.85">Controller confere se</text>
+          <text x="340" y="103.5" font-size="9" text-anchor="middle" opacity="0.65">o id é um número válido</text>
+          <g id="tip66" class="tip" transform="translate(150,120)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">O que essa caixa verifica</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">antes de qualquer código do projeto, o Spring tenta</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">converter o texto da rota (ex: "42") em número</text>
+          </g>
+        </g>
+
+        <!-- ramo id invalido -->
+        <g class="step tip-danger" tabindex="0">
+          <path class="hit" d="M257 95 C190 95, 160 40, 90 40" stroke-width="14" fill="none"></path>
+          <path id="src67" class="main" d="M257 95 C190 95, 160 40, 90 40" fill="none" stroke="var(--danger)" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrowGet)"></path>
+          <text x="165" y="34" font-size="9" text-anchor="middle" fill="var(--danger)">se o id não for um número → erro</text>
+          <g id="tip67" class="tip tip-danger" transform="translate(165,0)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Desvio para o caminho de erro</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">ex: acessar "/animais/abc" em vez de um número —</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">o Service nem chega a ser chamado</text>
+          </g>
+        </g>
+
+        <!-- 2 -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="340" y1="155" x2="620" y2="155" stroke-width="14"></line>
+          <line id="src57" class="main" x1="340" y1="155" x2="620" y2="155" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowGet)"></line>
+          <text x="480" y="146" font-size="11" text-anchor="middle">2. Controller solicita o cadastro</text>
+          <g id="tip57" class="tip" transform="translate(480,193)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Chamada interna (não é requisição HTTP)</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">buscarPorId(id) — mesmo método usado no início</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">da atualização (PUT), aqui reaproveitado</text>
+          </g>
+        </g>
+
+        <!-- 3 -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="620" y1="190" x2="900" y2="190" stroke-width="14"></line>
+          <line id="src58" class="main" x1="620" y1="190" x2="900" y2="190" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowGet)"></line>
+          <text x="760" y="181" font-size="11" text-anchor="middle">3. Service solicita o registro pelo id</text>
+          <g id="tip58" class="tip" transform="translate(760,155)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Chamada interna (não é requisição HTTP)</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">findById(id) — método pronto do Spring Data JPA</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">que busca direto pela chave primária (id)</text>
+          </g>
+        </g>
+
+        <!-- 4 -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="900" y1="225" x2="1080" y2="225" stroke-width="14"></line>
+          <line id="src59" class="main" x1="900" y1="225" x2="1080" y2="225" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowGet)"></line>
+          <text x="990" y="216" font-size="11" text-anchor="middle">4. Repository consulta pelo identificador</text>
+          <g id="tip59" class="tip" transform="translate(990,260)">
+            <rect x="-135" y="-27" width="270" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">O que acontece no banco</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">um comando SQL SELECT filtrado pela chave</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">primária (id) — busca só uma linha específica</text>
+          </g>
+        </g>
+
+        <!-- ramo nao encontrado -->
+        <g class="step tip-danger" tabindex="0">
+          <path class="hit" d="M900 225 C820 225, 800 40, 700 40" stroke-width="14" fill="none"></path>
+          <path id="src60" class="main" d="M900 225 C820 225, 800 40, 700 40" fill="none" stroke="var(--danger)" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrowGet)"></path>
+          <text x="820" y="34" font-size="9" text-anchor="middle" fill="var(--danger)">se esse id de animal não existe → erro 404</text>
+          <g id="tip60" class="tip tip-danger" transform="translate(700,0)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Desvio para o caminho de erro</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">é um número válido, mas nenhum animal tem esse</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">id — ver diagrama "Regra de negócio... / não encontrado"</text>
+          </g>
+        </g>
+
+        <!-- 5 banco -> repository -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="1080" y1="260" x2="900" y2="260" stroke-width="14"></line>
+          <line id="src61" class="main" x1="1080" y1="260" x2="900" y2="260" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrowGet)"></line>
+          <text x="990" y="251" font-size="10" text-anchor="middle" opacity="0.75">devolve a linha encontrada</text>
+          <g id="tip61" class="tip" transform="translate(990,300)">
+            <rect x="-130" y="-27" width="260" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">O que volta aqui</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">a entidade completa do animal encontrado, com</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">todos os campos como estão salvos no banco</text>
+          </g>
+        </g>
+
+        <!-- 6 repository -> service -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="900" y1="295" x2="620" y2="295" stroke-width="14"></line>
+          <line id="src62" class="main" x1="900" y1="295" x2="620" y2="295" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrowGet)"></line>
+          <text x="760" y="286" font-size="10" text-anchor="middle" opacity="0.75">5. Repository devolve a entidade</text>
+          <g id="tip62" class="tip" transform="translate(760,330)">
+            <rect x="-130" y="-27" width="260" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Em seguida</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">o Repository devolve ao Service o registro que</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">acabou de encontrar no banco</text>
+          </g>
+        </g>
+
+        <!-- 7 service -> controller -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="620" y1="330" x2="340" y2="330" stroke-width="14"></line>
+          <line id="src63" class="main" x1="620" y1="330" x2="340" y2="330" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrowGet)"></line>
+          <text x="480" y="321" font-size="10" text-anchor="middle" opacity="0.75">6. Service devolve o cadastro ao Controller</text>
+          <g id="tip63" class="tip" transform="translate(480,295)">
+            <rect x="-135" y="-27" width="270" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Neste ponto</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">como é só uma busca, não há mais nenhuma regra</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">de negócio a checar — o Service só repassa o resultado</text>
+          </g>
+        </g>
+
+        <!-- note: controller converte -->
+        <g class="note" tabindex="0">
+          <rect class="hit" x="257" y="342" width="166" height="46"></rect>
+          <rect id="src64" class="note-box" x="265" y="350" width="150" height="30" rx="4"></rect>
+          <text x="340" y="362.5" font-size="9.5" text-anchor="middle" opacity="0.85">Controller converte</text>
+          <text x="340" y="373.5" font-size="9" text-anchor="middle" opacity="0.65">entidade em comprovante</text>
+          <g id="tip64" class="tip" transform="translate(150,390)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Por que converter de novo</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">a entidade vira um DTO de resposta (o "comprovante"),</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">mesmo formato usado na listagem e no cadastro</text>
+          </g>
+        </g>
+
+        <!-- 8 controller -> tela -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="340" y1="410" x2="80" y2="410" stroke-width="14"></line>
+          <line id="src65" class="main" x1="340" y1="410" x2="80" y2="410" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowGet)"></line>
+          <text x="210" y="401" font-size="11" text-anchor="middle">7. Controller responde 200 OK com o comprovante</text>
+          <g id="tip65" class="tip" transform="translate(210,448)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Resposta HTTP enviada à tela</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">código 200 OK — "deu certo" — com o comprovante</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">(DTO) dos dados de um único animal</text>
+          </g>
+        </g>
+
+        <text x="80" y="460" font-size="11" text-anchor="middle" opacity="0.6">detalhes exibidos</text>
+
+        <g class="hitlayer">
+          <line data-tip="tip56" x1="80" y1="60" x2="340" y2="60" stroke-width="14"></line>
+          <rect data-tip="tip66" x="257" y="72" width="166" height="46"></rect>
+          <path data-tip="tip67" d="M257 95 C190 95, 160 40, 90 40" stroke-width="14" fill="none"></path>
+          <line data-tip="tip57" x1="340" y1="155" x2="620" y2="155" stroke-width="14"></line>
+          <line data-tip="tip58" x1="620" y1="190" x2="900" y2="190" stroke-width="14"></line>
+          <line data-tip="tip59" x1="900" y1="225" x2="1080" y2="225" stroke-width="14"></line>
+          <path data-tip="tip60" d="M900 225 C820 225, 800 40, 700 40" stroke-width="14" fill="none"></path>
+          <line data-tip="tip61" x1="1080" y1="260" x2="900" y2="260" stroke-width="14"></line>
+          <line data-tip="tip62" x1="900" y1="295" x2="620" y2="295" stroke-width="14"></line>
+          <line data-tip="tip63" x1="620" y1="330" x2="340" y2="330" stroke-width="14"></line>
+          <rect data-tip="tip64" x="257" y="342" width="166" height="46"></rect>
+          <line data-tip="tip65" x1="340" y1="410" x2="80" y2="410" stroke-width="14"></line>
+        </g>
+      </svg>
+      <figcaption>Setas sólidas: caminho de sucesso. Setas tracejadas: pontos onde a busca pode falhar — identificador inválido, ou identificador válido mas cadastro inexistente (404).</figcaption>
+    </figure>
+  </div>
+
+  <div class="diagram-block">
+    <h2><span class="tag err">Caminho de erro</span>Formulário inválido (falha antes do Service)</h2>
+    <figure role="img" aria-label="Diagrama de sequência mostrando o caminho de erro de validação: o Controller confere o formulário enviado, encontra um campo inválido e devolve imediatamente uma resposta 400 com a lista de campos problemáticos, sem chamar o Service.">
+      <button type="button" class="fs-btn" data-fs>⛶ Tela cheia</button>
+      <svg viewBox="0 -34 1160 254" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrowV" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"></path>
+          </marker>
+        </defs>
+
+        <g class="lane-icon" style="color:var(--text-muted)"><circle cx="80" cy="-16" r="15"></circle><use href="#icon-tela" x="69" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="80" y="26">Tela</text>
+        <line x1="80" y1="36" x2="80" y2="200" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--accent)"><circle cx="340" cy="-16" r="15"></circle><use href="#icon-controller" x="329" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="340" y="26">Controller</text>
+        <line x1="340" y1="36" x2="340" y2="200" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--danger)"><circle cx="960" cy="-16" r="15" stroke="var(--danger)"></circle><use href="#icon-erro" x="949" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="960" y="26">Tratador central de erros</text>
+        <line x1="960" y1="36" x2="960" y2="200" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="step" tabindex="0">
+          <line class="hit" x1="80" y1="64" x2="340" y2="64" stroke-width="14"></line>
+          <line id="src26" class="main" x1="80" y1="64" x2="340" y2="64" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowV)"></line>
+          <text x="210" y="55" font-size="11.5" text-anchor="middle">1. Usuário envia um dado inválido (ex: nome em branco)</text>
+          <g id="tip26" class="tip" transform="translate(210,24)">
+            <rect x="-135" y="-27" width="270" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Quando isso acontece</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">este caminho vale tanto para o cadastro (POST)</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">quanto para a atualização (PUT) de um animal</text>
+          </g>
+        </g><g class="note" tabindex="0">
+          <rect class="hit" x="268.5" y="70" width="143" height="46"></rect>
+          <rect id="src27" class="note-box" x="276.5" y="78" width="127" height="30" rx="4" stroke="var(--danger)"></rect>
+          <text x="340" y="90.5" font-size="9.5" text-anchor="middle" fill="var(--danger)">Validação automática</text>
+          <text x="340" y="101.5" font-size="9.5" text-anchor="middle" fill="var(--danger)">do formulário → falha</text>
+          <g id="tip27" class="tip tip-danger" transform="translate(125,97)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">O que essa caixa verifica</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">o DTO recebido tem campos marcados como</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">obrigatórios; um deles não veio preenchido</text>
+          </g>
+        </g><g class="step tip-danger" tabindex="0">
+          <path class="hit" d="M340 110 C340 150, 700 150, 960 110" stroke-width="14" fill="none"></path>
+          <path id="src28" class="main" d="M340 110 C340 150, 700 150, 960 110" fill="none" stroke="var(--danger)" stroke-width="1.6" marker-end="url(#arrowV)"></path>
+          <text x="660" y="140" font-size="11" text-anchor="middle" fill="var(--danger)">2. Spring lança uma exceção — nem chega ao Service</text>
+          <g id="tip28" class="tip tip-danger" transform="translate(660,172)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Como o erro chega ao Tratador</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">ninguém no código chama o Tratador manualmente —</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">o Spring intercepta a exceção sozinho e o aciona</text>
+          </g>
+        </g><g class="step tip-danger" tabindex="0">
+          <line class="hit" x1="960" y1="150" x2="80" y2="150" stroke-width="14"></line>
+          <line id="src34" class="main" x1="960" y1="150" x2="80" y2="150" stroke="var(--danger)" stroke-width="1.6" marker-end="url(#arrowV)"></line>
+          <text x="470" y="141" font-size="11.5" text-anchor="middle" fill="var(--danger)">3. Tratador responde com erro 400 e a lista de campos</text>
+          <g id="tip34" class="tip tip-danger" transform="translate(470,178)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Resposta HTTP enviada à tela</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">código 400 Bad Request, com uma lista dizendo</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">exatamente qual campo do formulário está errado</text>
+          </g>
+        </g>
+
+        <g class="hitlayer">
+          <line data-tip="tip34" x1="960" y1="150" x2="80" y2="150" stroke-width="14"></line>
+          <line data-tip="tip26" x1="80" y1="64" x2="340" y2="64" stroke-width="14"></line>
+          <rect data-tip="tip27" x="268.5" y="70" width="143" height="46"></rect>
+          <path data-tip="tip28" d="M340 110 C340 150, 700 150, 960 110" stroke-width="14" fill="none"></path>
+        </g>
+      </svg>
+      <figcaption>Este é o desvio mais rápido: como a checagem do formulário acontece na "porta de entrada" (Controller), um dado inválido nunca chega a acionar as regras de negócio nem o banco.</figcaption>
+    </figure>
+  </div>
+
+  <div class="diagram-block">
+    <h2><span class="tag err">Caminho de erro</span>Regra de negócio violada ou cadastro não encontrado</h2>
+    <figure role="img" aria-label="Diagrama de sequência mostrando o caminho de erro: o Service detecta um problema de regra de negócio (por exemplo, raça informada não existe) e lança uma exceção, que sobe até um tratador central de erros, que devolve uma resposta padronizada para a tela.">
+      <button type="button" class="fs-btn" data-fs>⛶ Tela cheia</button>
+      <svg viewBox="0 -34 1160 294" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrowErr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"></path>
+          </marker>
+        </defs>
+
+        <g class="lane-icon" style="color:var(--text-muted)"><circle cx="80" cy="-16" r="15"></circle><use href="#icon-tela" x="69" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="80" y="26">Tela</text>
+        <line x1="80" y1="36" x2="80" y2="240" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--accent)"><circle cx="340" cy="-16" r="15"></circle><use href="#icon-controller" x="329" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="340" y="26">Controller</text>
+        <line x1="340" y1="36" x2="340" y2="240" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--role-service)"><circle cx="620" cy="-16" r="15"></circle><use href="#icon-service" x="609" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="620" y="26">Service</text>
+        <line x1="620" y1="36" x2="620" y2="240" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--danger)"><circle cx="960" cy="-16" r="15" stroke="var(--danger)"></circle><use href="#icon-erro" x="949" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="960" y="26">Tratador central de erros</text>
+        <line x1="960" y1="36" x2="960" y2="240" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="step" tabindex="0">
+          <line class="hit" x1="80" y1="64" x2="340" y2="64" stroke-width="14"></line>
+          <line id="src29" class="main" x1="80" y1="64" x2="340" y2="64" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowErr)"></line>
+          <text x="210" y="55" font-size="11.5" text-anchor="middle">1. Usuário envia um formulário válido</text>
+          <g id="tip29" class="tip" transform="translate(210,24)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Ponto de partida</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">diferente do outro diagrama de erro, aqui o</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">formulário passou na validação sem problemas</text>
+          </g>
+        </g><g class="step" tabindex="0">
+          <line class="hit" x1="340" y1="96" x2="620" y2="96" stroke-width="14"></line>
+          <line id="src30" class="main" x1="340" y1="96" x2="620" y2="96" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowErr)"></line>
+          <text x="480" y="87" font-size="11.5" text-anchor="middle">2. Controller solicita ao Service que aplique as regras</text>
+          <g id="tip30" class="tip" transform="translate(480,58)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Onde essa etapa também aparece</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">é a mesma chamada salvar(animal) do caminho de</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">sucesso — o erro só aparece um passo depois</text>
+          </g>
+        </g><g class="note" tabindex="0">
+          <rect class="hit" x="535" y="102" width="170" height="46"></rect>
+          <rect id="src31" class="note-box" x="543" y="110" width="154" height="30" rx="4" stroke="var(--danger)"></rect>
+          <text x="620" y="122.5" font-size="9.5" text-anchor="middle" fill="var(--danger)">Service encontra problema:</text>
+          <text x="620" y="133.5" font-size="9.5" text-anchor="middle" fill="var(--danger)">raça não existe, ou sem adotante</text>
+          <g id="tip31" class="tip tip-danger" transform="translate(845,125)">
+            <rect x="-124" y="-27" width="248" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Exemplos de problemas encontrados</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">"raça não existe" (cadastro não encontrado)</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">ou "adotado" sem adotante (regra violada)</text>
+          </g>
+        </g><g class="step tip-danger" tabindex="0">
+          <path class="hit" d="M620 142 C620 178, 880 178, 960 142" stroke-width="14" fill="none"></path>
+          <path id="src32" class="main" d="M620 142 C620 178, 880 178, 960 142" fill="none" stroke="var(--danger)" stroke-width="1.6" marker-end="url(#arrowErr)"></path>
+          <text x="800" y="166" font-size="11" text-anchor="middle" fill="var(--danger)">3. Service lança uma exceção de domínio</text>
+          <g id="tip32" class="tip tip-danger" transform="translate(800,198)">
+            <rect x="-116" y="-27" width="232" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">O que essa seta vermelha significa</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">cada tipo de problema lança uma exceção</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">própria, capturada pelo Tratador central</text>
+          </g>
+        </g><g class="step tip-danger" tabindex="0">
+          <line class="hit" x1="960" y1="190" x2="80" y2="190" stroke-width="14"></line>
+          <line id="src35" class="main" x1="960" y1="190" x2="80" y2="190" stroke="var(--danger)" stroke-width="1.6" marker-end="url(#arrowErr)"></line>
+          <text x="470" y="181" font-size="11.5" text-anchor="middle" fill="var(--danger)">4. Tratador responde com o erro padronizado</text>
+          <g id="tip35" class="tip tip-danger" transform="translate(470,217)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Resposta HTTP enviada à tela</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">o código exato (404, 400 ou 409) depende do tipo</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">de exceção — veja a tabela abaixo do diagrama</text>
+          </g>
+        </g>
+
+        <g class="hitlayer">
+          <line data-tip="tip35" x1="960" y1="190" x2="80" y2="190" stroke-width="14"></line>
+          <line data-tip="tip29" x1="80" y1="64" x2="340" y2="64" stroke-width="14"></line>
+          <line data-tip="tip30" x1="340" y1="96" x2="620" y2="96" stroke-width="14"></line>
+          <rect data-tip="tip31" x="535" y="102" width="170" height="46"></rect>
+          <path data-tip="tip32" d="M620 142 C620 178, 880 178, 960 142" stroke-width="14" fill="none"></path>
+        </g>
+      </svg>
+      <figcaption>A exceção lançada pelo Service sobe direto até o tratador central — nenhuma camada intermediária (Controller) precisa saber tratar o erro, apenas deixá-lo passar.</figcaption>
+    </figure>
+
+    <div class="legend">
+      <span><strong>404</strong> — cadastro (animal, raça, adotante) não encontrado</span>
+      <span><strong>400</strong> — regra de negócio violada (ex: "adotado" sem adotante) ou formulário inválido</span>
+      <span><strong>409</strong> — exclusão bloqueada por vínculo com outro cadastro</span>
+      <span><strong>500</strong> — erro inesperado, não previsto pelas categorias acima</span>
+    </div>
+  </div>
+
+</div>
+
+<div id="editToolbar">
+  <span id="editStatus" style="color: var(--text-muted);">Use "Editar texto" para alterar o conteúdo.</span>
+  <button type="button" id="saveBtn" class="secondary" hidden>Salvar no arquivo</button>
+  <button type="button" id="pdfBtn" class="secondary">Salvar como PDF</button>
+  <button type="button" id="toggleEditBtn">Editar texto</button>
+</div>
+
+<script>
+(function () {
+  var wrap = document.querySelector('.wrap');
+  var editBtn = document.getElementById('toggleEditBtn');
+  var saveBtn = document.getElementById('saveBtn');
+  var statusEl = document.getElementById('editStatus');
+  var fileHandle = null;
+  var editing = false;
+
+  function setStatus(msg, isError) {
+    statusEl.textContent = msg || '';
+    statusEl.style.color = isError ? 'var(--danger)' : 'var(--text-muted)';
+  }
+
+  editBtn.addEventListener('click', function () {
+    editing = !editing;
+    wrap.setAttribute('contenteditable', editing ? 'true' : 'false');
+    editBtn.textContent = editing ? 'Parar edição' : 'Editar texto';
+    saveBtn.hidden = !editing;
+    setStatus(editing ? 'Clique no texto e edite. Depois use "Salvar no arquivo".' : 'Use "Editar texto" para alterar o conteúdo.');
+  });
+
+  function downloadFallback() {
+    var html = '<!doctype html>\n' + document.documentElement.outerHTML;
+    var blob = new Blob([html], { type: 'text/html' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'diagrama-sequencia-backend-2026-08-16.html';
+    a.click();
+    URL.revokeObjectURL(url);
+    setStatus('Seu navegador não permite salvar direto no arquivo — foi baixada uma cópia editada.');
+  }
+
+  var pdfBtn = document.getElementById('pdfBtn');
+  pdfBtn.addEventListener('click', function () {
+    window.print();
+  });
+
+  saveBtn.addEventListener('click', async function () {
+    if (!('showSaveFilePicker' in window)) {
+      downloadFallback();
+      return;
+    }
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'diagrama-sequencia-backend-2026-08-16.html',
+          types: [{ description: 'Página HTML', accept: { 'text/html': ['.html'] } }]
+        });
+      }
+      var writable = await fileHandle.createWritable();
+      var html = '<!doctype html>\n' + document.documentElement.outerHTML;
+      await writable.write(html);
+      await writable.close();
+      setStatus('Salvo com sucesso às ' + new Date().toLocaleTimeString('pt-BR') + '.');
+    } catch (err) {
+      if (err && err.name !== 'AbortError') {
+        setStatus('Não foi possível salvar: ' + err.message, true);
+      }
+    }
+  });
+
+  // Camada de interação: mostra o balão de detalhes ao passar o mouse ou focar,
+  // independente de sobreposição visual entre elementos do diagrama.
+  document.querySelectorAll('[data-tip]').forEach(function (hitEl) {
+    var tipId = hitEl.getAttribute('data-tip');
+    var tip = document.getElementById(tipId);
+    var src = document.getElementById('src' + tipId.replace('tip', ''));
+    if (!tip) return;
+    hitEl.setAttribute('tabindex', '0');
+    function show() {
+      tip.classList.add('show');
+      if (src) src.classList.add('hl');
+    }
+    function hide() {
+      tip.classList.remove('show');
+      if (src) src.classList.remove('hl');
+    }
+    hitEl.addEventListener('mouseenter', show);
+    hitEl.addEventListener('mouseleave', hide);
+    hitEl.addEventListener('focus', show);
+    hitEl.addEventListener('blur', hide);
+  });
+
+  // Tela cheia por diagrama
+  document.querySelectorAll('[data-fs]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var figure = btn.closest('figure');
+      if (document.fullscreenElement === figure) {
+        document.exitFullscreen();
+        return;
+      }
+      if (figure.requestFullscreen) {
+        figure.requestFullscreen();
+      } else if (figure.webkitRequestFullscreen) {
+        figure.webkitRequestFullscreen();
+      }
+    });
+  });
+})();
+</script>
+
+
+</body></html>

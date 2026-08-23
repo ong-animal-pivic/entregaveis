@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="UTF-8">
+<title>Análise Arquitetural do Backend</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-subtle: #f6f7f9;
+    --bg-card: #ffffff;
+    --border: #e2e4e9;
+    --text: #1c1f26;
+    --text-muted: #5b616e;
+    --accent: #2f6f4f;
+    --accent-soft: #e7f2ec;
+    --accent-strong: #1f5138;
+    --danger: #a13a3a;
+    --danger-soft: #fbeeee;
+    --good: #2f6f4f;
+    --good-soft: #e7f2ec;
+    --warn: #a1793a;
+    --warn-soft: #fbf2ee;
+    --shadow: 0 1px 2px rgba(20, 22, 28, 0.06), 0 4px 16px rgba(20, 22, 28, 0.05);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14161b;
+      --bg-subtle: #1b1e24;
+      --bg-card: #1c1f26;
+      --border: #2c303a;
+      --text: #e7e9ee;
+      --text-muted: #9aa0ac;
+      --accent: #6fbf94;
+      --accent-soft: #1e2c25;
+      --accent-strong: #8fd4ac;
+      --danger: #d97a7a;
+      --danger-soft: #2b1d1d;
+      --good: #6fbf94;
+      --good-soft: #1e2c25;
+      --warn: #d9a97a;
+      --warn-soft: #2b241d;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.35);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #14161b;
+    --bg-subtle: #1b1e24;
+    --bg-card: #1c1f26;
+    --border: #2c303a;
+    --text: #e7e9ee;
+    --text-muted: #9aa0ac;
+    --accent: #6fbf94;
+    --accent-soft: #1e2c25;
+    --accent-strong: #8fd4ac;
+    --danger: #d97a7a;
+    --danger-soft: #2b1d1d;
+    --good: #6fbf94;
+    --good-soft: #1e2c25;
+    --warn: #d9a97a;
+    --warn-soft: #2b241d;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.35);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 56px 24px 96px;
+  }
+
+  header.hero { margin-bottom: 48px; }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 0 0 12px;
+  }
+
+  h1 {
+    font-size: 2rem;
+    line-height: 1.25;
+    margin: 0 0 14px;
+    letter-spacing: -0.01em;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 1.08rem;
+    margin: 0;
+    max-width: 62ch;
+  }
+
+  section { margin-bottom: 46px; }
+
+  h2 {
+    font-size: 1.35rem;
+    margin: 0 0 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h3 { font-size: 1.05rem; margin: 24px 0 10px; }
+
+  p { margin: 0 0 14px; }
+  p.lead { color: var(--text-muted); font-size: 1.02rem; }
+
+  ul, ol { margin: 0 0 14px; padding-left: 22px; }
+  li { margin-bottom: 8px; }
+
+  .analogy {
+    background: var(--accent-soft);
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin: 18px 0;
+  }
+  .analogy .label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-strong);
+    margin-bottom: 8px;
+  }
+  .analogy p:last-child { margin-bottom: 0; }
+
+  .advantage-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 640px) { .advantage-grid { grid-template-columns: 1fr; } }
+  .advantage-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    background: var(--bg-card);
+    box-shadow: var(--shadow);
+  }
+  .advantage-card h4 { margin: 0 0 6px; font-size: 0.98rem; }
+  .advantage-card p { margin: 0; font-size: 0.9rem; color: var(--text-muted); }
+
+  .issue-card {
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin: 0 0 14px;
+    border-left: 3px solid var(--warn);
+    background: var(--warn-soft);
+  }
+  .issue-card.gap { border-left-color: var(--danger); background: var(--danger-soft); }
+  .issue-card .tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--warn);
+    margin-bottom: 6px;
+  }
+  .issue-card.gap .tag { color: var(--danger); }
+  .issue-card h4 { margin: 0 0 6px; font-size: 0.98rem; }
+  .issue-card p { margin: 0; font-size: 0.92rem; }
+  .issue-card p.why { margin-top: 8px; color: var(--text-muted); font-size: 0.88rem; }
+
+  .timeline {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-left: 2px solid var(--border);
+  }
+  .timeline li {
+    position: relative;
+    padding: 0 0 22px 24px;
+  }
+  .timeline li::before {
+    content: "";
+    position: absolute;
+    left: -6px;
+    top: 4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .timeline .t-phase {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-strong);
+    margin-bottom: 4px;
+  }
+  .timeline .t-title { font-weight: 600; margin-bottom: 3px; }
+  .timeline .t-desc { color: var(--text-muted); font-size: 0.94rem; }
+
+  .callout {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 0.94rem;
+    color: var(--text-muted);
+  }
+
+  footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.82rem;
+  }
+
+  figure {
+    margin: 22px 0;
+    padding: 20px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  figure svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    color: var(--text);
+  }
+  figure text { fill: currentColor; }
+  figcaption {
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  .glossary {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 20px;
+    font-size: 0.9rem;
+    margin: 18px 0;
+  }
+  @media (max-width: 640px) { .glossary { grid-template-columns: 1fr; } }
+  .glossary dt { font-weight: 600; color: var(--text); }
+  .glossary dd { margin: 2px 0 0; color: var(--text-muted); }
+
+  .wrap[contenteditable="true"] {
+    outline: 2px dashed var(--accent);
+    outline-offset: 8px;
+    border-radius: 8px;
+  }
+
+  #editToolbar {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 10px 8px 16px;
+    box-shadow: var(--shadow);
+    font-size: 0.85rem;
+  }
+  #editToolbar button {
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--bg);
+    background: var(--accent);
+    border: none;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  #editToolbar button.secondary {
+    color: var(--text);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+  }
+  #editToolbar #editStatus {
+    color: var(--text-muted);
+    max-width: 240px;
+  }
+
+  @media print {
+    #editToolbar { display: none; }
+
+    @page {
+      size: A4;
+      margin: 18mm 16mm;
+    }
+
+    html, body {
+      background: #ffffff !important;
+    }
+
+    body {
+      color: #1c1f26 !important;
+    }
+
+    .wrap {
+      max-width: none;
+      padding: 0;
+    }
+
+    .wrap[contenteditable] {
+      outline: none;
+    }
+
+    .analogy, .advantage-card, .issue-card,
+    .callout, figure, .timeline li::before {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .analogy { background: #e7f2ec !important; }
+    .issue-card { background: #fbf2ee !important; border-left-color: #a1793a !important; }
+    .issue-card .tag { color: #a1793a !important; }
+    .issue-card.gap { background: #fbeeee !important; border-left-color: #a13a3a !important; }
+    .issue-card.gap .tag { color: #a13a3a !important; }
+    .advantage-card, .callout, figure {
+      background: #ffffff !important;
+      border-color: #e2e4e9 !important;
+      box-shadow: none !important;
+    }
+    figure { background: #f6f7f9 !important; }
+    .timeline { border-left-color: #e2e4e9 !important; }
+    .timeline li::before { background: #2f6f4f !important; }
+    .eyebrow { color: #2f6f4f !important; }
+    .analogy .label, .timeline .t-phase { color: #1f5138 !important; }
+    p.lead, .subtitle, .t-desc, .advantage-card p, .callout, figcaption,
+    .glossary dd, footer { color: #5b616e !important; }
+    h1, h2, h3, .t-title, .glossary dt, strong { color: #1c1f26 !important; }
+    figure svg { color: #1c1f26 !important; }
+
+    section { break-inside: avoid-page; }
+    figure { break-inside: avoid-page; }
+    .advantage-card, .issue-card { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap" contenteditable="false">
+
+  <header class="hero">
+    <p class="eyebrow">PIVIC · Sistema ONG Animal · Análise arquitetural · 22/08/2026</p>
+    <h1>Análise arquitetural do backend</h1>
+    <p class="subtitle">Um raio-x do estado atual do sistema que recebe e organiza os cadastros (o "backend"), destacando o que já está sólido, o que precisa ser ajustado para manter tudo coerente, o que ainda falta construir, e em que ordem seguir daqui para frente.</p>
+  </header>
+
+  <section>
+    <h2>1. Por que essa análise foi feita</h2>
+    <p class="lead">Este é um projeto de iniciação científica, e por isso a forma como o sistema é construído importa tanto quanto o sistema funcionar. Não basta que os cadastros "funcionem hoje" — é preciso que as decisões de organização interna sejam consistentes entre si e continuem fazendo sentido conforme o sistema cresce, para que o trabalho possa ser explicado, avaliado e retomado com segurança a qualquer momento.</p>
+    <p>Esta análise revisou todo o código do backend do Sistema ONG Animal — a parte do sistema responsável por receber os pedidos da tela (cadastrar um animal, um adotante, etc.), aplicar as regras do negócio e guardar tudo de forma organizada no banco de dados. O resultado está dividido em quatro partes: o que já está bem estabelecido, o que precisa ser <strong>alterado</strong> por já existir mas estar inconsistente, o que precisa ser <strong>adicionado</strong> por ainda não existir, e um roteiro de próximos passos.</p>
+  </section>
+
+  <section>
+    <h2>2. O que já está bem estabelecido</h2>
+    <p class="lead">Antes de falar do que falta, vale registrar a base que já está consolidada — é sobre ela que os próximos passos devem ser construídos, não ao lado dela.</p>
+    <div class="advantage-grid">
+      <div class="advantage-card">
+        <h4>Organização em camadas</h4>
+        <p>O sistema segue um fluxo único e previsível: a "porta de entrada" recebe o pedido, uma camada de regras de negócio decide o que fazer, e só então o dado chega ao banco. Esse fluxo é usado por igual nos quatro tipos de cadastro (adotante, animal, raça, espécie).</p>
+      </div>
+      <div class="advantage-card">
+        <h4>Formulário/comprovante separado do arquivamento</h4>
+        <p>Como já registrado no relatório de migração anterior, a tela troca informações com a API usando um "formulário de entrada" e um "comprovante de saída" próprios, sem expor diretamente a estrutura interna de arquivamento do banco.</p>
+      </div>
+      <div class="advantage-card">
+        <h4>Tratamento de erros centralizado</h4>
+        <p>Existe um único ponto do sistema responsável por transformar qualquer erro interno em uma resposta padronizada e compreensível — por exemplo, "cadastro não encontrado" ou "este dado já está em uso" —, evitando que cada tela precise interpretar erros de formatos diferentes.</p>
+      </div>
+      <div class="advantage-card">
+        <h4>Histórico do banco de dados versionado</h4>
+        <p>Toda alteração na estrutura do banco de dados fica registrada em um histórico sequencial e datado, com dados de teste próprios — permite reconstruir o banco do zero, de forma confiável, em qualquer máquina.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>3. O que precisa ser alterado</h2>
+    <p class="lead">Estes são pontos que já existem no sistema, mas que se desviaram do padrão adotado no restante do backend — corrigi-los antes de adicionar funcionalidades novas evita que a inconsistência se espalhe.</p>
+
+    <div class="issue-card">
+      <div class="tag">Inconsistência no tratamento de erro</div>
+      <h4>Dois cadastros respondem "não encontrado" de um jeito diferente dos outros</h4>
+      <p>No cadastro de <strong>Animal</strong> e no de <strong>Raça</strong>, quando alguém tenta cadastrar ou atualizar um registro referenciando uma raça, espécie ou adotante que não existe, o sistema responde como se fosse um erro de "dado inválido" — em vez de responder como "referência não encontrada", que é o comportamento padrão em todo o resto do sistema. Ou seja, existem hoje dois caminhos diferentes para a mesma situação, dependendo de qual tela originou o pedido.</p>
+      <p class="why"><strong>Por que corrigir:</strong> o restante do sistema já tem um tratamento único e automático para "referência não encontrada" — esses dois pontos remam contra a própria decisão arquitetural já tomada, e deixam a resposta da API imprevisível para quem for consumi-la (inclusive o próprio frontend).</p>
+    </div>
+
+    <div class="issue-card">
+      <div class="tag">Documentação interna desatualizada</div>
+      <h4>A "planta baixa" do backend não reflete mais o código real</h4>
+      <p>O documento interno que descreve a arquitetura do backend (usado como referência rápida ao trabalhar no código) ainda descreve um estágio anterior do projeto — antes da introdução do formulário/comprovante separado do arquivamento interno, e antes de as atualizações de cadastro passarem a ser feitas campo por campo de forma explícita. O texto atual descreve um mecanismo automático de atualização que não é mais o usado no cadastro de Animal.</p>
+      <p class="why"><strong>Por que corrigir:</strong> esse documento é a referência rápida de como o sistema é organizado — se ele não acompanha o código, deixa de cumprir seu papel e pode levar a decisões futuras baseadas em uma descrição que não existe mais.</p>
+    </div>
+
+    <div class="issue-card">
+      <div class="tag">Assimetria não documentada</div>
+      <h4>Um dos quatro cadastros não tem o mesmo ciclo completo dos outros</h4>
+      <p>Adotante, Animal e Raça permitem cadastrar, editar, consultar e excluir. Espécie permite apenas consultar. Não há, hoje, nenhum registro explicando se essa limitação é uma decisão deliberada (por exemplo, porque a lista de espécies é fixa e não deve ser editada por quem usa o sistema) ou uma funcionalidade que ainda falta implementar.</p>
+      <p class="why"><strong>Por que corrigir:</strong> uma assimetria entre cadastros que deveriam seguir o mesmo padrão, sem justificativa registrada, é o tipo de coisa que passa a impressão de inacabado numa avaliação — mesmo que tenha sido uma escolha consciente.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>4. O que precisa ser adicionado</h2>
+    <p class="lead">Estas são lacunas — coisas que ainda não existem no sistema e que, em algum momento do projeto, precisarão existir.</p>
+
+    <div class="issue-card gap">
+      <div class="tag">Maior risco</div>
+      <h4>Praticamente não há testes automatizados</h4>
+      <p>Hoje existe apenas uma verificação de que "o sistema liga sem erro". Não há nenhuma verificação automática de que as regras de negócio continuam funcionando — por exemplo, a regra de que um animal só pode ficar com status "adotado" se estiver de fato vinculado a um adotante.</p>
+      <p class="why"><strong>Por que importa:</strong> sem testes, cada nova alteração corre o risco de quebrar uma regra já existente sem que ninguém perceba na hora — o problema só aparece depois, e sem um teste automatizado ninguém fica sabendo exatamente quando ou por quê.</p>
+    </div>
+
+    <div class="issue-card gap">
+      <div class="tag">Segurança</div>
+      <h4>A API está totalmente aberta</h4>
+      <p>Não existe, hoje, nenhum controle de quem pode consultar ou alterar os dados — qualquer pessoa com acesso ao endereço da API consegue cadastrar, editar ou excluir qualquer registro.</p>
+      <p class="why"><strong>Por que importa:</strong> mesmo que esteja fora do escopo imediato do PIVIC, é uma lacuna relevante de se registrar formalmente, já que se torna indispensável assim que o sistema deixar de ser apenas um protótipo acadêmico.</p>
+    </div>
+
+    <div class="issue-card gap">
+      <div class="tag">Documentação técnica</div>
+      <h4>Não existe um "manual" gerado automaticamente da API</h4>
+      <p>Não há hoje nenhum documento (gerado a partir do próprio código, sempre atualizado) listando todos os pedidos que a API aceita e o formato esperado de cada um.</p>
+      <p class="why"><strong>Por que importa:</strong> isso dificulta a integração com a tela (que é um projeto separado, em Angular) e torna mais difícil para qualquer avaliador entender rapidamente o que a API oferece sem precisar ler o código.</p>
+    </div>
+
+    <div class="issue-card gap">
+      <div class="tag">Regras de negócio pendentes</div>
+      <h4>Validações já sinalizadas no próprio código, mas ainda não implementadas</h4>
+      <p>O código já contém anotações próprias marcando pendências conhecidas: falta validar a idade informada de um adotante, falta impedir que a data de saída de um animal seja anterior à data em que ele foi resgatado, falta implementar a exclusão "reversível" de um animal (hoje a exclusão remove o registro em definitivo), e falta validar se um contato duplicado pode ser cadastrado mais de uma vez.</p>
+      <p class="why"><strong>Por que importa:</strong> são pendências que o próprio código já reconhece — deixá-las paradas por muito tempo aumenta o risco de dados inconsistentes entrarem no banco.</p>
+    </div>
+
+    <div class="issue-card gap">
+      <div class="tag">Configuração de ambiente</div>
+      <h4>Não existe um modelo de configuração para rodar o projeto do zero</h4>
+      <p>As credenciais de acesso ao banco de dados não vêm preenchidas nem existe um arquivo de exemplo mostrando quais informações precisam ser configuradas antes de rodar o sistema pela primeira vez.</p>
+      <p class="why"><strong>Por que importa:</strong> dificulta que outra pessoa (ou o próprio autor, em outro computador) consiga colocar o projeto para rodar sem precisar adivinhar a configuração necessária.</p>
+    </div>
+
+    <div class="issue-card gap">
+      <div class="tag">Verificação contínua</div>
+      <h4>Não há verificação automática antes de aceitar uma mudança no código</h4>
+      <p>Hoje, qualquer alteração pode ser incorporada ao projeto sem que nada rode automaticamente para conferir se algo quebrou.</p>
+      <p class="why"><strong>Por que importa:</strong> só faz sentido investir nisso depois que existirem testes automatizados de fato — é o próximo passo natural depois da maior lacuna identificada nesta análise.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>5. Próximos passos fundamentais</h2>
+    <p class="lead">Os pontos acima foram organizados em uma ordem pensada especificamente para preservar a coerência da arquitetura: primeiro alinhar o que já existe, depois proteger o que existe com testes antes de continuar crescendo, e só então avançar para funcionalidades que ampliam o sistema.</p>
+
+    <ol class="timeline">
+      <li>
+        <div class="t-phase">Curto prazo</div>
+        <div class="t-title">Alinhar o que já existe ao padrão do restante do sistema</div>
+        <div class="t-desc">Corrigir os dois pontos de tratamento de erro divergentes (Animal e Raça); decidir e registrar formalmente se o cadastro de Espécie é mesmo só de consulta; atualizar a documentação interna do backend para refletir a arquitetura real. Nenhum desses passos adiciona funcionalidade nova — apenas remove inconsistências antes que se acumulem mais.</div>
+      </li>
+      <li>
+        <div class="t-phase">Médio prazo</div>
+        <div class="t-title">Proteger as regras de negócio com testes antes de continuar</div>
+        <div class="t-desc">Criar testes automatizados cobrindo as regras centrais de cada cadastro (a mais crítica sendo a relação entre status "adotado" e vínculo com um adotante); implementar as validações de negócio já sinalizadas como pendentes no código; criar um arquivo de exemplo de configuração de ambiente. Fazer isso antes de novas funcionalidades evita crescer o sistema sobre uma base que ninguém consegue verificar automaticamente.</div>
+      </li>
+      <li>
+        <div class="t-phase">Longo prazo</div>
+        <div class="t-title">Ampliar o sistema com o que hoje está fora do escopo</div>
+        <div class="t-desc">Autenticação e controle de acesso; documentação automática da API; verificação automática a cada mudança no código. São passos que dependem da base anterior estar sólida — tentar adicioná-los antes tende a gerar mais retrabalho do que ganho.</div>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Glossário</h2>
+    <dl class="glossary">
+      <div><dt>API</dt><dd>"Porta de entrada" do sistema, que recebe pedidos da tela e devolve respostas.</dd></div>
+      <div><dt>Controller</dt><dd>Parte da API responsável por atender cada tipo de pedido (cadastrar, editar, consultar).</dd></div>
+      <div><dt>DTO</dt><dd>Formulário/comprovante usado só para troca de informação entre a tela e a API, separado de como o dado é guardado.</dd></div>
+      <div><dt>Entidade</dt><dd>Estrutura de dados que representa uma tabela do banco de dados.</dd></div>
+      <div><dt>Migração de banco</dt><dd>Registro histórico e sequencial de cada alteração feita na estrutura do banco de dados.</dd></div>
+      <div><dt>Testes automatizados</dt><dd>Verificações programadas que checam se as regras do sistema continuam funcionando a cada mudança no código.</dd></div>
+      <div><dt>Autenticação/autorização</dt><dd>Mecanismo que identifica quem está usando o sistema e controla o que essa pessoa pode ou não fazer.</dd></div>
+      <div><dt>Verificação contínua</dt><dd>Processo automático que roda os testes a cada alteração, antes de aceitar a mudança no projeto.</dd></div>
+    </dl>
+  </section>
+
+  <p class="callout">Em resumo: a arquitetura de base do backend está sólida e consistente — o maior risco atual não é a organização geral, e sim o acúmulo de pequenos desvios pontuais e a ausência de testes automatizados. Corrigir os desvios e proteger as regras de negócio com testes antes de seguir adicionando funcionalidades é o que garante que a coerência arquitetural, tão relevante para este trabalho de iniciação científica, se mantenha ao longo de todo o projeto.</p>
+
+  <footer>
+    Análise arquitetural — projeto PIVIC, Sistema ONG Animal.
+  </footer>
+
+</div>
+
+<div id="editToolbar">
+  <span id="editStatus" style="color: var(--text-muted);">Clique em "Editar texto" para alterar o conteúdo.</span>
+  <button type="button" id="saveBtn" class="secondary" hidden>Salvar no arquivo</button>
+  <button type="button" id="pdfBtn" class="secondary">Salvar como PDF</button>
+  <button type="button" id="toggleEditBtn">Editar texto</button>
+</div>
+
+<script>
+(function () {
+  var wrap = document.querySelector('.wrap');
+  var editBtn = document.getElementById('toggleEditBtn');
+  var saveBtn = document.getElementById('saveBtn');
+  var statusEl = document.getElementById('editStatus');
+  var fileHandle = null;
+  var editing = false;
+
+  function setStatus(msg, isError) {
+    statusEl.textContent = msg || '';
+    statusEl.style.color = isError ? 'var(--danger)' : 'var(--text-muted)';
+  }
+
+  editBtn.addEventListener('click', function () {
+    editing = !editing;
+    wrap.setAttribute('contenteditable', editing ? 'true' : 'false');
+    editBtn.textContent = editing ? 'Parar edição' : 'Editar texto';
+    saveBtn.hidden = !editing;
+    setStatus(editing ? 'Clique no texto e edite. Depois use "Salvar no arquivo".' : 'Clique em "Editar texto" para alterar o conteúdo.');
+  });
+
+  function downloadFallback() {
+    var html = '<!doctype html>\n' + document.documentElement.outerHTML;
+    var blob = new Blob([html], { type: 'text/html' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'analise-arquitetural-backend-2026-08-22.html';
+    a.click();
+    URL.revokeObjectURL(url);
+    setStatus('Seu navegador não permite salvar direto no arquivo — foi baixada uma cópia editada.');
+  }
+
+  var pdfBtn = document.getElementById('pdfBtn');
+  pdfBtn.addEventListener('click', function () {
+    window.print();
+  });
+
+  saveBtn.addEventListener('click', async function () {
+    if (!('showSaveFilePicker' in window)) {
+      downloadFallback();
+      return;
+    }
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'analise-arquitetural-backend-2026-08-22.html',
+          types: [{ description: 'Página HTML', accept: { 'text/html': ['.html'] } }]
+        });
+      }
+      var writable = await fileHandle.createWritable();
+      var html = '<!doctype html>\n' + document.documentElement.outerHTML;
+      await writable.write(html);
+      await writable.close();
+      setStatus('Salvo com sucesso às ' + new Date().toLocaleTimeString('pt-BR') + '.');
+    } catch (err) {
+      if (err && err.name !== 'AbortError') {
+        setStatus('Não foi possível salvar: ' + err.message, true);
+      }
+    }
+  });
+})();
+</script>
+
+</body></html>

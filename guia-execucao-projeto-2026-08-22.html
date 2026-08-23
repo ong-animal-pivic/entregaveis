@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia de Execução do Projeto</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-subtle: #f6f7f9;
+    --bg-card: #ffffff;
+    --border: #e2e4e9;
+    --text: #1c1f26;
+    --text-muted: #5b616e;
+    --accent: #2f6f4f;
+    --accent-soft: #e7f2ec;
+    --accent-strong: #1f5138;
+    --danger: #a13a3a;
+    --danger-soft: #fbeeee;
+    --badge-bg: #eef1f6;
+    --badge-text: #3c4250;
+    --shadow: 0 1px 2px rgba(20, 22, 28, 0.06), 0 4px 16px rgba(20, 22, 28, 0.05);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14161b;
+      --bg-subtle: #1b1e24;
+      --bg-card: #1c1f26;
+      --border: #2c303a;
+      --text: #e7e9ee;
+      --text-muted: #9aa0ac;
+      --accent: #6fbf94;
+      --accent-soft: #1e2c25;
+      --accent-strong: #8fd4ac;
+      --danger: #e08787;
+      --danger-soft: #2c1e20;
+      --badge-bg: #262a33;
+      --badge-text: #c3c8d3;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.35);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #14161b;
+    --bg-subtle: #1b1e24;
+    --bg-card: #1c1f26;
+    --border: #2c303a;
+    --text: #e7e9ee;
+    --text-muted: #9aa0ac;
+    --accent: #6fbf94;
+    --accent-soft: #1e2c25;
+    --accent-strong: #8fd4ac;
+    --danger: #e08787;
+    --danger-soft: #2c1e20;
+    --badge-bg: #262a33;
+    --badge-text: #c3c8d3;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.35);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 56px 24px 96px;
+  }
+
+  header.hero { margin-bottom: 40px; }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 0 0 10px;
+  }
+
+  h1 {
+    font-size: 2rem;
+    margin: 0 0 10px;
+    letter-spacing: -0.01em;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin: 0;
+    max-width: 66ch;
+  }
+
+  section { margin-bottom: 44px; }
+
+  h2 {
+    font-size: 1.25rem;
+    margin: 0 0 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  h2 .step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    font-size: 0.85rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  p.lead {
+    color: var(--text-muted);
+    margin: 0 0 16px;
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 14px;
+  }
+
+  .card h3 {
+    font-size: 0.95rem;
+    margin: 0 0 6px;
+  }
+
+  .card p, .card ul {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  .card ul { padding-left: 18px; }
+  .card li { margin-bottom: 4px; }
+
+  code, .cmd {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 0.86em;
+  }
+
+  .cmd-block {
+    display: block;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.86rem;
+    color: var(--text);
+    overflow-x: auto;
+    margin: 10px 0 14px;
+    white-space: pre;
+  }
+
+  .callout {
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    font-size: 0.88rem;
+    margin: 14px 0;
+  }
+
+  .callout.warn {
+    background: var(--danger-soft);
+    border-left-color: var(--danger);
+  }
+
+  .callout strong { color: var(--text); }
+
+  .order-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent-strong);
+    background: var(--accent-soft);
+    border-radius: 999px;
+    padding: 3px 10px;
+    margin-bottom: 16px;
+  }
+
+  .checklist {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .checklist li {
+    position: relative;
+    padding-left: 26px;
+    margin-bottom: 8px;
+    font-size: 0.92rem;
+  }
+  .checklist li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 4px;
+    width: 15px;
+    height: 15px;
+    border: 1.5px solid var(--accent);
+    border-radius: 4px;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    color: var(--badge-text);
+    background: var(--badge-bg);
+    border-radius: 6px;
+    padding: 2px 8px;
+    margin-left: 6px;
+  }
+
+  .glossary {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 20px;
+    font-size: 0.9rem;
+    margin: 18px 0;
+  }
+  @media (max-width: 640px) { .glossary { grid-template-columns: 1fr; } }
+  .glossary dt { font-weight: 600; color: var(--text); }
+  .glossary dd { margin: 2px 0 0; color: var(--text-muted); }
+
+  footer {
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+
+  .wrap[contenteditable="true"] {
+    outline: 2px dashed var(--accent);
+    outline-offset: 8px;
+    border-radius: 8px;
+  }
+
+  #editToolbar {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 10px 8px 16px;
+    box-shadow: var(--shadow);
+    font-size: 0.85rem;
+  }
+  #editToolbar button {
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--bg);
+    background: var(--accent);
+    border: none;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  #editToolbar button.secondary {
+    color: var(--text);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+  }
+  #editToolbar #editStatus {
+    color: var(--text-muted);
+    max-width: 240px;
+  }
+
+  @media print {
+    #editToolbar { display: none; }
+
+    @page {
+      size: A4;
+      margin: 18mm 16mm;
+    }
+
+    html, body {
+      background: #ffffff !important;
+    }
+
+    body {
+      color: #1c1f26 !important;
+    }
+
+    .wrap {
+      max-width: none;
+      padding: 0;
+    }
+
+    .wrap[contenteditable] {
+      outline: none;
+    }
+
+    .card, .cmd-block, .callout {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      break-inside: avoid;
+    }
+
+    .card { background: #ffffff !important; border-color: #e2e4e9 !important; box-shadow: none !important; }
+    .cmd-block { background: #f6f7f9 !important; border-color: #e2e4e9 !important; color: #1c1f26 !important; }
+    .callout { background: #e7f2ec !important; border-left-color: #2f6f4f !important; }
+    .callout.warn { background: #fbeeee !important; border-left-color: #a13a3a !important; }
+    .eyebrow { color: #2f6f4f !important; }
+    h1, h2, h3, code, strong, .t-title { color: #1c1f26 !important; }
+    p.lead, .card p, .card ul, .glossary dd, footer { color: #5b616e !important; }
+    code { background: #eef1f6 !important; border-color: #e2e4e9 !important; }
+
+    section { break-inside: avoid-page; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap" contenteditable="false">
+
+  <header class="hero">
+    <p class="eyebrow">PIVIC · Sistema ONG Animal · Guia prático · 22/08/2026</p>
+    <h1>Como colocar o sistema para rodar</h1>
+    <p class="subtitle">Passo a passo para deixar as três partes do sistema funcionando em um computador: o banco de dados (onde as informações ficam guardadas), o backend (a "porta de entrada" que processa os pedidos) e o frontend (a tela que o usuário usa no navegador).</p>
+  </header>
+
+  <section>
+    <h2><span class="step-num">•</span>Visão geral das três partes</h2>
+    <p class="lead">O sistema é dividido em três peças independentes, que precisam ser ligadas nesta ordem: primeiro o banco de dados, depois o backend, e por último o frontend.</p>
+    <div class="card">
+      <h3>1. Banco de dados <span class="badge">PostgreSQL</span></h3>
+      <p>Onde ficam guardadas as informações de animais, adotantes, espécies e raças. Precisa estar rodando antes de qualquer outra parte, porque o backend se conecta a ele assim que é ligado.</p>
+    </div>
+    <div class="card">
+      <h3>2. Backend <span class="badge">Java / Spring Boot</span></h3>
+      <p>A "porta de entrada" do sistema (chamada tecnicamente de API). Recebe os pedidos vindos da tela, aplica as regras do negócio e conversa com o banco de dados. Fica localizado na pasta <code>sistema-ong-animal</code>.</p>
+    </div>
+    <div class="card">
+      <h3>3. Frontend <span class="badge">Angular</span></h3>
+      <p>A tela que o usuário efetivamente usa no navegador. Fica localizada na pasta <code>sistema-ong-animal-frontend</code> e depende do backend já estar rodando para funcionar de verdade (embora possa ser aberta sozinha).</p>
+    </div>
+
+    <dl class="glossary">
+      <div><dt>API</dt><dd>"Porta de entrada" do sistema — recebe pedidos da tela e devolve respostas.</dd></div>
+      <div><dt>Repositório</dt><dd>Pasta com o código-fonte de uma das partes do sistema, controlada pelo Git.</dd></div>
+      <div><dt>Migração de banco</dt><dd>Script que cria/ajusta as tabelas do banco de dados automaticamente.</dd></div>
+      <div><dt>Terminal</dt><dd>Janela de linha de comando (PowerShell, no Windows) usada para digitar os comandos deste guia.</dd></div>
+    </dl>
+  </section>
+
+  <section>
+    <span class="order-badge">Etapa 1 de 3</span>
+    <h2><span class="step-num">1</span>Preparar o banco de dados</h2>
+    <p class="lead">O backend usa o Flyway, uma ferramenta que cria e ajusta as tabelas do banco automaticamente assim que a aplicação é ligada — não é preciso criar tabela nenhuma manualmente. Só é necessário deixar um banco PostgreSQL disponível, na porta certa, e informar as credenciais de acesso.</p>
+
+    <h3 style="margin-top:0; font-size:0.95rem;">1.1 — Confirmar que o PostgreSQL está instalado e rodando</h3>
+    <p style="font-size:0.9rem; color:var(--text-muted); margin:0 0 4px;">No Windows, o PostgreSQL roda como um serviço. Para verificar se está instalado e ativo, no PowerShell:</p>
+    <span class="cmd-block">Get-Service -Name '*postgres*'</span>
+    <p style="font-size:0.9rem; color:var(--text-muted);">O campo <code>Status</code> deve aparecer como <code>Running</code>. Se não aparecer nenhum serviço, o PostgreSQL precisa ser instalado primeiro.</p>
+
+    <h3 style="font-size:0.95rem;">1.2 — Descobrir a porta real em que ele está escutando</h3>
+    <p style="font-size:0.9rem; color:var(--text-muted); margin:0 0 4px;">
+      <strong>Este é o passo mais pulado e a causa mais comum de erro de conexão.</strong> A porta padrão do PostgreSQL é <code>5432</code>, mas o instalador do Windows escolhe automaticamente outra porta (ex: <code>5433</code>) quando a <code>5432</code> já está ocupada — o que é comum se já existir outra versão instalada. Nunca assuma que é <code>5432</code>: confirme sempre no arquivo <code>postgresql.conf</code> da instalação, geralmente em <code>C:\Program Files\PostgreSQL\&lt;versão&gt;\data\postgresql.conf</code>:
+    </p>
+    <span class="cmd-block">Select-String -Path "C:\Program Files\PostgreSQL\*\data\postgresql.conf" -Pattern "^port"</span>
+    <p style="font-size:0.9rem; color:var(--text-muted);">Anote o número retornado — é ele que vai entrar na URL de conexão do backend, não o <code>5432</code> por padrão.</p>
+
+    <h3 style="font-size:0.95rem;">1.3 — Criar o banco de dados vazio para o projeto</h3>
+    <p style="font-size:0.9rem; color:var(--text-muted); margin:0 0 4px;">Pode ser feito por qualquer ferramenta de administração (pgAdmin, DBeaver) ou direto pelo terminal com o <code>psql</code>. O <code>psql</code> normalmente não fica no PATH do Windows, então é preciso usar o caminho completo do executável (ajustando a versão na pasta):</p>
+    <span class="cmd-block">& "C:\Program Files\PostgreSQL\&lt;versão&gt;\bin\psql.exe" -U postgres -h localhost -p &lt;porta_anotada_no_passo_1.2&gt; -c "CREATE DATABASE ong_animal;"</span>
+    <p style="font-size:0.9rem; color:var(--text-muted);">Isso vai pedir a senha do usuário <code>postgres</code> (definida na instalação do PostgreSQL). Para conferir que o banco foi criado, liste todos com <code>-l</code> no lugar do <code>-c "CREATE DATABASE..."</code>.</p>
+
+    <ul class="checklist">
+      <li>PostgreSQL instalado e com o serviço em <code>Running</code>.</li>
+      <li>Porta real confirmada no <code>postgresql.conf</code> (não presumir <code>5432</code>).</li>
+      <li>Banco de dados vazio criado (ex: <code>ong_animal</code>).</li>
+      <li>Anotar host, <strong>porta confirmada</strong>, nome do banco, usuário e senha — serão usados na configuração do backend na próxima etapa.</li>
+    </ul>
+
+    <div class="callout">
+      <strong>Não é preciso rodar nenhum script SQL de tabela manualmente.</strong> As tabelas e os dados iniciais são criados sozinhos pelo Flyway na primeira vez que o backend é ligado, a partir dos scripts versionados no repositório do backend. O único SQL manual necessário é o <code>CREATE DATABASE</code> do banco vazio, acima.
+    </div>
+  </section>
+
+  <section>
+    <span class="order-badge">Etapa 2 de 3</span>
+    <h2><span class="step-num">2</span>Ligar o backend</h2>
+    <p class="lead">Repositório: <code>sistema-ong-animal</code>. Requer Java 17 instalado; o gerenciador de build (Maven) já vem embutido no projeto, não precisa ser instalado separadamente.</p>
+
+    <h3 style="margin-top:0; font-size:0.95rem;">2.1 — Configurar o acesso ao banco de dados</h3>
+    <p style="font-size:0.9rem; color:var(--text-muted); margin:0 0 8px;">O arquivo principal de configuração (<code>application.properties</code>) não traz credenciais de banco por padrão, por segurança. É preciso criar um arquivo próprio, que não entra no controle de versão, com as credenciais anotadas na etapa anterior:</p>
+    <p style="font-size:0.9rem; color:var(--text-muted); margin:0 0 4px;">Criar o arquivo <code>src/main/resources/application-local.properties</code> com o conteúdo, usando <strong>a porta confirmada na Etapa 1.2</strong> (não copiar <code>5432</code> às cegas):</p>
+    <span class="cmd-block">spring.datasource.url=jdbc:postgresql://localhost:&lt;porta_anotada_no_passo_1.2&gt;/ong_animal
+spring.datasource.username=SEU_USUARIO
+spring.datasource.password=SUA_SENHA</span>
+    <div class="callout warn">
+      <strong>Erro mais comum aqui:</strong> deixar <code>5432</code> fixo na URL sem checar a porta real do serviço instalado. Isso causa <code>Connection refused</code> ao iniciar o backend, mesmo com o PostgreSQL rodando normalmente — porque a aplicação está tentando falar com a porta errada.
+    </div>
+
+    <h3 style="font-size:0.95rem;">2.2 — Executar a aplicação</h3>
+    <p style="font-size:0.9rem; color:var(--text-muted); margin:0 0 4px;">Dentro da pasta <code>sistema-ong-animal</code>, no terminal:</p>
+    <span class="cmd-block">.\mvnw.cmd spring-boot:run</span>
+    <p style="font-size:0.9rem; color:var(--text-muted);">Na primeira execução, o Flyway cria automaticamente todas as tabelas e alguns dados iniciais de exemplo. O backend fica disponível em <code>http://localhost:8080</code>.</p>
+
+    <div class="callout">
+      <strong>Como saber que deu certo:</strong> o terminal mostra o log de inicialização do Spring Boot terminando com uma linha do tipo "Started SistemaOngAnimalApplication" e nenhum erro de conexão com o banco.
+    </div>
+
+    <h3 style="font-size:0.95rem;">2.3 — Solução de problemas mais comuns</h3>
+    <div class="card">
+      <h3><code>Connection refused</code> ao conectar no banco</h3>
+      <p>A porta usada em <code>application-local.properties</code> não é a porta real em que o PostgreSQL está escutando. Repetir o passo 1.2 para confirmar a porta e corrigir a URL.</p>
+    </div>
+    <div class="card">
+      <h3><code>database "..." does not exist</code></h3>
+      <p>O banco vazio ainda não foi criado (passo 1.3 pulado) ou o nome usado na URL não é exatamente igual ao nome criado no PostgreSQL.</p>
+    </div>
+    <div class="card">
+      <h3><code>Port 8080 was already in use</code></h3>
+      <p>Já existe outro processo Java do backend rodando (por exemplo, uma execução anterior que não foi encerrada corretamente). Encontrar e encerrar esse processo antes de rodar de novo:</p>
+      <span class="cmd-block">Get-NetTCPConnection -LocalPort 8080 | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Get-Process -Id $_ }
+Stop-Process -Id &lt;id_encontrado_acima&gt; -Force</span>
+    </div>
+  </section>
+
+  <section>
+    <span class="order-badge">Etapa 3 de 3</span>
+    <h2><span class="step-num">3</span>Ligar o frontend</h2>
+    <p class="lead">Repositório: <code>sistema-ong-animal-frontend</code>. Requer Node.js instalado (para ter o <code>npm</code>, gerenciador de pacotes usado pelo Angular).</p>
+
+    <h3 style="margin-top:0; font-size:0.95rem;">3.1 — Instalar as dependências</h3>
+    <p style="font-size:0.9rem; color:var(--text-muted); margin:0 0 4px;">Só precisa ser feito uma vez (ou quando novas bibliotecas forem adicionadas ao projeto). Dentro da pasta <code>sistema-ong-animal-frontend</code>:</p>
+    <span class="cmd-block">npm install</span>
+
+    <h3 style="font-size:0.95rem;">3.2 — Iniciar a tela</h3>
+    <span class="cmd-block">npm start</span>
+    <p style="font-size:0.9rem; color:var(--text-muted);">A tela fica disponível em <code>http://localhost:4200</code>, aberta no navegador. Ela já vem configurada para conversar com o backend em <code>http://localhost:8080</code> — por isso o backend precisa estar ligado antes.</p>
+
+    <div class="callout warn">
+      <strong>Atenção à porta:</strong> o backend só aceita pedidos vindos de <code>http://localhost:4200</code> (regra de segurança chamada CORS). Se a tela abrir em outra porta, os pedidos ao backend serão bloqueados pelo navegador.
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="step-num">✓</span>Checagem final</h2>
+    <p class="lead">Com as três partes ligadas, nesta ordem: banco de dados → backend → frontend.</p>
+    <ul class="checklist">
+      <li>PostgreSQL em execução, com o banco de dados criado.</li>
+      <li>Backend rodando em <code>http://localhost:8080</code>, sem erros no terminal.</li>
+      <li>Frontend rodando em <code>http://localhost:4200</code>, exibindo a lista de animais sem a mensagem de "backend não está rodando".</li>
+    </ul>
+  </section>
+
+  <footer>
+    Guia prático — projeto PIVIC, Sistema ONG Animal. Baseado nos arquivos <code>CLAUDE.md</code> e de configuração dos repositórios <code>sistema-ong-animal</code> e <code>sistema-ong-animal-frontend</code>.
+  </footer>
+
+</div>
+
+<div id="editToolbar">
+  <span id="editStatus" style="color: var(--text-muted);">Clique em "Editar texto" para alterar o conteúdo.</span>
+  <button type="button" id="saveBtn" class="secondary" hidden>Salvar no arquivo</button>
+  <button type="button" id="pdfBtn" class="secondary">Salvar como PDF</button>
+  <button type="button" id="toggleEditBtn">Editar texto</button>
+</div>
+
+<script>
+(function () {
+  var wrap = document.querySelector('.wrap');
+  var editBtn = document.getElementById('toggleEditBtn');
+  var saveBtn = document.getElementById('saveBtn');
+  var statusEl = document.getElementById('editStatus');
+  var fileHandle = null;
+  var editing = false;
+
+  function setStatus(msg, isError) {
+    statusEl.textContent = msg || '';
+    statusEl.style.color = isError ? 'var(--danger)' : 'var(--text-muted)';
+  }
+
+  editBtn.addEventListener('click', function () {
+    editing = !editing;
+    wrap.setAttribute('contenteditable', editing ? 'true' : 'false');
+    editBtn.textContent = editing ? 'Parar edição' : 'Editar texto';
+    saveBtn.hidden = !editing;
+    setStatus(editing ? 'Clique no texto e edite. Depois use "Salvar no arquivo".' : 'Clique em "Editar texto" para alterar o conteúdo.');
+  });
+
+  function downloadFallback() {
+    var html = '<!doctype html>\n' + document.documentElement.outerHTML;
+    var blob = new Blob([html], { type: 'text/html' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'guia-execucao-projeto-2026-08-22.html';
+    a.click();
+    URL.revokeObjectURL(url);
+    setStatus('Seu navegador não permite salvar direto no arquivo — foi baixada uma cópia editada.');
+  }
+
+  var pdfBtn = document.getElementById('pdfBtn');
+  pdfBtn.addEventListener('click', function () {
+    window.print();
+  });
+
+  saveBtn.addEventListener('click', async function () {
+    if (!('showSaveFilePicker' in window)) {
+      downloadFallback();
+      return;
+    }
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'guia-execucao-projeto-2026-08-22.html',
+          types: [{ description: 'Página HTML', accept: { 'text/html': ['.html'] } }]
+        });
+      }
+      var writable = await fileHandle.createWritable();
+      var html = '<!doctype html>\n' + document.documentElement.outerHTML;
+      await writable.write(html);
+      await writable.close();
+      setStatus('Salvo com sucesso às ' + new Date().toLocaleTimeString('pt-BR') + '.');
+    } catch (err) {
+      if (err && err.name !== 'AbortError') {
+        setStatus('Não foi possível salvar: ' + err.message, true);
+      }
+    }
+  });
+})();
+</script>
+
+</body></html>

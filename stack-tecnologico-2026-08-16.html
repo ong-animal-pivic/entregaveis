@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stack Tecnológico</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-subtle: #f6f7f9;
+    --bg-card: #ffffff;
+    --border: #e2e4e9;
+    --text: #1c1f26;
+    --text-muted: #5b616e;
+    --accent: #2f6f4f;
+    --accent-soft: #e7f2ec;
+    --accent-strong: #1f5138;
+    --badge-bg: #eef1f6;
+    --badge-text: #3c4250;
+    --shadow: 0 1px 2px rgba(20, 22, 28, 0.06), 0 4px 16px rgba(20, 22, 28, 0.05);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14161b;
+      --bg-subtle: #1b1e24;
+      --bg-card: #1c1f26;
+      --border: #2c303a;
+      --text: #e7e9ee;
+      --text-muted: #9aa0ac;
+      --accent: #6fbf94;
+      --accent-soft: #1e2c25;
+      --accent-strong: #8fd4ac;
+      --badge-bg: #262a33;
+      --badge-text: #c3c8d3;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.35);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #14161b;
+    --bg-subtle: #1b1e24;
+    --bg-card: #1c1f26;
+    --border: #2c303a;
+    --text: #e7e9ee;
+    --text-muted: #9aa0ac;
+    --accent: #6fbf94;
+    --accent-soft: #1e2c25;
+    --accent-strong: #8fd4ac;
+    --badge-bg: #262a33;
+    --badge-text: #c3c8d3;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.35);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .wrap {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 56px 24px 96px;
+  }
+
+  header.hero { margin-bottom: 40px; }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 0 0 10px;
+  }
+
+  h1 {
+    font-size: 2rem;
+    margin: 0 0 10px;
+    letter-spacing: -0.01em;
+  }
+
+  .sub {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin: 0;
+    max-width: 62ch;
+  }
+
+  .updated {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 18px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 999px;
+  }
+
+  section { margin-bottom: 44px; }
+
+  .section-title {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .section-title h2 {
+    font-size: 1.15rem;
+    margin: 0;
+  }
+
+  .section-title .count {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 2px 10px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 18px 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .card h3 {
+    font-size: 1rem;
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .version {
+    flex-shrink: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent-strong);
+    background: var(--accent-soft);
+    border-radius: 6px;
+    padding: 3px 8px;
+    white-space: nowrap;
+  }
+
+  .card p {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    color: var(--badge-text);
+    background: var(--badge-bg);
+    border-radius: 6px;
+    padding: 2px 8px;
+    margin-top: 10px;
+  }
+
+  footer {
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+
+  footer code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 5px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">Sistema ONG Animal</p>
+    <h1>Stack Tecnológico</h1>
+    <p class="sub">Ferramentas, frameworks e versões utilizadas na construção do sistema. Documento vivo — atualizado à medida que o projeto evolui.</p>
+    <span class="updated">Última atualização: 16 de agosto de 2026</span>
+  </header>
+
+  <section>
+    <div class="section-title">
+      <h2>Linguagem &amp; Build</h2>
+      <span class="count">3</span>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-top"><h3>Java</h3><span class="version">17</span></div>
+        <p>Linguagem principal do backend. Versão LTS, base para todo o código da aplicação.</p>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>Apache Maven</h3><span class="version">3.9.11</span></div>
+        <p>Gerenciador de build e dependências do projeto (executado via Maven Wrapper).</p>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>Lombok</h3><span class="version">gerenciado pelo Spring Boot</span></div>
+        <p>Gera automaticamente getters, setters, builders e outros métodos repetitivos das entidades via anotações.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title">
+      <h2>Framework &amp; Backend</h2>
+      <span class="count">5</span>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-top"><h3>Spring Boot</h3><span class="version">3.5.13</span></div>
+        <p>Framework principal da aplicação. Fornece o servidor web embutido, injeção de dependências e configuração automática.</p>
+        <span class="badge">spring-boot-starter-parent</span>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>Spring Web</h3><span class="version">via Boot</span></div>
+        <p>Suporte a construção de APIs REST — controllers, serialização JSON e tratamento de requisições HTTP.</p>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>Spring Data JPA</h3><span class="version">via Boot</span></div>
+        <p>Camada de persistência: mapeia entidades Java para tabelas do banco e fornece repositórios prontos para uso.</p>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>Spring Validation</h3><span class="version">via Boot</span></div>
+        <p>Validação declarativa de dados de entrada (Bean Validation), usada nos DTOs e entidades da API.</p>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>Spring Boot DevTools</h3><span class="version">via Boot</span></div>
+        <p>Acelera o desenvolvimento com reinicialização automática da aplicação ao detectar mudanças no código.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title">
+      <h2>Banco de Dados</h2>
+      <span class="count">3</span>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-top"><h3>PostgreSQL</h3><span class="version">driver via Boot</span></div>
+        <p>Banco de dados relacional utilizado para persistir os dados do sistema (animais, adotantes, espécies, raças).</p>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>Flyway</h3><span class="version">11.0.0</span></div>
+        <p>Controla o versionamento do esquema do banco através de migrações SQL sequenciais, aplicadas automaticamente ao iniciar a aplicação.</p>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>Hibernate</h3><span class="version">via Spring Data JPA</span></div>
+        <p>Implementação de JPA usada por baixo dos panos para converter objetos Java em comandos SQL.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title">
+      <h2>Serialização &amp; Outros</h2>
+      <span class="count">1</span>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-top"><h3>Jackson (XML)</h3><span class="version">via Boot</span></div>
+        <p>Biblioteca de serialização/desserialização; o módulo XML permite que a API também trabalhe com esse formato além de JSON.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title">
+      <h2>Testes</h2>
+      <span class="count">1</span>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-top"><h3>Spring Boot Starter Test</h3><span class="version">via Boot</span></div>
+        <p>Conjunto de bibliotecas de teste (JUnit 5, Mockito, AssertJ) usado para os testes automatizados da aplicação.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Versões extraídas de <code>pom.xml</code> e <code>.mvn/wrapper/maven-wrapper.properties</code> do repositório <code>sistema-ong-animal</code>. Dependências marcadas como "via Boot" não possuem versão fixada no projeto — seguem a versão gerenciada pelo Spring Boot Parent (3.5.13).
+  </footer>
+
+</div>
+</body>
+</html>

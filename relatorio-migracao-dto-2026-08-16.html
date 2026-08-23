@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="UTF-8">
+<title>Melhoria na Comunicação do Sistema</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-subtle: #f6f7f9;
+    --bg-card: #ffffff;
+    --border: #e2e4e9;
+    --text: #1c1f26;
+    --text-muted: #5b616e;
+    --accent: #2f6f4f;
+    --accent-soft: #e7f2ec;
+    --accent-strong: #1f5138;
+    --danger: #a13a3a;
+    --danger-soft: #fbeeee;
+    --good: #2f6f4f;
+    --good-soft: #e7f2ec;
+    --shadow: 0 1px 2px rgba(20, 22, 28, 0.06), 0 4px 16px rgba(20, 22, 28, 0.05);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14161b;
+      --bg-subtle: #1b1e24;
+      --bg-card: #1c1f26;
+      --border: #2c303a;
+      --text: #e7e9ee;
+      --text-muted: #9aa0ac;
+      --accent: #6fbf94;
+      --accent-soft: #1e2c25;
+      --accent-strong: #8fd4ac;
+      --danger: #d97a7a;
+      --danger-soft: #2b1d1d;
+      --good: #6fbf94;
+      --good-soft: #1e2c25;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.35);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #14161b;
+    --bg-subtle: #1b1e24;
+    --bg-card: #1c1f26;
+    --border: #2c303a;
+    --text: #e7e9ee;
+    --text-muted: #9aa0ac;
+    --accent: #6fbf94;
+    --accent-soft: #1e2c25;
+    --accent-strong: #8fd4ac;
+    --danger: #d97a7a;
+    --danger-soft: #2b1d1d;
+    --good: #6fbf94;
+    --good-soft: #1e2c25;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.35);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .wrap {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 56px 24px 96px;
+  }
+
+  header.hero { margin-bottom: 48px; }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 0 0 12px;
+  }
+
+  h1 {
+    font-size: 2rem;
+    line-height: 1.25;
+    margin: 0 0 14px;
+    letter-spacing: -0.01em;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 1.08rem;
+    margin: 0;
+    max-width: 58ch;
+  }
+
+  section { margin-bottom: 46px; }
+
+  h2 {
+    font-size: 1.35rem;
+    margin: 0 0 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h3 { font-size: 1.05rem; margin: 24px 0 10px; }
+
+  p { margin: 0 0 14px; }
+  p.lead { color: var(--text-muted); font-size: 1.02rem; }
+
+  ul, ol { margin: 0 0 14px; padding-left: 22px; }
+  li { margin-bottom: 8px; }
+
+  .analogy {
+    background: var(--accent-soft);
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin: 18px 0;
+  }
+  .analogy .label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-strong);
+    margin-bottom: 8px;
+  }
+  .analogy p:last-child { margin-bottom: 0; }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 18px 0;
+  }
+  @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .compare-before, .compare-after {
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .compare-before { background: var(--danger-soft); border-left: 3px solid var(--danger); }
+  .compare-after { background: var(--good-soft); border-left: 3px solid var(--good); }
+  .compare-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+  .compare-before .compare-label { color: var(--danger); }
+  .compare-after .compare-label { color: var(--good); }
+  .compare-before p, .compare-after p { margin: 0; font-size: 0.95rem; }
+
+  .timeline {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-left: 2px solid var(--border);
+  }
+  .timeline li {
+    position: relative;
+    padding: 0 0 20px 24px;
+  }
+  .timeline li::before {
+    content: "";
+    position: absolute;
+    left: -6px;
+    top: 4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .timeline .t-title { font-weight: 600; margin-bottom: 3px; }
+  .timeline .t-desc { color: var(--text-muted); font-size: 0.94rem; }
+
+  .advantage-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 640px) { .advantage-grid { grid-template-columns: 1fr; } }
+  .advantage-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    background: var(--bg-card);
+    box-shadow: var(--shadow);
+  }
+  .advantage-card h4 { margin: 0 0 6px; font-size: 0.98rem; }
+  .advantage-card p { margin: 0; font-size: 0.9rem; color: var(--text-muted); }
+
+  .callout {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 0.94rem;
+    color: var(--text-muted);
+  }
+
+  footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.82rem;
+  }
+
+  figure {
+    margin: 22px 0;
+    padding: 20px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  figure svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    color: var(--text);
+  }
+  figure text { fill: currentColor; }
+  figcaption {
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  .glossary {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 20px;
+    font-size: 0.9rem;
+    margin: 18px 0;
+  }
+  @media (max-width: 640px) { .glossary { grid-template-columns: 1fr; } }
+  .glossary dt { font-weight: 600; color: var(--text); }
+  .glossary dd { margin: 2px 0 0; color: var(--text-muted); }
+
+  .wrap[contenteditable="true"] {
+    outline: 2px dashed var(--accent);
+    outline-offset: 8px;
+    border-radius: 8px;
+  }
+
+  #editToolbar {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 10px 8px 16px;
+    box-shadow: var(--shadow);
+    font-size: 0.85rem;
+  }
+  #editToolbar button {
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--bg);
+    background: var(--accent);
+    border: none;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  #editToolbar button.secondary {
+    color: var(--text);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+  }
+  #editToolbar #editStatus {
+    color: var(--text-muted);
+    max-width: 240px;
+  }
+
+  @media print {
+    #editToolbar { display: none; }
+
+    @page {
+      size: A4;
+      margin: 18mm 16mm;
+    }
+
+    html, body {
+      background: #ffffff !important;
+    }
+
+    body {
+      color: #1c1f26 !important;
+    }
+
+    .wrap {
+      max-width: none;
+      padding: 0;
+    }
+
+    .wrap[contenteditable] {
+      outline: none;
+    }
+
+    .analogy, .compare-before, .compare-after, .advantage-card,
+    .callout, figure, .timeline li::before {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .analogy { background: #e7f2ec !important; }
+    .compare-before { background: #fbeeee !important; border-left-color: #a13a3a !important; }
+    .compare-after { background: #e7f2ec !important; border-left-color: #2f6f4f !important; }
+    .compare-before .compare-label { color: #a13a3a !important; }
+    .compare-after .compare-label { color: #2f6f4f !important; }
+    .advantage-card, .callout, figure {
+      background: #ffffff !important;
+      border-color: #e2e4e9 !important;
+      box-shadow: none !important;
+    }
+    figure { background: #f6f7f9 !important; }
+    .timeline { border-left-color: #e2e4e9 !important; }
+    .timeline li::before { background: #2f6f4f !important; }
+    .eyebrow { color: #2f6f4f !important; }
+    .analogy .label { color: #1f5138 !important; }
+    p.lead, .subtitle, .t-desc, .advantage-card p, .callout, figcaption,
+    .glossary dd, footer {
+      color: #5b616e !important;
+    }
+    h1, h2, h3, .t-title, .glossary dt, code, strong {
+      color: #1c1f26 !important;
+    }
+    figure svg { color: #1c1f26 !important; }
+
+    section { break-inside: avoid-page; }
+    figure { break-inside: avoid-page; }
+    .advantage-card { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap" contenteditable="true">
+
+  <header class="hero">
+    <p class="eyebrow">PIVIC · Sistema ONG Animal · Relatório de progresso · 16/08/2026</p>
+    <h1>Melhoria na forma como o sistema troca informações</h1>
+    <p class="subtitle">O que foi alterado no sistema, por que essa mudança era importante e o que ela traz de benefício para o restante do projeto — explicado com analogias e diagramas, sem entrar no código em si.</p>
+  </header>
+
+  <section>
+    <h2>1. O que foi feito</h2>
+    <p class="lead">O sistema é dividido em três camadas que conversam entre si: a <strong>tela</strong> que o usuário usa (cadastro de animais, adotantes, etc.), a <strong>API</strong> — a "porta de entrada" do sistema que recebe os pedidos da tela — e o <strong>banco de dados</strong>, onde as informações ficam guardadas de forma permanente. Até esta mudança, a API repassava direto para a tela a mesma estrutura de dados usada para gravar no banco (chamada de <strong>entidade</strong>). Ou seja, não havia diferença entre "como o dado é guardado" e "como o dado é exposto para fora do sistema".</p>
+
+    <div class="analogy">
+      <div class="label">Uma analogia</div>
+      <p>Foi criado uma classe intermediária para cada tipo de cadastro do sistema (adotante, animal, raça e espécie). Na programação, esse padrão tem nome: <strong>DTO</strong> (<em>Data Transfer Object</em>, "objeto de transferência de dados"). Existe um DTO de entrada (o formulário — o que a tela envia) e um DTO de saída (o comprovante — o que a tela recebe de volta), separados da entidade que representa o dado dentro do banco.</p>
+    </div>
+
+    <figure role="img" aria-label="Comparação da arquitetura antes e depois: antes, a tela trocava a entidade do banco de dados diretamente com a API; depois, a tela troca um DTO de entrada e de saída com a API, que converte para a entidade antes de falar com o banco.">
+      <svg viewBox="0 0 720 230" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"></path>
+          </marker>
+        </defs>
+
+        <text x="16" y="22" font-size="12" font-weight="700" letter-spacing="0.04em" opacity="0.6">ANTES</text>
+        <rect x="16" y="34" width="110" height="46" rx="8" fill="none" stroke="currentColor" stroke-width="1.4"></rect>
+        <text x="71" y="61" font-size="13" text-anchor="middle">Tela</text>
+
+        <line x1="126" y1="57" x2="234" y2="57" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrow)"></line>
+        <line x1="234" y1="70" x2="126" y2="70" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrow)"></line>
+        <text x="180" y="48" font-size="10.5" text-anchor="middle" opacity="0.7">entidade</text>
+
+        <rect x="234" y="34" width="130" height="46" rx="8" fill="none" stroke="currentColor" stroke-width="1.4"></rect>
+        <text x="299" y="55" font-size="13" text-anchor="middle">API</text>
+        <text x="299" y="70" font-size="10" text-anchor="middle" opacity="0.65">(sem tradução)</text>
+
+        <line x1="364" y1="57" x2="472" y2="57" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrow)"></line>
+        <text x="418" y="48" font-size="10.5" text-anchor="middle" opacity="0.7">entidade</text>
+
+        <rect x="472" y="34" width="150" height="46" rx="8" fill="none" stroke="currentColor" stroke-width="1.4"></rect>
+        <text x="547" y="61" font-size="13" text-anchor="middle">Banco de dados</text>
+
+        <text x="16" y="130" font-size="12" font-weight="700" letter-spacing="0.04em" fill="var(--accent, currentColor)" opacity="0.85">DEPOIS</text>
+        <rect x="16" y="142" width="110" height="46" rx="8" fill="none" stroke="currentColor" stroke-width="1.4"></rect>
+        <text x="71" y="169" font-size="13" text-anchor="middle">Tela</text>
+
+        <line x1="126" y1="163" x2="234" y2="163" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrow)"></line>
+        <line x1="234" y1="178" x2="126" y2="178" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrow)"></line>
+        <text x="180" y="153" font-size="10.5" text-anchor="middle" font-weight="600">DTO</text>
+
+        <rect x="234" y="142" width="130" height="46" rx="8" fill="none" stroke="currentColor" stroke-width="1.6"></rect>
+        <text x="299" y="163" font-size="13" text-anchor="middle">API</text>
+        <text x="299" y="178" font-size="10" text-anchor="middle" opacity="0.65">(converte)</text>
+
+        <line x1="364" y1="163" x2="472" y2="163" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrow)"></line>
+        <text x="418" y="153" font-size="10.5" text-anchor="middle" opacity="0.7">entidade</text>
+
+        <rect x="472" y="142" width="150" height="46" rx="8" fill="none" stroke="currentColor" stroke-width="1.4"></rect>
+        <text x="547" y="169" font-size="13" text-anchor="middle">Banco de dados</text>
+      </svg>
+      <figcaption>Antes, a tela e o banco de dados compartilhavam a mesma estrutura de dados (a entidade). Depois, a API passou a "traduzir" entre um formato de troca com a tela (DTO) e o formato interno de armazenamento (entidade).</figcaption>
+    </figure>
+
+    <dl class="glossary">
+      <div><dt>Entidade</dt><dd>Estrutura de dados que representa uma tabela do banco de dados.</dd></div>
+      <div><dt>DTO</dt><dd>Estrutura de dados usada só para troca de informação entre a tela e a API.</dd></div>
+      <div><dt>API</dt><dd>"Porta de entrada" do sistema, que recebe pedidos da tela e devolve respostas.</dd></div>
+      <div><dt>Controller</dt><dd>Parte da API responsável por atender cada tipo de pedido (cadastrar, editar, consultar).</dd></div>
+    </dl>
+
+    <p>Essa mudança foi feita aos poucos, um tipo de cadastro por vez, para que cada etapa pudesse ser conferida com calma antes de seguir para a próxima.</p>
+  </section>
+
+  <section>
+    <h2>2. Etapas realizadas</h2>
+    <p class="lead">A migração para o padrão DTO foi aplicada camada por camada, sempre nesta ordem para cada cadastro: criar os DTOs de entrada e saída → ajustar o Controller para usá-los → conferir que nada quebrou.</p>
+    <ol class="timeline">
+      <li>
+        <div class="t-title">Cadastro de Adotante</div>
+        <div class="t-desc">Primeiro cadastro a receber o novo formulário/comprovante — o mais completo, pois envolve dados pessoais, documento, contato e endereço.</div>
+      </li>
+      <li>
+        <div class="t-title">Cadastro de Espécie</div>
+        <div class="t-desc">Cadastro mais simples do sistema (só é possível consultar, não cadastrar/editar por essa tela) — recebeu apenas o "comprovante" de consulta.</div>
+      </li>
+      <li>
+        <div class="t-title">Cadastro de Raça</div>
+        <div class="t-desc">Cada raça pertence a uma espécie — essa etapa ajustou como essa ligação entre os dois cadastros é comunicada.</div>
+      </li>
+      <li>
+        <div class="t-title">Cadastro de Animal</div>
+        <div class="t-desc">O cadastro mais completo: cada animal está ligado a uma raça e, quando adotado, a um adotante. Foi a etapa mais delicada por reunir mais informações conectadas entre si.</div>
+      </li>
+      <li>
+        <div class="t-title">Organização final</div>
+        <div class="t-desc">Depois que todos os cadastros passaram a usar o novo formulário/comprovante, foram removidas regras de conferência de dados que ficavam "espalhadas" em dois lugares diferentes do sistema, deixando apenas um único lugar responsável por checar se as informações enviadas estão corretas.</div>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>3. Como funciona na prática</h2>
+    <p class="lead">Exemplo com o cadastro de um <strong>Animal</strong>: o caminho que uma informação percorre desde o preenchimento na tela até ser salva no banco de dados, e a volta como resposta.</p>
+
+    <figure role="img" aria-label="Fluxo de cadastro de um animal: a tela envia um DTO de entrada para o Controller, que converte para entidade e manda salvar no banco de dados; o banco confirma, o Controller converte a entidade salva em um DTO de saída e devolve para a tela.">
+      <svg viewBox="0 0 760 150" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"></path>
+          </marker>
+        </defs>
+
+        <rect x="8" y="42" width="100" height="46" rx="8" fill="none" stroke="currentColor" stroke-width="1.4"></rect>
+        <text x="58" y="69" font-size="13" text-anchor="middle">Tela</text>
+
+        <line x1="108" y1="65" x2="196" y2="65" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrow2)"></line>
+        <text x="152" y="55" font-size="10" text-anchor="middle" font-weight="600">DTO de entrada</text>
+
+        <rect x="196" y="42" width="150" height="46" rx="8" fill="none" stroke="currentColor" stroke-width="1.6"></rect>
+        <text x="271" y="69" font-size="13" text-anchor="middle">Controller</text>
+
+        <line x1="346" y1="65" x2="434" y2="65" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrow2)"></line>
+        <text x="390" y="55" font-size="10" text-anchor="middle" opacity="0.75">converte p/ entidade</text>
+
+        <rect x="434" y="42" width="150" height="46" rx="8" fill="none" stroke="currentColor" stroke-width="1.4"></rect>
+        <text x="509" y="69" font-size="13" text-anchor="middle">Banco de dados</text>
+
+        <line x1="434" y1="82" x2="346" y2="82" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrow2)"></line>
+        <text x="390" y="98" font-size="10" text-anchor="middle" opacity="0.75">confirma gravação</text>
+
+        <path d="M271 88 C271 118, 152 118, 108 88" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrow2)"></path>
+        <text x="190" y="128" font-size="10" text-anchor="middle" font-weight="600">DTO de saída</text>
+
+        <text x="58" y="30" font-size="10" text-anchor="middle" opacity="0.7">preenche formulário</text>
+        <text x="700" y="30" font-size="10" text-anchor="end" opacity="0.7">registro salvo</text>
+      </svg>
+      <figcaption>O DTO de entrada carrega só o necessário para cadastrar; a entidade é a forma interna usada para gravar no banco; o DTO de saída devolve à tela apenas o que ela precisa exibir.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>4. Por que essa mudança era necessária</h2>
+    <p class="lead">Sem esse "formulário/comprovante" intermediário, a tela do sistema tinha acesso direto à estrutura interna do banco de dados. Isso trazia alguns riscos práticos:</p>
+    <ul>
+      <li><strong>Falta de controle sobre o que é mostrado:</strong> qualquer ajuste feito no arquivo interno do banco de dados podia, sem querer, aparecer na tela do usuário ou em outros sistemas conectados.</li>
+      <li><strong>Falta de controle sobre o que é recebido:</strong> como não existia um "formulário padrão", em teoria seria possível enviar informações que não deveriam poder ser alteradas por quem está usando o sistema.</li>
+      <li><strong>Regras de conferência de dados espalhadas:</strong> as verificações de "esse dado está preenchido corretamente?" ficavam misturadas com a própria estrutura de arquivamento do banco de dados, dificultando manter tudo consistente.</li>
+      <li><strong>Atualizações pouco claras:</strong> quando um cadastro era editado, o sistema usava um mecanismo automático "por baixo dos panos" para decidir o que mudar, dificultando saber com exatidão o que uma edição realmente alterava.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>5. Vantagens para as próximas etapas do projeto</h2>
+    <div class="advantage-grid">
+      <div class="advantage-card">
+        <h4>Mais segurança</h4>
+        <p>Só é possível enviar exatamente os dados previstos no formulário de cada cadastro — nada além disso.</p>
+      </div>
+      <div class="advantage-card">
+        <h4>Mais estabilidade</h4>
+        <p>Ajustes internos no banco de dados não afetam automaticamente o que é mostrado na tela, evitando quebras inesperadas.</p>
+      </div>
+      <div class="advantage-card">
+        <h4>Conferência de dados mais clara</h4>
+        <p>Todas as regras de "o que é um cadastro válido" agora estão concentradas num único lugar, mais fácil de revisar e ajustar.</p>
+      </div>
+      <div class="advantage-card">
+        <h4>Edições mais transparentes</h4>
+        <p>Ficou explícito, campo por campo, o que acontece quando um cadastro é atualizado — sem mecanismos automáticos ocultos.</p>
+      </div>
+      <div class="advantage-card">
+        <h4>Flexibilidade futura</h4>
+        <p>Será possível, por exemplo, mostrar uma versão resumida de um cadastro em uma tela e uma versão completa em outra, sem mexer na forma como os dados são guardados.</p>
+      </div>
+      <div class="advantage-card">
+        <h4>Padrão pronto para repetir</h4>
+        <p>O modelo criado (formulário de entrada + comprovante de saída) já foi testado nos quatro tipos de cadastro do sistema, incluindo o caso mais complexo — novos cadastros futuros podem seguir a mesma receita.</p>
+      </div>
+    </div>
+  </section>
+
+  <p class="callout">Em resumo: essa etapa não adicionou uma funcionalidade nova visível para quem usa o sistema — foi um ajuste de organização interna que deixa o sistema mais seguro, mais fácil de manter e mais preparado para receber novas funcionalidades nas próximas etapas do projeto.</p>
+
+  <footer>
+    Relatório de progresso — projeto PIVIC, Sistema ONG Animal.
+  </footer>
+
+</div>
+
+<div id="editToolbar">
+  <span id="editStatus" style="color: var(--text-muted);">Clique no texto e edite. Depois use "Salvar no arquivo".</span>
+  <button type="button" id="saveBtn" class="secondary">Salvar no arquivo</button>
+  <button type="button" id="pdfBtn" class="secondary">Salvar como PDF</button>
+  <button type="button" id="toggleEditBtn">Parar edição</button>
+</div>
+
+<script>
+(function () {
+  var wrap = document.querySelector('.wrap');
+  var editBtn = document.getElementById('toggleEditBtn');
+  var saveBtn = document.getElementById('saveBtn');
+  var statusEl = document.getElementById('editStatus');
+  var fileHandle = null;
+  var editing = false;
+
+  function setStatus(msg, isError) {
+    statusEl.textContent = msg || '';
+    statusEl.style.color = isError ? 'var(--danger)' : 'var(--text-muted)';
+  }
+
+  editBtn.addEventListener('click', function () {
+    editing = !editing;
+    wrap.setAttribute('contenteditable', editing ? 'true' : 'false');
+    editBtn.textContent = editing ? 'Parar edição' : 'Editar texto';
+    saveBtn.hidden = !editing;
+    setStatus(editing ? 'Clique no texto e edite. Depois use "Salvar no arquivo".' : '');
+  });
+
+  function downloadFallback() {
+    var html = '<!doctype html>\n' + document.documentElement.outerHTML;
+    var blob = new Blob([html], { type: 'text/html' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'relatorio-migracao-dto.html';
+    a.click();
+    URL.revokeObjectURL(url);
+    setStatus('Seu navegador não permite salvar direto no arquivo — foi baixada uma cópia editada.');
+  }
+
+  var pdfBtn = document.getElementById('pdfBtn');
+  pdfBtn.addEventListener('click', function () {
+    window.print();
+  });
+
+  saveBtn.addEventListener('click', async function () {
+    if (!('showSaveFilePicker' in window)) {
+      downloadFallback();
+      return;
+    }
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'relatorio-migracao-dto.html',
+          types: [{ description: 'Página HTML', accept: { 'text/html': ['.html'] } }]
+        });
+      }
+      var writable = await fileHandle.createWritable();
+      var html = '<!doctype html>\n' + document.documentElement.outerHTML;
+      await writable.write(html);
+      await writable.close();
+      setStatus('Salvo com sucesso às ' + new Date().toLocaleTimeString('pt-BR') + '.');
+    } catch (err) {
+      if (err && err.name !== 'AbortError') {
+        setStatus('Não foi possível salvar: ' + err.message, true);
+      }
+    }
+  });
+})();
+</script>
+
+
+</body></html>
