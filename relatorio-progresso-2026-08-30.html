@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="UTF-8">
+<title>Mudanças do Fim de Semana</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-subtle: #f6f7f9;
+    --bg-card: #ffffff;
+    --border: #e2e4e9;
+    --text: #1c1f26;
+    --text-muted: #5b616e;
+    --accent: #2f6f4f;
+    --accent-soft: #e7f2ec;
+    --accent-strong: #1f5138;
+    --danger: #a13a3a;
+    --danger-soft: #fbeeee;
+    --good: #2f6f4f;
+    --good-soft: #e7f2ec;
+    --shadow: 0 1px 2px rgba(20, 22, 28, 0.06), 0 4px 16px rgba(20, 22, 28, 0.05);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14161b;
+      --bg-subtle: #1b1e24;
+      --bg-card: #1c1f26;
+      --border: #2c303a;
+      --text: #e7e9ee;
+      --text-muted: #9aa0ac;
+      --accent: #6fbf94;
+      --accent-soft: #1e2c25;
+      --accent-strong: #8fd4ac;
+      --danger: #d97a7a;
+      --danger-soft: #2b1d1d;
+      --good: #6fbf94;
+      --good-soft: #1e2c25;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.35);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #14161b;
+    --bg-subtle: #1b1e24;
+    --bg-card: #1c1f26;
+    --border: #2c303a;
+    --text: #e7e9ee;
+    --text-muted: #9aa0ac;
+    --accent: #6fbf94;
+    --accent-soft: #1e2c25;
+    --accent-strong: #8fd4ac;
+    --danger: #d97a7a;
+    --danger-soft: #2b1d1d;
+    --good: #6fbf94;
+    --good-soft: #1e2c25;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.35);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .wrap {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 56px 24px 96px;
+  }
+
+  header.hero { margin-bottom: 48px; }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 0 0 12px;
+  }
+
+  h1 {
+    font-size: 2rem;
+    line-height: 1.25;
+    margin: 0 0 14px;
+    letter-spacing: -0.01em;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 1.08rem;
+    margin: 0;
+    max-width: 58ch;
+  }
+
+  section { margin-bottom: 46px; }
+
+  h2 {
+    font-size: 1.35rem;
+    margin: 0 0 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h3 { font-size: 1.05rem; margin: 24px 0 10px; }
+
+  p { margin: 0 0 14px; }
+  p.lead { color: var(--text-muted); font-size: 1.02rem; }
+
+  ul, ol { margin: 0 0 14px; padding-left: 22px; }
+  li { margin-bottom: 8px; }
+
+  .analogy {
+    background: var(--accent-soft);
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin: 18px 0;
+  }
+  .analogy .label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-strong);
+    margin-bottom: 8px;
+  }
+  .analogy p:last-child { margin-bottom: 0; }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 18px 0;
+  }
+  @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .compare-before, .compare-after {
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .compare-before { background: var(--danger-soft); border-left: 3px solid var(--danger); }
+  .compare-after { background: var(--good-soft); border-left: 3px solid var(--good); }
+  .compare-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+  .compare-before .compare-label { color: var(--danger); }
+  .compare-after .compare-label { color: var(--good); }
+  .compare-before p, .compare-after p { margin: 0; font-size: 0.95rem; }
+
+  .timeline {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-left: 2px solid var(--border);
+  }
+  .timeline li {
+    position: relative;
+    padding: 0 0 20px 24px;
+  }
+  .timeline li::before {
+    content: "";
+    position: absolute;
+    left: -6px;
+    top: 4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .timeline li.is-backend::before { background: var(--accent-strong); }
+  .timeline .t-title { font-weight: 600; margin-bottom: 3px; }
+  .timeline .t-desc { color: var(--text-muted); font-size: 0.94rem; }
+  .tag {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .tag-back { background: var(--accent-soft); color: var(--accent-strong); }
+  .tag-front { background: var(--bg-subtle); color: var(--text-muted); border: 1px solid var(--border); }
+
+  .advantage-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 640px) { .advantage-grid { grid-template-columns: 1fr; } }
+  .advantage-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    background: var(--bg-card);
+    box-shadow: var(--shadow);
+  }
+  .advantage-card h4 { margin: 0 0 6px; font-size: 0.98rem; }
+  .advantage-card p { margin: 0; font-size: 0.9rem; color: var(--text-muted); }
+
+  .callout {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 0.94rem;
+    color: var(--text-muted);
+  }
+
+  footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.82rem;
+  }
+
+  figure {
+    margin: 22px 0;
+    padding: 20px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  figure svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    color: var(--text);
+  }
+  figure text { fill: currentColor; }
+  figcaption {
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  .glossary {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 20px;
+    font-size: 0.9rem;
+    margin: 18px 0;
+  }
+  @media (max-width: 640px) { .glossary { grid-template-columns: 1fr; } }
+  .glossary dt { font-weight: 600; color: var(--text); }
+  .glossary dd { margin: 2px 0 0; color: var(--text-muted); }
+
+  .wrap[contenteditable="true"] {
+    outline: 2px dashed var(--accent);
+    outline-offset: 8px;
+    border-radius: 8px;
+  }
+
+  #editToolbar {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 10px 8px 16px;
+    box-shadow: var(--shadow);
+    font-size: 0.85rem;
+  }
+  #editToolbar button {
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--bg);
+    background: var(--accent);
+    border: none;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  #editToolbar button.secondary {
+    color: var(--text);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+  }
+  #editToolbar #editStatus {
+    color: var(--text-muted);
+    max-width: 240px;
+  }
+
+  @media print {
+    #editToolbar { display: none; }
+
+    @page {
+      size: A4;
+      margin: 18mm 16mm;
+    }
+
+    html, body {
+      background: #ffffff !important;
+    }
+
+    body {
+      color: #1c1f26 !important;
+    }
+
+    .wrap {
+      max-width: none;
+      padding: 0;
+    }
+
+    .wrap[contenteditable] {
+      outline: none;
+    }
+
+    .analogy, .compare-before, .compare-after, .advantage-card,
+    .callout, figure, .timeline li::before {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .analogy { background: #e7f2ec !important; }
+    .compare-before { background: #fbeeee !important; border-left-color: #a13a3a !important; }
+    .compare-after { background: #e7f2ec !important; border-left-color: #2f6f4f !important; }
+    .compare-before .compare-label { color: #a13a3a !important; }
+    .compare-after .compare-label { color: #2f6f4f !important; }
+    .advantage-card, .callout, figure {
+      background: #ffffff !important;
+      border-color: #e2e4e9 !important;
+      box-shadow: none !important;
+    }
+    figure { background: #f6f7f9 !important; }
+    .timeline { border-left-color: #e2e4e9 !important; }
+    .timeline li::before { background: #2f6f4f !important; }
+    .timeline li.is-backend::before { background: #1f5138 !important; }
+    .tag-back { background: #e7f2ec !important; color: #1f5138 !important; }
+    .tag-front { background: #f6f7f9 !important; color: #5b616e !important; border-color: #e2e4e9 !important; }
+    .eyebrow { color: #2f6f4f !important; }
+    .analogy .label { color: #1f5138 !important; }
+    p.lead, .subtitle, .t-desc, .advantage-card p, .callout, figcaption,
+    .glossary dd, footer {
+      color: #5b616e !important;
+    }
+    h1, h2, h3, .t-title, .glossary dt, code, strong {
+      color: #1c1f26 !important;
+    }
+    figure svg { color: #1c1f26 !important; }
+
+    section { break-inside: avoid-page; }
+    figure { break-inside: avoid-page; }
+    .advantage-card { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap" contenteditable="true">
+
+  <header class="hero">
+    <p class="eyebrow">PIVIC · Sistema ONG Animal · Relatório de progresso · 30/08/2026</p>
+    <h1>Mudanças implementadas no fim de semana (29 e 30/08)</h1>
+    <p class="subtitle">Mapeamento de tudo que foi alterado no backend e no frontend do sistema entre sábado e domingo, explicado sem entrar em código.</p>
+  </header>
+
+  <section>
+    <h2>1. Visão geral do fim de semana</h2>
+    <p class="lead">Ao todo foram <strong>15 alterações registradas</strong> na mesma frente de trabalho (uma "branch" — um espaço separado onde o código é alterado antes de ser incorporado à versão principal do sistema), sendo 2 no backend e 13 no frontend, concentradas em seis frentes de melhoria.</p>
+
+    <figure role="img" aria-label="Linha do tempo mostrando as 15 alterações distribuídas entre sábado e domingo, separadas entre backend e frontend.">
+      <svg viewBox="0 0 720 190" xmlns="http://www.w3.org/2000/svg">
+        <line x1="40" y1="60" x2="680" y2="60" stroke="currentColor" stroke-width="1.4" opacity="0.35"></line>
+        <line x1="40" y1="130" x2="680" y2="130" stroke="currentColor" stroke-width="1.4" opacity="0.35"></line>
+
+        <text x="40" y="34" font-size="12" font-weight="700">Sábado, 29/08</text>
+        <text x="40" y="104" font-size="12" font-weight="700">Domingo, 30/08</text>
+
+        <text x="20" y="64" font-size="9" text-anchor="end" opacity="0.6">Backend</text>
+        <circle cx="120" cy="60" r="6" fill="var(--accent-strong, currentColor)"></circle>
+        <circle cx="180" cy="60" r="6" fill="var(--accent-strong, currentColor)"></circle>
+        <text x="150" y="46" font-size="9.5" text-anchor="middle" opacity="0.75">idade em meses · telefones</text>
+
+        <text x="20" y="134" font-size="9" text-anchor="end" opacity="0.6">Backend</text>
+        <text x="150" y="150" font-size="9" text-anchor="middle" opacity="0.4">— sem alterações —</text>
+
+        <text x="20" y="64" font-size="0" text-anchor="end"></text>
+
+        <text x="270" y="46" font-size="9.5" text-anchor="middle" opacity="0.75">idade · datas pt-BR · máscaras adotante</text>
+        <circle cx="230" cy="60" r="6" fill="currentColor" opacity="0.85"></circle>
+        <circle cx="270" cy="60" r="6" fill="currentColor" opacity="0.85"></circle>
+        <circle cx="310" cy="60" r="6" fill="currentColor" opacity="0.85"></circle>
+        <circle cx="350" cy="60" r="6" fill="currentColor" opacity="0.85"></circle>
+        <circle cx="390" cy="60" r="6" fill="currentColor" opacity="0.85"></circle>
+        <circle cx="430" cy="60" r="6" fill="currentColor" opacity="0.85"></circle>
+
+        <text x="580" y="150" font-size="9.5" text-anchor="middle" opacity="0.75">tela de raças · máscara de data · rolagem até erro · busca e filtros</text>
+        <circle cx="500" cy="130" r="6" fill="currentColor" opacity="0.85"></circle>
+        <circle cx="540" cy="130" r="6" fill="currentColor" opacity="0.85"></circle>
+        <circle cx="580" cy="130" r="6" fill="currentColor" opacity="0.85"></circle>
+        <circle cx="620" cy="130" r="6" fill="currentColor" opacity="0.85"></circle>
+        <circle cx="660" cy="130" r="6" fill="currentColor" opacity="0.85"></circle>
+
+        <text x="680" y="176" font-size="10" text-anchor="end" opacity="0.6">● backend &#160;&#160; ○ frontend</text>
+      </svg>
+      <figcaption>2 alterações de backend e 6 de frontend em 29/08 (sábado); 7 novas alterações de frontend em 30/08 (domingo).</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>2. Idade dos animais com mais precisão</h2>
+    <p class="lead">Antes, a idade de um animal era guardada em anos. Isso é impreciso para filhotes: um animal de "0 anos" podia ter 2 semanas ou 11 meses, sem distinção.</p>
+
+    <div class="grid-2">
+      <div class="compare-before">
+        <div class="compare-label">Antes</div>
+        <p>A idade era guardada e cadastrada só em anos — pouco preciso para animais jovens.</p>
+      </div>
+      <div class="compare-after">
+        <div class="compare-label">Depois</div>
+        <p>A idade passou a ser guardada em meses "por baixo dos panos", mas a tela de cadastro continua mostrando e recebendo a idade em anos, calculando a conversão automaticamente.</p>
+      </div>
+    </div>
+
+    <p>Para que essa mudança não apagasse os dados já cadastrados, foi criada uma <strong>migração de banco de dados</strong> — uma espécie de "receita" que atualiza automaticamente todos os registros existentes para o novo formato, sem exigir recadastro manual.</p>
+  </section>
+
+  <section>
+    <h2>3. Cadastro de adotantes mais confiável</h2>
+    <p class="lead">Duas frentes de melhoria no cadastro de adotantes, tanto no backend quanto no frontend:</p>
+    <ul>
+      <li><strong>Telefones duplicados bloqueados:</strong> agora o sistema impede que o mesmo número seja cadastrado como telefone principal e telefone secundário da mesma pessoa — essa checagem foi feita tanto na tela quanto no servidor, para garantir que nenhum cadastro escape da regra, mesmo se vier de outro caminho que não a tela.</li>
+      <li><strong>Máscaras de formatação:</strong> os campos de CPF, RG, telefone e CEP passaram a se formatar automaticamente enquanto a pessoa digita (por exemplo, exibindo os pontos e traços do CPF sozinhos). Isso reduz erro de digitação e deixa os dados mais padronizados, tanto no formulário de cadastro quanto na listagem de adotantes.</li>
+    </ul>
+
+    <div class="analogy">
+      <div class="label">Uma analogia</div>
+      <p>Uma <strong>máscara de campo</strong> funciona como um formulário de papel pré-impresso com espaços já demarcados para cada grupo de números — a pessoa só digita os dígitos, e o formato (pontos, traços, parênteses) aparece sozinho.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>4. Datas mais fáceis de preencher e sem erro de fuso</h2>
+    <p class="lead">Dois ajustes relacionados a como o sistema lida com datas digitadas manualmente pela pessoa usuária:</p>
+    <ul>
+      <li><strong>Correção de um bug de data:</strong> em alguns casos, uma data digitada manualmente (em vez de escolhida num calendário) podia ser interpretada com um dia de diferença da que foi realmente digitada, por causa de como o navegador lida com fuso horário internamente. Esse comportamento foi corrigido para o padrão brasileiro de data.</li>
+      <li><strong>Máscara visual de data:</strong> os campos de data ganharam a formatação automática <code>dd/mm/aaaa</code> enquanto a pessoa digita, guiando visualmente o preenchimento e reduzindo a chance de erro de formato.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>5. Nova tela: gestão de raças</h2>
+    <p class="lead">Foi criada, do zero, uma tela completa para gerenciar as raças de animais dentro do próprio sistema — antes esse cadastro provavelmente precisava ser feito por outro meio, fora da tela principal.</p>
+
+    <div class="analogy">
+      <div class="label">Uma analogia</div>
+      <p>Essa é uma funcionalidade do tipo <strong>CRUD</strong> — sigla que resume as quatro operações básicas de qualquer cadastro: <em>criar, ler, atualizar e excluir</em> (do inglês <em>Create, Read, Update, Delete</em>). Agora é possível cadastrar uma raça nova, ver a lista de raças existentes, editar uma raça e excluir uma raça diretamente pela tela, sem depender de ninguém mexer direto no banco de dados.</p>
+    </div>
+
+    <p>Essa tela também inclui uma confirmação antes de excluir uma raça, evitando exclusões acidentais.</p>
+  </section>
+
+  <section>
+    <h2>6. Formulários mais fáceis de corrigir</h2>
+    <p class="lead">Quando alguém tenta salvar um formulário (de animal, adotante ou raça) e algum campo está com erro, a tela agora rola automaticamente até o primeiro campo inválido — em vez de deixar a pessoa procurando manualmente qual campo, lá em cima ou embaixo, precisa de correção.</p>
+  </section>
+
+  <section>
+    <h2>7. Busca e filtros nas listagens</h2>
+    <p class="lead">As telas de listagem de animais, adotantes e raças ganharam um campo de busca por texto e filtros por categoria, para facilitar encontrar um registro específico numa lista longa sem precisar rolar tudo manualmente.</p>
+
+    <ul>
+      <li><strong>Busca por texto:</strong> nas três listagens, digitar um termo já filtra a lista pelos campos mais usados na identificação de cada registro (nome, documento, cidade, etc.), conforme a pessoa digita.</li>
+      <li><strong>Filtros da lista de animais:</strong> passou a ser possível filtrar por espécie, raça, status (disponível/adotado/etc.), sexo, porte, se é castrado e por adotante. Cada filtro aceita mais de uma opção marcada ao mesmo tempo — por exemplo, filtrar por "Cachorro" e "Gato" juntos, ou por dois portes ao mesmo tempo.</li>
+      <li><strong>Filtro da lista de raças:</strong> passou a ser possível filtrar as raças por espécie.</li>
+      <li><strong>Filtros da lista de adotantes:</strong> passou a ser possível filtrar por estado, faixa de renda mensal (em salários mínimos) e faixa etária. A faixa de renda e a faixa etária são calculadas automaticamente pelo sistema a partir da renda informada e da data de nascimento cadastradas — a pessoa que usa o sistema não precisa preencher nada a mais para isso funcionar.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>8. Resumo das alterações por área</h2>
+    <ol class="timeline">
+      <li class="is-backend">
+        <div class="t-title">Backend <span class="tag tag-back">Backend</span></div>
+        <div class="t-desc">Idade do animal passa a ser guardada em meses (com migração de dados existentes) e bloqueio de telefones duplicados no cadastro de adotante.</div>
+      </li>
+      <li>
+        <div class="t-title">Frontend — Animais <span class="tag tag-front">Frontend</span></div>
+        <div class="t-desc">Formulário e listagem adaptados para a idade em meses, exibindo a conversão em anos para quem usa o sistema; busca por texto e filtros por espécie, raça, status, sexo, porte, castrado e adotante, com seleção múltipla em cada filtro.</div>
+      </li>
+      <li>
+        <div class="t-title">Frontend — Datas <span class="tag tag-front">Frontend</span></div>
+        <div class="t-desc">Correção do parsing de datas digitadas manualmente e nova máscara visual dd/mm/aaaa.</div>
+      </li>
+      <li>
+        <div class="t-title">Frontend — Adotantes <span class="tag tag-front">Frontend</span></div>
+        <div class="t-desc">Máscaras de CPF, RG, telefone e CEP; bloqueio de telefones duplicados também na tela; busca por texto e filtros por estado, faixa de renda e faixa etária.</div>
+      </li>
+      <li>
+        <div class="t-title">Frontend — Raças <span class="tag tag-front">Frontend</span></div>
+        <div class="t-desc">Nova tela completa de cadastro, listagem, edição e exclusão de raças; busca por texto e filtro por espécie.</div>
+      </li>
+      <li>
+        <div class="t-title">Frontend — Formulários em geral <span class="tag tag-front">Frontend</span></div>
+        <div class="t-desc">Rolagem automática até o primeiro campo inválido ao tentar salvar.</div>
+      </li>
+    </ol>
+  </section>
+
+  <p class="callout">Em resumo: o fim de semana concentrou melhorias de qualidade e confiabilidade dos dados já existentes (idade, telefone, datas, CPF/RG/CEP), uma funcionalidade nova completa (gestão de raças) e ferramentas de busca e filtro nas três listagens principais. Todas as alterações estão reunidas numa mesma frente de trabalho separada da versão principal do sistema, prontas para revisão antes de serem incorporadas definitivamente.</p>
+
+  <footer>
+    Relatório de progresso — projeto PIVIC, Sistema ONG Animal.
+  </footer>
+
+</div>
+
+<div id="editToolbar">
+  <span id="editStatus" style="color: var(--text-muted);">Clique no texto e edite. Depois use "Salvar no arquivo".</span>
+  <button type="button" id="saveBtn" class="secondary">Salvar no arquivo</button>
+  <button type="button" id="pdfBtn" class="secondary">Salvar como PDF</button>
+  <button type="button" id="toggleEditBtn">Parar edição</button>
+</div>
+
+<script>
+(function () {
+  var wrap = document.querySelector('.wrap');
+  var editBtn = document.getElementById('toggleEditBtn');
+  var saveBtn = document.getElementById('saveBtn');
+  var statusEl = document.getElementById('editStatus');
+  var fileHandle = null;
+  var editing = false;
+
+  function setStatus(msg, isError) {
+    statusEl.textContent = msg || '';
+    statusEl.style.color = isError ? 'var(--danger)' : 'var(--text-muted)';
+  }
+
+  editBtn.addEventListener('click', function () {
+    editing = !editing;
+    wrap.setAttribute('contenteditable', editing ? 'true' : 'false');
+    editBtn.textContent = editing ? 'Parar edição' : 'Editar texto';
+    saveBtn.hidden = !editing;
+    setStatus(editing ? 'Clique no texto e edite. Depois use "Salvar no arquivo".' : '');
+  });
+
+  function downloadFallback() {
+    var html = '<!doctype html>\n' + document.documentElement.outerHTML;
+    var blob = new Blob([html], { type: 'text/html' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'relatorio-progresso-2026-08-30.html';
+    a.click();
+    URL.revokeObjectURL(url);
+    setStatus('Seu navegador não permite salvar direto no arquivo — foi baixada uma cópia editada.');
+  }
+
+  var pdfBtn = document.getElementById('pdfBtn');
+  pdfBtn.addEventListener('click', function () {
+    window.print();
+  });
+
+  saveBtn.addEventListener('click', async function () {
+    if (!('showSaveFilePicker' in window)) {
+      downloadFallback();
+      return;
+    }
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'relatorio-progresso-2026-08-30.html',
+          types: [{ description: 'Página HTML', accept: { 'text/html': ['.html'] } }]
+        });
+      }
+      var writable = await fileHandle.createWritable();
+      var html = '<!doctype html>\n' + document.documentElement.outerHTML;
+      await writable.write(html);
+      await writable.close();
+      setStatus('Salvo com sucesso às ' + new Date().toLocaleTimeString('pt-BR') + '.');
+    } catch (err) {
+      if (err && err.name !== 'AbortError') {
+        setStatus('Não foi possível salvar: ' + err.message, true);
+      }
+    }
+  });
+})();
+</script>
+
+
+</body></html>

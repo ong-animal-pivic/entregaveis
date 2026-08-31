@@ -41,6 +41,7 @@ Todo relatório em HTML criado nesta pasta deve seguir os pontos abaixo. O arqui
 - **Público-alvo é não técnico** (orientadora, avaliadores do PIVIC): explicar conceitos com analogias antes de nomear o termo técnico, nunca assumir conhecimento prévio de programação.
 - **Pode citar nomenclatura técnica** (ex: DTO, API, entidade, Controller), mas sempre com explicação curta ao lado ou em um glossário — nunca aprofundar detalhes de implementação/código.
 - **Nunca incluir trechos de código-fonte** (blocos `<pre><code>`, snippets, nomes de arquivos/classes específicos) — o relatório fala de conceitos e decisões, não de sintaxe.
+- **Ficar no escopo da alteração**: só explicar um conceito quando ele for necessário para entender a alteração em si (ex: o que é uma máscara de campo, o que é CRUD, o que é uma migração de banco). Não explicar conceitos genéricos de arquitetura/programação que não são o foco do relatório (ex: o que é "frontend" e "backend" em geral) — usar esses termos como rótulos diretos (ex: tag "Backend"/"Frontend"), sem analogia introdutória, a menos que a alteração em questão seja especificamente sobre a diferença entre as duas camadas.
 - Incluir **elementos visuais** (diagramas de fluxo, comparações antes/depois, linhas do tempo) sempre que ajudarem a explicar um mecanismo — usar SVG desenhado à mão (sem bibliotecas externas), com setas rotuladas.
 
 ### Data de criação
@@ -70,6 +71,9 @@ Usar `kebab-case` descritivo, com prefixo indicando o tipo de documento quando �
 - `stack-tecnologico-2026-08-16.html`
 
 Essa data é a de **criação** do arquivo e não muda em edições/atualizações posteriores do mesmo documento — mesmo para "documentos vivos" que são reabertos e atualizados ao longo do projeto (o conteúdo interno pode ter sua própria data de "última atualização", mas o nome do arquivo preserva a data original de criação).
+
+### Relatório periódico de progresso ("o que mudou recentemente")
+Quando o relatório é do tipo "resumo do que foi alterado no sistema num período recente" (e não sobre um tópico/decisão específica), usar sempre o nome padronizado `relatorio-progresso-AAAA-MM-DD.html` — sem sufixos que descrevam o período (ex: nada de `-fim-de-semana`, `-semana-passada`), já que o período coberto pode variar de relatório para relatório e o nome do arquivo precisa continuar previsível. A data no nome é a data de criação do relatório, seguindo a regra geral acima. O conteúdo interno do relatório pode e deve mencionar o período coberto (ex: "29 e 30/08") no título e no texto — só o nome do arquivo é padronizado. Exemplo: `relatorio-progresso-2026-08-30.html`.
 
 ## Padrão obrigatório para diagramas (HTML com SVG)
 
