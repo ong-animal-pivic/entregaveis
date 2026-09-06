@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="UTF-8">
+<title>Tipos de Teste Automatizado</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-subtle: #f6f7f9;
+    --bg-card: #ffffff;
+    --border: #e2e4e9;
+    --text: #1c1f26;
+    --text-muted: #5b616e;
+    --accent: #2f6f4f;
+    --accent-soft: #e7f2ec;
+    --accent-strong: #1f5138;
+    --danger: #a13a3a;
+    --danger-soft: #fbeeee;
+    --good: #2f6f4f;
+    --good-soft: #e7f2ec;
+    --shadow: 0 1px 2px rgba(20, 22, 28, 0.06), 0 4px 16px rgba(20, 22, 28, 0.05);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14161b;
+      --bg-subtle: #1b1e24;
+      --bg-card: #1c1f26;
+      --border: #2c303a;
+      --text: #e7e9ee;
+      --text-muted: #9aa0ac;
+      --accent: #6fbf94;
+      --accent-soft: #1e2c25;
+      --accent-strong: #8fd4ac;
+      --danger: #d97a7a;
+      --danger-soft: #2b1d1d;
+      --good: #6fbf94;
+      --good-soft: #1e2c25;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.35);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #14161b;
+    --bg-subtle: #1b1e24;
+    --bg-card: #1c1f26;
+    --border: #2c303a;
+    --text: #e7e9ee;
+    --text-muted: #9aa0ac;
+    --accent: #6fbf94;
+    --accent-soft: #1e2c25;
+    --accent-strong: #8fd4ac;
+    --danger: #d97a7a;
+    --danger-soft: #2b1d1d;
+    --good: #6fbf94;
+    --good-soft: #1e2c25;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.35);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .wrap {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 56px 24px 96px;
+  }
+
+  header.hero { margin-bottom: 16px; }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 0 0 12px;
+  }
+
+  h1 {
+    font-size: 2rem;
+    line-height: 1.25;
+    margin: 0 0 14px;
+    letter-spacing: -0.01em;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 1.08rem;
+    margin: 0;
+    max-width: 60ch;
+  }
+
+  .origin-note {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin: 0 0 48px;
+    font-style: italic;
+  }
+
+  section { margin-bottom: 46px; }
+
+  h2 {
+    font-size: 1.35rem;
+    margin: 0 0 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h3 { font-size: 1.05rem; margin: 24px 0 10px; }
+
+  p { margin: 0 0 14px; }
+  p.lead { color: var(--text-muted); font-size: 1.02rem; }
+
+  ul, ol { margin: 0 0 14px; padding-left: 22px; }
+  li { margin-bottom: 8px; }
+
+  .analogy {
+    background: var(--accent-soft);
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin: 18px 0;
+  }
+  .analogy .label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-strong);
+    margin-bottom: 8px;
+  }
+  .analogy p:last-child { margin-bottom: 0; }
+
+  .type-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 18px 0;
+  }
+  @media (max-width: 720px) { .type-grid { grid-template-columns: 1fr; } }
+  .type-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    background: var(--bg-card);
+    box-shadow: var(--shadow);
+  }
+  .type-card .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+  }
+  .type-card h4 { margin: 0 0 6px; font-size: 0.98rem; }
+  .type-card p { margin: 0; font-size: 0.9rem; color: var(--text-muted); }
+
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 18px 0;
+    font-size: 0.92rem;
+  }
+  .compare-table th, .compare-table td {
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  .compare-table th {
+    background: var(--bg-subtle);
+    font-weight: 700;
+  }
+  .compare-table td:first-child { font-weight: 600; white-space: nowrap; }
+
+  figure {
+    margin: 22px 0;
+    padding: 20px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  figure svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    color: var(--text);
+  }
+  figure text { fill: currentColor; }
+  figcaption {
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  .code-block {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin: 14px 0;
+    overflow-x: auto;
+  }
+  .code-block pre {
+    margin: 0;
+    font-family: "SF Mono", Consolas, Menlo, monospace;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: var(--text);
+    white-space: pre;
+  }
+  .code-caption {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin: -6px 0 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .pitfall-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  @media (max-width: 720px) { .pitfall-grid { grid-template-columns: 1fr; } }
+  .pitfall-card {
+    border-left: 3px solid var(--danger);
+    background: var(--danger-soft);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 16px;
+  }
+  .pitfall-card h4 { margin: 0 0 6px; font-size: 0.92rem; color: var(--danger); }
+  .pitfall-card p { margin: 0; font-size: 0.88rem; }
+
+  .practice-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 20px;
+  }
+  @media (max-width: 720px) { .practice-grid { grid-template-columns: 1fr; } }
+  .practice-card {
+    border-left: 3px solid var(--good);
+    background: var(--good-soft);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 16px;
+  }
+  .practice-card h4 { margin: 0 0 6px; font-size: 0.92rem; color: var(--good); }
+  .practice-card p { margin: 0; font-size: 0.88rem; }
+
+  .callout {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 0.94rem;
+    color: var(--text-muted);
+  }
+
+  footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.82rem;
+  }
+
+  .glossary {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 20px;
+    font-size: 0.9rem;
+    margin: 18px 0;
+  }
+  @media (max-width: 640px) { .glossary { grid-template-columns: 1fr; } }
+  .glossary dt { font-weight: 600; color: var(--text); }
+  .glossary dd { margin: 2px 0 0; color: var(--text-muted); }
+
+  .wrap[contenteditable="true"] {
+    outline: 2px dashed var(--accent);
+    outline-offset: 8px;
+    border-radius: 8px;
+  }
+
+  #editToolbar {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 10px 8px 16px;
+    box-shadow: var(--shadow);
+    font-size: 0.85rem;
+  }
+  #editToolbar button {
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--bg);
+    background: var(--accent);
+    border: none;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  #editToolbar button.secondary {
+    color: var(--text);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+  }
+  #editToolbar #editStatus {
+    color: var(--text-muted);
+    max-width: 240px;
+  }
+
+  @media print {
+    #editToolbar { display: none; }
+
+    @page {
+      size: A4;
+      margin: 18mm 16mm;
+    }
+
+    html, body {
+      background: #ffffff !important;
+    }
+
+    body {
+      color: #1c1f26 !important;
+    }
+
+    .wrap {
+      max-width: none;
+      padding: 0;
+    }
+
+    .wrap[contenteditable] {
+      outline: none;
+    }
+
+    .analogy, .type-card, .code-block, .pitfall-card, .practice-card, .callout, figure {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .analogy { background: #e7f2ec !important; }
+    .type-card .tag { background: #e7f2ec !important; color: #1f5138 !important; }
+    .type-card, .code-block, .callout, figure {
+      background: #ffffff !important;
+      border-color: #e2e4e9 !important;
+      box-shadow: none !important;
+    }
+    figure, .code-block { background: #f6f7f9 !important; }
+    .pitfall-card { background: #fbeeee !important; border-left-color: #a13a3a !important; }
+    .pitfall-card h4 { color: #a13a3a !important; }
+    .practice-card { background: #e7f2ec !important; border-left-color: #2f6f4f !important; }
+    .practice-card h4 { color: #2f6f4f !important; }
+    .compare-table th { background: #f6f7f9 !important; }
+    .compare-table th, .compare-table td { border-color: #e2e4e9 !important; }
+    .eyebrow { color: #2f6f4f !important; }
+    .analogy .label { color: #1f5138 !important; }
+    p.lead, .subtitle, .origin-note, .type-card p, .callout, figcaption,
+    .glossary dd, .code-caption, footer {
+      color: #5b616e !important;
+    }
+    h1, h2, h3, h4, .glossary dt, code, strong {
+      color: #1c1f26 !important;
+    }
+    figure svg { color: #1c1f26 !important; }
+    .code-block pre { color: #1c1f26 !important; }
+
+    section { break-inside: avoid-page; }
+    figure { break-inside: avoid-page; }
+    .type-card, .pitfall-card, .practice-card, .code-block { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap" contenteditable="true">
+
+  <header class="hero">
+    <p class="eyebrow">PIVIC · Sistema ONG Animal · Material de estudo · 05/09/2026</p>
+    <h1>Teste unitário, teste de integração e teste de API</h1>
+    <p class="subtitle">Três camadas diferentes de "robôs" que conferem sozinhos se o sistema continua funcionando corretamente — o que cada uma testa, por que existem as três, e quando cada uma é usada.</p>
+  </header>
+  <p class="origin-note">Este material foi estudado a partir da etapa de testes automatizados da API de adotantes — ver relatório <em>be-testes-integracao-api-2026-09-05</em>.</p>
+
+  <section>
+    <h2>1. O que é</h2>
+    <p class="lead">Um <strong>teste automatizado</strong> é um "robô" que simula uma ação de uso do sistema e confere sozinho se o resultado é o esperado — sem precisar de uma pessoa clicando manualmente em cada tela para verificar se tudo continua funcionando. Existem diferentes "níveis" de teste automatizado, que diferem no <em>tamanho do pedaço do sistema</em> que cada um verifica de cada vez.</p>
+
+    <div class="analogy">
+      <div class="label">Uma analogia</div>
+      <p>Pense na fabricação de um carro. Primeiro, cada peça é testada isolada na bancada (o motor sozinho, o freio sozinho) — isso é o <strong>teste unitário</strong>. Depois, testa-se se as peças se encaixam e funcionam bem juntas, ainda dentro da fábrica (o motor ligado ao câmbio) — isso é o <strong>teste de integração</strong>. Por fim, testa-se o carro inteiro rodando na pista, usando o volante e os pedais exatamente como um motorista usaria — isso é o <strong>teste de API</strong> (ou teste "de ponta a ponta").</p>
+    </div>
+
+    <div class="type-grid">
+      <div class="type-card">
+        <span class="tag">Teste unitário</span>
+        <h4>Uma peça isolada</h4>
+        <p>Confere uma única regra ou cálculo, isolado do resto do sistema (sem banco de dados, sem outras partes envolvidas).</p>
+      </div>
+      <div class="type-card">
+        <span class="tag">Teste de integração</span>
+        <h4>Peças conectadas</h4>
+        <p>Confere se duas ou mais partes do sistema funcionam corretamente quando conectadas entre si (ex: a lógica de negócio conversando de verdade com o banco de dados).</p>
+      </div>
+      <div class="type-card">
+        <span class="tag">Teste de API</span>
+        <h4>O sistema inteiro, de fora</h4>
+        <p>Confere o sistema como um todo, entrando exatamente pela mesma "porta de entrada" que a tela usaria — sem conhecer nem se importar com o que existe por dentro.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. Que problema cada um resolve</h2>
+    <p class="lead">Sem cada uma dessas camadas, um tipo diferente de problema passaria despercebido até tarde demais:</p>
+    <ul>
+      <li><strong>Sem teste unitário:</strong> um erro numa regra isolada (ex: um cálculo com a conta errada) só seria percebido depois, quando já estivesse misturado com o resto do sistema — mais difícil e demorado de localizar exatamente onde o erro está.</li>
+      <li><strong>Sem teste de integração:</strong> cada peça isolada poderia estar "correta" na bancada, mas ainda assim não se encaixar direito com as outras (ex: a lógica de negócio manda salvar algo do jeito errado para o banco de dados) — um problema que só aparece quando as partes se conectam de verdade.</li>
+      <li><strong>Sem teste de API:</strong> mesmo com as peças testadas e encaixadas, a "porta de entrada" do sistema (o jeito que a tela efetivamente conversa com ele) poderia ter um problema que só apareceria quando alguém realmente tentasse usar o sistema — ou seja, só seria descoberto em produção, com o sistema já em uso real.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>3. Como funciona</h2>
+    <p class="lead">As três camadas formam o que costuma ser chamado de <strong>pirâmide de testes</strong>: muitos testes unitários (rápidos e baratos de rodar), uma quantidade média de testes de integração, e poucos testes de API (mais lentos, pois precisam ligar o sistema quase inteiro para rodar).</p>
+
+    <figure role="img" aria-label="Pirâmide de testes: base larga de testes unitários, camada do meio de testes de integração, topo estreito de testes de API.">
+      <svg viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="250,20 330,90 170,90" fill="none" stroke="currentColor" stroke-width="1.6"></polygon>
+        <text x="250" y="60" font-size="12" text-anchor="middle" font-weight="600">Teste de API</text>
+        <text x="250" y="76" font-size="10" text-anchor="middle" opacity="0.65">poucos, mais lentos</text>
+
+        <polygon points="170,90 330,90 380,155 120,155" fill="none" stroke="currentColor" stroke-width="1.6"></polygon>
+        <text x="250" y="118" font-size="12" text-anchor="middle" font-weight="600">Teste de integração</text>
+        <text x="250" y="134" font-size="10" text-anchor="middle" opacity="0.65">quantidade média</text>
+
+        <polygon points="120,155 380,155 430,210 70,210" fill="none" stroke="currentColor" stroke-width="1.6"></polygon>
+        <text x="250" y="178" font-size="12" text-anchor="middle" font-weight="600">Teste unitário</text>
+        <text x="250" y="194" font-size="10" text-anchor="middle" opacity="0.65">muitos, rápidos e baratos</text>
+      </svg>
+      <figcaption>Quanto mais alto na pirâmide, maior o pedaço do sistema testado de uma vez — e mais lento/caro fica rodar cada teste. Por isso a base (testes unitários) é a mais numerosa.</figcaption>
+    </figure>
+
+    <h3>Teste unitário — exemplo genérico</h3>
+    <p class="code-caption">Pseudo-código ilustrativo — não representa código real do projeto</p>
+    <div class="code-block"><pre>teste "calcula desconto de 10% corretamente":
+    resultado = ServicoDeDesconto.calcular(precoBase: 100)
+    esperar(resultado) igual a 90</pre></div>
+    <p>Chama diretamente uma única peça de lógica (<code>ServicoDeDesconto</code>), sem banco de dados nem rede envolvidos — só a conta em si.</p>
+
+    <h3>Teste de integração — exemplo genérico</h3>
+    <p class="code-caption">Pseudo-código ilustrativo — não representa código real do projeto</p>
+    <div class="code-block"><pre>teste "salva um pedido de verdade no banco":
+    ServicoDePedido.criar(pedido: novoPedido)
+    resultado = BancoDeDados.buscar(novoPedido.id)
+    esperar(resultado) não seja vazio</pre></div>
+    <p>Chama a lógica de negócio (<code>ServicoDePedido</code>) conectada a um banco de dados real de teste, confirmando que as duas partes conversam corretamente entre si.</p>
+
+    <h3>Teste de API — exemplo genérico</h3>
+    <p class="code-caption">Pseudo-código ilustrativo — não representa código real do projeto</p>
+    <div class="code-block"><pre>teste "cria um pedido através da API":
+    resposta = HTTP.post("/pedidos", dados: novoPedido)
+    esperar(resposta.status) igual a 201
+    esperar(resposta.corpo.id) não seja vazio</pre></div>
+    <p>Não chama nenhuma classe do sistema diretamente — faz uma chamada HTTP real, como a própria tela faria, e confere só a resposta que chega "de fora".</p>
+
+    <h3>Relação com a arquitetura em camadas</h3>
+    <p>Num sistema organizado em camadas — Controller (porta de entrada), Service (regras de negócio) e Repository (acesso ao banco de dados) — cada tipo de teste "abraça" uma fatia diferente dessas camadas: o teste unitário mira uma camada isolada (tipicamente o Service sozinho, sem tocar no Repository de verdade); o teste de integração mira duas ou mais camadas conectadas entre si (ex: Service + Repository + banco de dados real de teste); e o teste de API entra pela camada mais externa (Controller) e atravessa todas as camadas de uma vez, de ponta a ponta.</p>
+
+    <h3>Padrões de nomenclatura</h3>
+    <p>É comum, em projetos Java como este, usar o <strong>nome do arquivo de teste</strong> para já indicar de que tipo ele é, sem precisar abrir o conteúdo: um sufixo como <code>Test</code> costuma indicar teste unitário (rodado nas verificações rápidas do dia a dia), enquanto um sufixo como <code>IT</code> (de <em>Integration Test</em>) indica um teste de integração ou de API, rodado numa etapa separada e mais demorada do processo de build. Essa convenção também orienta as próprias ferramentas de build: elas podem ser configuradas para rodar automaticamente só os arquivos terminados em <code>Test</code> numa etapa, e só os terminados em <code>IT</code> em outra — foi exatamente esse tipo de configuração que precisou ser ajustada no projeto para que o novo teste de API passasse a rodar automaticamente (ver relatório <em>be-testes-integracao-api-2026-09-05</em>).</p>
+  </section>
+
+  <section>
+    <h2>4. Onde isso apareceu no projeto</h2>
+    <p class="lead">O backend do sistema já contava, antes de 05/09, com testes de integração no nível da lógica de negócio: eles chamam diretamente a parte responsável pelas regras de cada cadastro, mas já conectada a um banco de dados real de teste — cobrindo a camada do meio da pirâmide. Na etapa de 05/09, foi adicionado o primeiro <strong>teste de API</strong> do projeto: um teste que faz chamadas HTTP reais contra o cadastro de adotantes, cobrindo o caminho completo (criar, consultar, editar, excluir) e alguns casos de erro esperados, exatamente como a tela faria ao usar o sistema. Veja o relatório <em>be-testes-integracao-api-2026-09-05</em> para os detalhes dessa etapa.</p>
+  </section>
+
+  <section>
+    <h2>5. Armadilhas comuns e boas práticas</h2>
+    <h3>Armadilhas comuns</h3>
+    <div class="pitfall-grid">
+      <div class="pitfall-card">
+        <h4>Teste unitário</h4>
+        <p>Não deve depender de banco de dados, rede ou qualquer coisa "de fora" — se depender, deixa de ser rápido e passa a ser, na prática, um teste de integração disfarçado.</p>
+      </div>
+      <div class="pitfall-card">
+        <h4>Teste de integração</h4>
+        <p>Um teste pode deixar dados "sujos" no banco depois de rodar, atrapalhando o próximo teste que rodar em seguida — é preciso sempre limpar o que foi criado ao final de cada teste.</p>
+      </div>
+      <div class="pitfall-card">
+        <h4>Teste de API</h4>
+        <p>Como é mais lento e mais caro de rodar, não faz sentido repetir nele todas as combinações de erro já cobertas nos testes de camadas mais baixas — reservar para os caminhos mais importantes do ponto de vista de quem usa o sistema.</p>
+      </div>
+    </div>
+
+    <h3>Boas práticas</h3>
+    <div class="practice-grid">
+      <div class="practice-card">
+        <h4>Teste unitário</h4>
+        <p>Nomear o teste descrevendo o comportamento esperado (ex: "calcula desconto de 10% corretamente"), não só o nome técnico do método testado — assim o próprio nome do teste já explica o que quebrou quando ele falha.</p>
+      </div>
+      <div class="practice-card">
+        <h4>Teste de integração</h4>
+        <p>Rodar sempre contra um ambiente de teste isolado (nunca contra o banco de dados real usado pelo sistema em produção), para que uma falha no teste jamais afete dados reais.</p>
+      </div>
+      <div class="practice-card">
+        <h4>Teste de API</h4>
+        <p>Conferir não só se a resposta veio com o status esperado, mas também se o formato/conteúdo da resposta é o combinado (o chamado "contrato" da API) — um status certo com dados errados também é uma falha.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>6. Termos relacionados</h2>
+    <dl class="glossary">
+      <div><dt>Pirâmide de testes</dt><dd>Representação visual da proporção ideal entre os tipos de teste: muitos unitários, menos de integração, poucos de API.</dd></div>
+      <div><dt>Mock</dt><dd>Uma "peça falsa" usada num teste unitário para simular uma dependência (ex: um banco de dados de mentira), evitando depender de algo real.</dd></div>
+      <div><dt>Ambiente de teste</dt><dd>Uma cópia isolada do sistema (e, geralmente, do banco de dados) usada só para rodar testes, sem afetar dados reais.</dd></div>
+      <div><dt>CRUD</dt><dd>Sigla para as quatro operações básicas de um cadastro: Criar, Consultar (Read), Atualizar (Update) e Excluir (Delete).</dd></div>
+      <div><dt>Teste de ponta a ponta</dt><dd>Outro nome comum para o teste de API: testa o sistema do início ao fim, como o usuário final o utilizaria.</dd></div>
+      <div><dt>Convenção de nomenclatura de testes</dt><dd>Padrão de sufixo no nome do arquivo (ex: <code>Test</code>, <code>IT</code>) usado para indicar o tipo de teste e permitir que ferramentas de build o executem na etapa correta automaticamente.</dd></div>
+      <div><dt>Contrato de uma API</dt><dd>O formato combinado de resposta que a API promete devolver (quais campos, em que tipo) — um teste de API deve conferir se esse combinado está sendo cumprido.</dd></div>
+    </dl>
+  </section>
+
+  <p class="callout">Em resumo: as três camadas de teste não competem entre si — se complementam. Testes unitários dão confiança rápida sobre pedaços isolados de lógica; testes de integração confirmam que as peças se encaixam de verdade; testes de API confirmam que o sistema, usado do jeito que ele realmente é usado, funciona de ponta a ponta.</p>
+
+  <footer>
+    Material de estudo — projeto PIVIC, Sistema ONG Animal.
+  </footer>
+
+</div>
+
+<div id="editToolbar">
+  <span id="editStatus" style="color: var(--text-muted);">Clique no texto e edite. Depois use "Salvar no arquivo".</span>
+  <button type="button" id="saveBtn" class="secondary">Salvar no arquivo</button>
+  <button type="button" id="pdfBtn" class="secondary">Salvar como PDF</button>
+  <button type="button" id="toggleEditBtn">Parar edição</button>
+</div>
+
+<script>
+(function () {
+  var wrap = document.querySelector('.wrap');
+  var editBtn = document.getElementById('toggleEditBtn');
+  var saveBtn = document.getElementById('saveBtn');
+  var statusEl = document.getElementById('editStatus');
+  var fileHandle = null;
+  var editing = false;
+
+  function setStatus(msg, isError) {
+    statusEl.textContent = msg || '';
+    statusEl.style.color = isError ? 'var(--danger)' : 'var(--text-muted)';
+  }
+
+  editBtn.addEventListener('click', function () {
+    editing = !editing;
+    wrap.setAttribute('contenteditable', editing ? 'true' : 'false');
+    editBtn.textContent = editing ? 'Parar edição' : 'Editar texto';
+    saveBtn.hidden = !editing;
+    setStatus(editing ? 'Clique no texto e edite. Depois use "Salvar no arquivo".' : '');
+  });
+
+  function downloadFallback() {
+    var html = '<!doctype html>\n' + document.documentElement.outerHTML;
+    var blob = new Blob([html], { type: 'text/html' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'conceito-tipos-de-teste-automatizado-2026-09-05.html';
+    a.click();
+    URL.revokeObjectURL(url);
+    setStatus('Seu navegador não permite salvar direto no arquivo — foi baixada uma cópia editada.');
+  }
+
+  var pdfBtn = document.getElementById('pdfBtn');
+  pdfBtn.addEventListener('click', function () {
+    window.print();
+  });
+
+  saveBtn.addEventListener('click', async function () {
+    if (!('showSaveFilePicker' in window)) {
+      downloadFallback();
+      return;
+    }
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'conceito-tipos-de-teste-automatizado-2026-09-05.html',
+          types: [{ description: 'Página HTML', accept: { 'text/html': ['.html'] } }]
+        });
+      }
+      var writable = await fileHandle.createWritable();
+      var html = '<!doctype html>\n' + document.documentElement.outerHTML;
+      await writable.write(html);
+      await writable.close();
+      setStatus('Salvo com sucesso às ' + new Date().toLocaleTimeString('pt-BR') + '.');
+    } catch (err) {
+      if (err && err.name !== 'AbortError') {
+        setStatus('Não foi possível salvar: ' + err.message, true);
+      }
+    }
+  });
+})();
+</script>
+
+
+</body></html>

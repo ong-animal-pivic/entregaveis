@@ -106,6 +106,22 @@
 
   section { margin-bottom: 44px; }
 
+  .group-title {
+    font-size: 1.5rem;
+    margin: 56px 0 4px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+    letter-spacing: -0.01em;
+  }
+
+  .group-title:first-of-type { margin-top: 0; }
+
+  .group-sub {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin: 0 0 28px;
+  }
+
   .section-title {
     display: flex;
     align-items: baseline;
@@ -207,8 +223,11 @@
     <p class="eyebrow">Sistema ONG Animal</p>
     <h1>Stack Tecnológico</h1>
     <p class="sub">Ferramentas, frameworks e versões utilizadas na construção do sistema. Documento vivo — atualizado à medida que o projeto evolui.</p>
-    <span class="updated">Última atualização: 16 de agosto de 2026</span>
+    <span class="updated">Última atualização: 05 de setembro de 2026</span>
   </header>
+
+  <h2 class="group-title">Backend</h2>
+  <p class="group-sub">API REST em Java com Spring Boot, responsável pelas regras de negócio e persistência dos dados.</p>
 
   <section>
     <div class="section-title">
@@ -298,18 +317,96 @@
   <section>
     <div class="section-title">
       <h2>Testes</h2>
-      <span class="count">1</span>
+      <span class="count">3</span>
     </div>
     <div class="grid">
       <div class="card">
         <div class="card-top"><h3>Spring Boot Starter Test</h3><span class="version">via Boot</span></div>
-        <p>Conjunto de bibliotecas de teste (JUnit 5, Mockito, AssertJ) usado para os testes automatizados da aplicação.</p>
+        <p>Conjunto de bibliotecas de teste (JUnit 5, Mockito, AssertJ) usado para os testes unitários e de integração da aplicação.</p>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>REST Assured</h3><span class="version">5.5.1</span></div>
+        <p>Biblioteca para testar a API REST de fora para dentro, fazendo requisições HTTP reais e validando as respostas (status, corpo, cabeçalhos) nos testes de integração.</p>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>Maven Failsafe Plugin</h3><span class="version">via Boot</span></div>
+        <p>Executa os testes de integração (classes terminadas em "IT") em uma fase separada dos testes unitários, contra o banco de dados real.</p>
+      </div>
+    </div>
+  </section>
+
+  <h2 class="group-title">Frontend</h2>
+  <p class="group-sub">Aplicação web em Angular, responsável pela interface usada para gerenciar animais, adotantes e raças.</p>
+
+  <section>
+    <div class="section-title">
+      <h2>Linguagem &amp; Build</h2>
+      <span class="count">4</span>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-top"><h3>TypeScript</h3><span class="version">5.9.2</span></div>
+        <p>Linguagem principal do frontend — adiciona tipagem estática ao JavaScript, ajudando a evitar erros antes mesmo de rodar o código.</p>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>Angular CLI</h3><span class="version">21.2.13</span></div>
+        <p>Ferramenta de linha de comando usada para criar, rodar e compilar o projeto Angular.</p>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>@angular/build</h3><span class="version">21.2.13</span></div>
+        <p>Sistema de build oficial do Angular, baseado em Vite/esbuild — compila e otimiza a aplicação para desenvolvimento e produção.</p>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>npm</h3><span class="version">11.11.0</span></div>
+        <p>Gerenciador de pacotes e dependências do projeto (versão fixada via campo <code>packageManager</code>).</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title">
+      <h2>Framework &amp; UI</h2>
+      <span class="count">4</span>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-top"><h3>Angular</h3><span class="version">21.2</span></div>
+        <p>Framework principal da aplicação. Usado no estilo "standalone" (sem NgModules), com componentes, rotas e injeção de dependências.</p>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>Angular Material</h3><span class="version">21.2.13</span></div>
+        <p>Biblioteca de componentes visuais prontos (tabelas, formulários, diálogos, ícones) seguindo o padrão de design Material.</p>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>Angular CDK</h3><span class="version">21.2.13</span></div>
+        <p>Conjunto de ferramentas de apoio usadas por baixo dos panos pelo Angular Material (comportamentos de acessibilidade, sobreposição de telas, etc.).</p>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>RxJS</h3><span class="version">7.8</span></div>
+        <p>Biblioteca para lidar com eventos e dados assíncronos (ex: respostas de requisições HTTP) através de fluxos observáveis.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title">
+      <h2>Testes &amp; Qualidade</h2>
+      <span class="count">2</span>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-top"><h3>Vitest</h3><span class="version">4.0.8</span></div>
+        <p>Executor de testes automatizados do frontend (substitui o Karma/Jasmine padrão do Angular), integrado via <code>@angular/build:unit-test</code>.</p>
+      </div>
+      <div class="card">
+        <div class="card-top"><h3>Prettier</h3><span class="version">3.8.1</span></div>
+        <p>Formatador de código automático, garantindo um estilo consistente em todo o projeto.</p>
       </div>
     </div>
   </section>
 
   <footer>
-    Versões extraídas de <code>pom.xml</code> e <code>.mvn/wrapper/maven-wrapper.properties</code> do repositório <code>sistema-ong-animal</code>. Dependências marcadas como "via Boot" não possuem versão fixada no projeto — seguem a versão gerenciada pelo Spring Boot Parent (3.5.13).
+    Versões extraídas de <code>pom.xml</code> e <code>.mvn/wrapper/maven-wrapper.properties</code> do repositório <code>sistema-ong-animal</code> (backend), e de <code>package.json</code> do repositório <code>sistema-ong-animal-frontend</code> (frontend). Dependências marcadas como "via Boot" não possuem versão fixada no projeto — seguem a versão gerenciada pelo Spring Boot Parent (3.5.13).
   </footer>
 
 </div>

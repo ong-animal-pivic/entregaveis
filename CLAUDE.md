@@ -33,6 +33,10 @@ O backend segue camadas: `Controller` (API REST) → `Service` (regras de negóc
 - Código-fonte ou configuração do sistema (isso vive nos repositórios `sistema-ong-animal` e `sistema-ong-animal-frontend`).
 - Segredos, credenciais ou dados de produção.
 
+## Mensagens de commit
+
+Após concluir qualquer alteração concreta nesta pasta (novo documento, atualização de um documento vivo, etc.), sugira ao final da resposta a mensagem de commit a ser usada, seguindo o padrão de **commit semântico** (`docs:`, `feat:`, `fix:`, `chore:`, etc.), com a descrição no **modo imperativo** (ex.: "adiciona", "atualiza", "corrige", não "adicionado" ou "adicionando"). Apenas sugira o texto — **não execute o commit**, a menos que o usuário peça explicitamente.
+
 ## Organização da pasta
 
 Os documentos ficam organizados em subpastas por tipo. Todo documento novo deve ser salvo na subpasta correspondente ao seu tipo, nunca solto na raiz:
@@ -76,9 +80,12 @@ Incluir também na barra um botão **"Salvar como PDF"**, que chama `window.prin
 - Evitar cortar seções/figuras no meio entre páginas (`break-inside: avoid`/`avoid-page`).
 
 ### Convenção de nomes
-Usar `kebab-case` descritivo, dentro da subpasta correspondente ao tipo de documento (ver "Organização da pasta"), e **sempre incluir a data de criação do arquivo no nome**, no formato `AAAA-MM-DD` ao final (antes da extensão). Essa data é a de **criação** do arquivo e não muda em edições/atualizações posteriores do mesmo documento — mesmo para "documentos vivos" que são reabertos e atualizados ao longo do projeto (o conteúdo interno pode ter sua própria data de "última atualização", mas o nome do arquivo preserva a data original de criação).
+Usar `kebab-case` descritivo, dentro da subpasta correspondente ao tipo de documento (ver "Organização da pasta"), e **sempre incluir uma data no nome**, no formato `AAAA-MM-DD` ao final (antes da extensão). O significado dessa data — e se ela muda quando o documento é editado depois — depende do tipo:
 
-Em `diagramas/` e `documentacao-geral/`, o nome é só `<assunto>-AAAA-MM-DD.html`, ex: `stack-tecnologico-2026-08-16.html`. Em `relatorios-progresso/`, segue o padrão específico abaixo.
+- **Arquivos não atualizáveis (`relatorios-progresso/`)**: cada mudança gera um relatório novo, nunca se edita um relatório existente para descrever uma mudança diferente. A data no nome é a de **criação** e **nunca muda**, mesmo que o conteúdo do relatório seja reaberto para revisão/correção pontual depois de publicado (o conteúdo pode mudar; a data do nome, não).
+- **Arquivos atualizáveis (`documentacao-geral/`, `material-de-estudo/`, `diagramas/`)**: são "documentos vivos", reabertos e atualizados ao longo do projeto. Ao contrário dos relatórios, a data no nome **deve ser atualizada a cada atualização de conteúdo** — o arquivo é renomeado, mantendo o mesmo `<assunto>` e trocando a data para a data da edição, mantendo-a coerente com a data de "última atualização" exibida dentro do próprio documento. A data de criação original não é preservada no nome depois da primeira atualização.
+
+Em `diagramas/` e `documentacao-geral/`, o nome é só `<assunto>-AAAA-MM-DD.html`, ex: `stack-tecnologico-2026-09-05.html`. Em `relatorios-progresso/`, segue o padrão específico abaixo.
 
 ### Relatórios de progresso (`relatorios-progresso/`)
 Todo relatório dessa pasta — periódico ou sobre um tópico específico — segue o formato:
@@ -156,6 +163,14 @@ Todo documento de material de estudo segue esta sequência de seções, para man
 4. **Onde isso apareceu no projeto** — em que parte do desenvolvimento (backend/frontend, que tipo de mudança) esse conceito foi usado na prática, sem citar código real — só o contexto.
 5. **Armadilhas comuns / boas práticas** — erros frequentes ao aplicar o conceito e recomendações de uso.
 6. **Termos relacionados** — mini-glossário com outros termos técnicos citados no texto que mereçam uma definição curta à parte.
+
+### Conexão com arquitetura, nomenclatura e boas práticas
+Sempre que fizer sentido para o conceito tratado, o material deve conectar a explicação com um panorama mais amplo de engenharia de software. Esses três pontos são **independentes entre si** e devem aparecer como blocos/subseções distintos e claramente identificados no documento (cada um com seu próprio título, ex: um `<h3>` ou card com rótulo próprio) — nunca combinados na mesma frase, parágrafo ou card:
+- **Arquitetura de software**: em que camada/padrão arquitetural o conceito se encaixa (ex: onde ele aparece numa arquitetura em camadas, num padrão MVC, numa API REST), e como ele se relaciona com outros conceitos arquiteturais próximos.
+- **Padrões de nomenclatura**: convenções de nome usadas na comunidade para esse tipo de elemento (ex: sufixos/prefixos comuns como `*Service`, `*Repository`, `*IT`/`*Test`, `*DTO`), explicando o propósito prático da convenção.
+- **Boas práticas**: recomendações amplamente aceitas sobre o uso do conceito, mesmo além do que foi aplicado especificamente no projeto — tratadas como um bloco à parte das armadilhas/erros comuns (seção 5), não misturadas na mesma frase ou card.
+
+Cada um entra na seção onde fizer mais sentido (tipicamente arquitetura e nomenclatura em "Como funciona"; boas práticas como um bloco próprio dentro ou logo após "Armadilhas comuns"), mas sempre com identidade visual/textual própria. Quando um dos três pontos não tiver conexão natural e relevante com o conceito, ele é simplesmente omitido — nunca forçado.
 
 ### Nota de contexto de origem
 Logo abaixo do cabeçalho/eyebrow do documento, incluir uma nota curta (1 frase) indicando qual mudança ou período do projeto motivou o estudo daquele conceito, referenciando o relatório correspondente pelo nome do arquivo (sem precisar ser um link clicável, já que os documentos são autocontidos e podem circular avulsos). Exemplo: "Este conceito foi estudado a partir da migração para DTOs — ver relatório `be-migracao-dto-2026-08-16`."
