@@ -558,7 +558,7 @@
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url;
-    a.download = 'relatorio-progresso-2026-08-30.html';
+    a.download = 'fe-be-idade-em-meses-e-busca-2026-08-30.html';
     a.click();
     URL.revokeObjectURL(url);
     setStatus('Seu navegador não permite salvar direto no arquivo — foi baixada uma cópia editada.');
@@ -577,7 +577,7 @@
     try {
       if (!fileHandle) {
         fileHandle = await window.showSaveFilePicker({
-          suggestedName: 'relatorio-progresso-2026-08-30.html',
+          suggestedName: 'fe-be-idade-em-meses-e-busca-2026-08-30.html',
           types: [{ description: 'Página HTML', accept: { 'text/html': ['.html'] } }]
         });
       }
