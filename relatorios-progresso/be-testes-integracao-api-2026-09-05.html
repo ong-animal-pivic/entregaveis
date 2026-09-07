@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8">
-<title>Testes Automatizados da API de Adotantes</title>
+<title>Testes de API, Responsáveis e Ajustes de Cadastro</title>
 <style>
   :root {
     --bg: #ffffff;
@@ -269,6 +269,20 @@
   .scenario-card.err .tag { background: var(--danger-soft); color: var(--danger); }
   .scenario-card p { margin: 0; font-size: 0.92rem; }
 
+  .area-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+  }
+  .area-tag.fe { background: var(--bg-subtle); color: var(--text-muted); border: 1px solid var(--border); }
+
   .wrap[contenteditable="true"] {
     outline: 2px dashed var(--accent);
     outline-offset: 8px;
@@ -355,6 +369,8 @@
     figure { background: #f6f7f9 !important; }
     .scenario-card.ok .tag { background: #e7f2ec !important; color: #2f6f4f !important; }
     .scenario-card.err .tag { background: #fbeeee !important; color: #a13a3a !important; }
+    .area-tag { background: #e7f2ec !important; color: #1f5138 !important; }
+    .area-tag.fe { background: #f6f7f9 !important; color: #5b616e !important; border-color: #e2e4e9 !important; }
     .timeline { border-left-color: #e2e4e9 !important; }
     .timeline li::before { background: #2f6f4f !important; }
     .eyebrow { color: #2f6f4f !important; }
@@ -378,9 +394,9 @@
 <div class="wrap" contenteditable="true">
 
   <header class="hero">
-    <p class="eyebrow">PIVIC · Sistema ONG Animal · Relatório de progresso · 05/09/2026</p>
-    <h1>Testes automatizados que simulam o uso real da API</h1>
-    <p class="subtitle">O que foi feito para garantir, de forma automática, que o cadastro de adotantes continua funcionando corretamente do jeito que quem usa o sistema realmente o utiliza — explicado com analogias, sem entrar no código em si.</p>
+    <p class="eyebrow">PIVIC · Sistema ONG Animal · Relatório de progresso · 05 e 06/09/2026</p>
+    <h1>Testes de API, gestão de responsáveis e ajustes de cadastro</h1>
+    <p class="subtitle">Duas frentes de trabalho da semana: (1) testes automatizados que garantem que o cadastro de adotantes funciona do jeito que quem usa o sistema realmente o utiliza, e (2) a introdução do conceito de responsável por um animal, com telas próprias no frontend e ajustes de cadastro em adotantes e animais — explicado com analogias, sem entrar no código em si.</p>
   </header>
 
   <section>
@@ -437,6 +453,8 @@
       <div><dt>API</dt><dd>"Porta de entrada" do sistema, que recebe pedidos da tela e devolve respostas.</dd></div>
       <div><dt>Teste automatizado</dt><dd>Um "robô" que simula ações de uso do sistema e confere sozinho se o resultado é o esperado, sem precisar de alguém testando manualmente.</dd></div>
       <div><dt>Cenário de teste</dt><dd>Uma situação específica simulada pelo teste (ex: cadastrar com sucesso, ou tentar cadastrar com um dado inválido).</dd></div>
+      <div><dt>Responsável</dt><dd>Pessoa cadastrada como encarregada de cuidar de um ou mais animais da ONG.</dd></div>
+      <div><dt>Tipo (de responsável)</dt><dd>Categoria usada para classificar cada responsável cadastrado.</dd></div>
     </dl>
   </section>
 
@@ -488,7 +506,73 @@
     </div>
   </section>
 
-  <p class="callout">Em resumo: essa etapa não altera nenhuma regra de negócio nem adiciona uma tela ou funcionalidade nova — ela cria uma rede de segurança automatizada que confirma, a cada verificação futura do sistema, que o cadastro de adotantes continua funcionando corretamente do início ao fim, exatamente como quem usa o sistema o utilizaria.</p>
+  <p class="callout">Até aqui: a frente de testes não altera nenhuma regra de negócio nem adiciona tela ou funcionalidade nova — ela só cria uma rede de segurança automatizada. As seções a seguir já tratam de uma frente diferente da semana: novas funcionalidades de cadastro, tanto no backend quanto no frontend.</p>
+
+  <section>
+    <h2>5. Gestão de responsáveis por animais</h2>
+    <span class="area-tag">Backend</span> <span class="area-tag fe">Frontend</span>
+    <p class="lead">Foi criado o conceito de <strong>responsável</strong>: uma pessoa (que não é necessariamente um adotante) que fica encarregada de cuidar de um ou mais animais da ONG — por exemplo, alguém que cuida temporariamente de um animal antes de ele ser adotado. Assim como já existia para adotantes, esse cadastro agora tem uma tela própria completa: listar, cadastrar, ver detalhes, editar e excluir responsáveis.</p>
+
+    <div class="analogy">
+      <div class="label">Uma analogia</div>
+      <p>É como abrir uma nova "ficha" no sistema, parecida com a ficha de adotante que já existia, mas para uma pessoa com um papel diferente: quem cuida do animal no dia a dia, e não necessariamente quem vai adotá-lo.</p>
+    </div>
+
+    <p>Duas regras de negócio importantes acompanham esse cadastro:</p>
+    <div class="grid-2">
+      <div class="compare-before">
+        <div class="compare-label">Antes</div>
+        <p>A quantidade de animais sob cuidado de um responsável era um número guardado manualmente, que precisava ser atualizado "à mão" toda vez que um animal era vinculado ou desvinculado dele — correndo o risco de ficar desatualizado.</p>
+      </div>
+      <div class="compare-after">
+        <div class="compare-label">Depois</div>
+        <p>Esse número passou a ser calculado automaticamente, contando em tempo real quantos animais estão de fato vinculados àquele responsável no momento da consulta — nunca fica errado ou desatualizado, e o campo correspondente foi removido do formulário de cadastro.</p>
+      </div>
+    </div>
+
+    <p>Além disso, todo animal cadastrado no sistema passou a exigir um responsável vinculado (antes era opcional), o e-mail do responsável precisa ser único no sistema, e o documento de identificação dele passou a ser um campo obrigatório.</p>
+  </section>
+
+  <section>
+    <h2>6. Categorização de responsáveis por tipo</h2>
+    <span class="area-tag">Backend</span>
+    <p class="lead">Foi adicionado o conceito de <strong>tipo de responsável</strong>, para classificar cada responsável cadastrado (por exemplo, diferenciando papéis distintos que uma pessoa pode ter em relação aos animais que cuida). Todo responsável agora precisa ter um tipo vinculado, o que ajuda a organizar e futuramente filtrar/relatar os cadastros por essa categoria.</p>
+  </section>
+
+  <section>
+    <h2>7. Ajustes de cadastro em adotantes e animais</h2>
+    <span class="area-tag">Backend</span> <span class="area-tag fe">Frontend</span>
+    <p class="lead">Uma série de ajustes menores, feitos tanto na tela quanto nas regras por trás dela, tornou os cadastros existentes mais flexíveis e fiéis à realidade de uso da ONG.</p>
+
+    <div class="advantage-grid">
+      <div class="advantage-card">
+        <h4>Campos de documento opcionais</h4>
+        <p>RG, órgão emissor e telefone secundário deixaram de ser obrigatórios no cadastro de adotante — nem todo adotante chega com esses dados em mãos no momento do cadastro.</p>
+      </div>
+      <div class="advantage-card">
+        <h4>CPF vira "CPF/CIN"</h4>
+        <p>O campo antes chamado apenas de CPF passou a se chamar "CPF/CIN", reconhecendo que a Carteira de Identidade Nacional também é aceita como documento.</p>
+      </div>
+      <div class="advantage-card">
+        <h4>Máscara do RG removida</h4>
+        <p>O campo de RG deixou de forçar um formato fixo de digitação, já que o formato desse documento varia de estado para estado.</p>
+      </div>
+      <div class="advantage-card">
+        <h4>Órgão emissor reposicionado</h4>
+        <p>O campo de órgão emissor foi movido para ficar ao lado do campo de RG na tela, já que os dois estão diretamente relacionados.</p>
+      </div>
+      <div class="advantage-card">
+        <h4>Espécie e raça separados</h4>
+        <p>O formulário de cadastro de animal passou a ter um campo de espécie separado do campo de raça (antes eram escolhidos de forma combinada), e a raça também ganhou um atalho de cadastro rápido direto na tela do animal, sem precisar sair para outra tela.</p>
+      </div>
+      <div class="advantage-card">
+        <h4>Raça duplicada bloqueada</h4>
+        <p>O sistema passou a impedir o cadastro de uma raça já existente para a mesma espécie, evitando registros duplicados.</p>
+      </div>
+    </div>
+  </section>
+
+  <p class="callout">Em resumo: além da rede de segurança automatizada dos testes de API, a semana também trouxe uma funcionalidade nova de ponta a ponta — o cadastro de responsáveis, com sua própria categorização por tipo — e uma leva de ajustes que tornam os cadastros de adotante e animal mais flexíveis e alinhados ao uso real da ONG.</p>
 
   <footer>
     Relatório de progresso — projeto PIVIC, Sistema ONG Animal.

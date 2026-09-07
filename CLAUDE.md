@@ -102,6 +102,20 @@ Exemplos: `be-migracao-dto-2026-08-16.html`, `be-analise-arquitetural-2026-08-22
 
 O conteúdo interno do relatório pode e deve detalhar o período e todas as frentes cobertas (ex: "29 e 30/08") no título e no texto — a simplificação para 1-2 destaques vale só para o nome do arquivo.
 
+### Exceção: expandir um relatório já publicado para cobrir mudanças posteriores
+
+A regra padrão é "cada mudança gera um relatório novo" (ver acima). Mas o usuário pode pedir explicitamente para **não** seguir essa regra — por exemplo, ao final de uma semana de trabalho, pedir para consolidar num único relatório já existente todas as mudanças feitas numa mesma branch, mesmo que o relatório original tivesse um escopo mais estreito (ex: um relatório criado no meio da semana para documentar só uma parte do trabalho).
+
+Quando isso for pedido explicitamente (nunca por iniciativa própria — na dúvida, perguntar antes de editar):
+
+- **Confirmar o desvio da convenção antes de agir**, deixando claro que a prática normal seria criar um relatório novo, e seguir com a edição do arquivo existente somente após confirmação.
+- **Nome do arquivo permanece intocado**, inclusive a data — a regra de "a data no nome nunca muda" continua valendo mesmo nesse fluxo de exceção.
+- **Conteúdo interno (eyebrow, `h1`, `subtitle`) é que se atualiza** para refletir o escopo ampliado: o eyebrow passa a citar o período completo (ex: "05 e 06/09/2026" ou "29 a 30/08/2026"), e o título/subtítulo passam a resumir todas as frentes cobertas, não só a original.
+- **Seções antigas são preservadas como estão**; as novas mudanças entram como seções adicionais, numeradas em sequência, cada uma seguindo os mesmos componentes visuais já usados no arquivo (`.analogy`, `.grid-2`/`.compare-before`/`.compare-after`, `.advantage-grid`, `.scenario-grid`, `.timeline`, `.glossary`, `figure`+SVG) — nunca introduzir um estilo visual novo só para a parte adicionada.
+- **Identificar onde (frontend/backend) cada seção nova se aplica** com uma tag simples do tipo `.area-tag`/`.area-tag.fe` (rótulo direto "Backend"/"Frontend", sem analogia introdutória — mesma lógica do rótulo `fe`/`be` do nome do arquivo), quando o relatório passa a cobrir as duas camadas.
+- Um parágrafo `.callout` de transição pode ser inserido entre o bloco de conteúdo original e as novas seções, deixando claro que ali começa uma frente de trabalho diferente; o `.callout` final deve ser reescrito para resumir o conjunto completo (original + adicionado), não só a parte nova.
+- O glossário (`.glossary`) é atualizado com os termos técnicos novos introduzidos pelas seções adicionadas.
+
 ## Padrão obrigatório para diagramas (HTML com SVG)
 
 Documentos cujo conteúdo principal é um **diagrama** (sequência, fluxo, arquitetura, etc.) seguem as mesmas regras gerais de "Padrão obrigatório para relatórios" acima (público não técnico, autocontido, tema claro/escuro, barra de edição, exportar PDF, convenção de nomes), **mais** as regras específicas abaixo. O arquivo `diagramas/diagrama-sequencia-backend-2026-08-16.html` é o **modelo de referência**.
