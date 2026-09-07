@@ -168,6 +168,16 @@ Diferente dos relatórios, o material de estudo **pode incluir pequenos trechos 
 
 Essa exceção vale **somente** dentro de `material-de-estudo/`; a proibição de código-fonte nos relatórios (seção "Conteúdo e linguagem" acima) continua valendo normalmente.
 
+### Variante: estudo de código já implementado no projeto
+A regra acima (pseudo-código genérico, nomes de exemplo) é o padrão para quando o pedido é sobre um **conceito em abstrato**. Mas o usuário pode pedir explicitamente material de estudo sobre **código que já foi de fato implementado** no Sistema ONG Animal (backend Spring Boot ou frontend Angular) — nesse caso, o objetivo passa a ser entender aquela implementação real, não só o conceito genérico por trás dela. Quando o pedido for desse tipo, valem as regras abaixo **no lugar** das de pseudo-código genérico:
+
+- Pode citar o **trecho de código real** do projeto (nomes reais de classes, métodos, arquivos), diferente da regra padrão que proíbe nomes reais.
+- O trecho citado vem acompanhado de **explicação linha a linha**, em linguagem simples, do que cada parte faz.
+- Sempre indicar explicitamente **de qual camada e arquivo/classe** o trecho veio (ex: "trecho do `AnimalService`, no backend do Sistema ONG Animal") — aqui a fonte real importa, ao contrário do caso conceitual genérico.
+- Complementar com **outros exemplos de código concretos** além do trecho real citado (variações do mesmo mecanismo, casos de uso próximos), para reforçar o entendimento — não só reproduzir o trecho original.
+
+As duas abordagens coexistem: pseudo-código genérico é o padrão para pedidos sobre um conceito; código real com explicação linha a linha se aplica quando o pedido é especificamente sobre uma implementação já existente no projeto. A estrutura de 6 seções obrigatórias (abaixo) e as demais regras gerais do documento (público não técnico, autocontido, tema claro/escuro, barra de edição, exportar PDF, convenção de nome) continuam valendo sem alteração nessa variante — só a política de código-fonte muda, inclusive na seção 4 ("Onde isso apareceu no projeto"), que nesse caso pode citar o código real em vez de ficar só no contexto.
+
 ### Estrutura de conteúdo obrigatória
 Todo documento de material de estudo segue esta sequência de seções, para manter consistência entre os documentos:
 
