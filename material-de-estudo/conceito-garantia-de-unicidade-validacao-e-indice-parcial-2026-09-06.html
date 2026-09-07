@@ -1,0 +1,1042 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="UTF-8">
+<title>Garantia de Unicidade de Dados</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-subtle: #f6f7f9;
+    --bg-card: #ffffff;
+    --border: #e2e4e9;
+    --text: #1c1f26;
+    --text-muted: #5b616e;
+    --accent: #2f6f4f;
+    --accent-soft: #e7f2ec;
+    --accent-strong: #1f5138;
+    --danger: #a13a3a;
+    --danger-soft: #fbeeee;
+    --good: #2f6f4f;
+    --good-soft: #e7f2ec;
+    --role-service: #2c5f8a;
+    --role-data: #8a6a1f;
+    --shadow: 0 1px 2px rgba(20, 22, 28, 0.06), 0 4px 16px rgba(20, 22, 28, 0.05);
+    --tip-bg: #2a2e37;
+    --tip-text: #f1f2f5;
+    --tip-accent: #8fd4ac;
+    --tip-danger: #e8a3a3;
+    --code-text: #1c1f26;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14161b;
+      --bg-subtle: #1b1e24;
+      --bg-card: #1c1f26;
+      --border: #2c303a;
+      --text: #e7e9ee;
+      --text-muted: #9aa0ac;
+      --accent: #6fbf94;
+      --accent-soft: #1e2c25;
+      --accent-strong: #8fd4ac;
+      --danger: #d97a7a;
+      --danger-soft: #2b1d1d;
+      --good: #6fbf94;
+      --good-soft: #1e2c25;
+      --role-service: #7fb0e6;
+      --role-data: #e0b563;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.35);
+      --tip-bg: #eef0f3;
+      --tip-text: #1c1f26;
+      --tip-accent: #1f5138;
+      --tip-danger: #8a2f2f;
+      --code-text: #e7e9ee;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #14161b;
+    --bg-subtle: #1b1e24;
+    --bg-card: #1c1f26;
+    --border: #2c303a;
+    --text: #e7e9ee;
+    --text-muted: #9aa0ac;
+    --accent: #6fbf94;
+    --accent-soft: #1e2c25;
+    --accent-strong: #8fd4ac;
+    --danger: #d97a7a;
+    --danger-soft: #2b1d1d;
+    --good: #6fbf94;
+    --good-soft: #1e2c25;
+    --role-service: #7fb0e6;
+    --role-data: #e0b563;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.35);
+    --tip-bg: #eef0f3;
+    --tip-text: #1c1f26;
+    --code-text: #e7e9ee;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 56px 24px 96px;
+  }
+
+  header.hero { margin-bottom: 10px; }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 0 0 12px;
+  }
+
+  h1 {
+    font-size: 2rem;
+    line-height: 1.25;
+    margin: 0 0 14px;
+    letter-spacing: -0.01em;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 1.08rem;
+    margin: 0;
+    max-width: 64ch;
+  }
+
+  .origin-note {
+    margin: 22px 0 44px;
+    padding: 12px 16px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+  }
+  .origin-note strong { color: var(--text); }
+
+  section { margin-bottom: 46px; }
+
+  h2 {
+    font-size: 1.35rem;
+    margin: 0 0 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h3 { font-size: 1.05rem; margin: 24px 0 10px; }
+
+  p { margin: 0 0 14px; }
+  p.lead { color: var(--text-muted); font-size: 1.02rem; }
+
+  ul, ol { margin: 0 0 14px; padding-left: 22px; }
+  li { margin-bottom: 8px; }
+
+  code.inline {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.88em;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 1px 6px;
+  }
+
+  .analogy {
+    background: var(--accent-soft);
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin: 18px 0;
+  }
+  .analogy .label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-strong);
+    margin-bottom: 8px;
+  }
+  .analogy p:last-child { margin-bottom: 0; }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 18px 0;
+  }
+  @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .compare-before, .compare-after {
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .compare-before { background: var(--danger-soft); border-left: 3px solid var(--danger); }
+  .compare-after { background: var(--good-soft); border-left: 3px solid var(--good); }
+  .compare-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+  .compare-before .compare-label { color: var(--danger); }
+  .compare-after .compare-label { color: var(--good); }
+  .compare-before p, .compare-after p { margin: 0; font-size: 0.95rem; }
+  .compare-before p + p, .compare-after p + p { margin-top: 8px; }
+
+  .advantage-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 640px) { .advantage-grid { grid-template-columns: 1fr; } }
+  .advantage-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    background: var(--bg-card);
+    box-shadow: var(--shadow);
+  }
+  .advantage-card h4 { margin: 0 0 6px; font-size: 0.98rem; }
+  .advantage-card p { margin: 0; font-size: 0.9rem; color: var(--text-muted); }
+
+  .concept-block {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    background: var(--bg-card);
+    box-shadow: var(--shadow);
+    margin: 18px 0;
+  }
+  .concept-block .kicker {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-strong);
+    margin-bottom: 8px;
+  }
+  .concept-block p:last-child { margin-bottom: 0; }
+  .concept-block p { font-size: 0.94rem; }
+
+  .callout {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 0.94rem;
+    color: var(--text-muted);
+  }
+
+  pre.code {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    margin: 14px 0 6px;
+    color: var(--code-text);
+  }
+  .code-caption {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin: 0 0 18px;
+  }
+
+  footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.82rem;
+  }
+
+  .glossary {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 20px;
+    font-size: 0.9rem;
+    margin: 18px 0;
+  }
+  @media (max-width: 640px) { .glossary { grid-template-columns: 1fr; } }
+  .glossary dt { font-weight: 600; color: var(--text); }
+  .glossary dd { margin: 2px 0 0; color: var(--text-muted); }
+
+  /* --- Diagrama (padrão diagramas/) --- */
+  .hint {
+    margin: 4px 0 18px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    max-width: 74ch;
+  }
+  .actor-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    margin: 0 0 18px;
+    padding: 10px 16px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.78rem;
+    color: var(--text);
+  }
+  .actor-key .k { display: flex; align-items: center; gap: 6px; }
+  .actor-key .swatch {
+    width: 18px; height: 18px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; flex: none;
+  }
+  .actor-key .swatch svg { width: 12px; height: 12px; }
+
+  figure {
+    position: relative;
+    margin: 18px 0;
+    padding: 18px 20px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow-x: auto;
+    overflow-y: visible;
+  }
+  figure svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    color: var(--text);
+    overflow: visible;
+  }
+  figure text { fill: currentColor; }
+  figcaption {
+    margin-top: 10px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+
+  .lane-icon circle { fill: var(--bg-card); stroke: var(--border); stroke-width: 1.4; }
+  .lane-name { font-size: 12px; font-weight: 700; text-anchor: middle; }
+
+  .step, .note { cursor: help; }
+  .step .hit { stroke: transparent; fill: none; pointer-events: stroke; }
+  .note .hit { fill: transparent; stroke: none; pointer-events: fill; }
+
+  .tip { opacity: 0; transition: opacity .12s ease; pointer-events: none; }
+  .step:hover .tip, .step:focus-visible .tip,
+  .note:hover .tip, .note:focus-visible .tip { opacity: 1; }
+  .tip.show { opacity: 1; }
+
+  .hitlayer > * { fill: transparent; stroke: transparent; pointer-events: all; cursor: help; }
+
+  .tip rect { fill: var(--tip-bg); rx: 6; }
+  .tip text { fill: var(--tip-text); }
+  .tip .tip-label {
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    fill: var(--tip-accent);
+  }
+  .tip.tip-danger .tip-label { fill: var(--tip-danger); }
+  .tip .tip-detail { font-size: 9.5px; }
+
+  .main.hl { stroke: var(--accent) !important; stroke-width: 2.6 !important; }
+  .main[stroke="var(--danger)"].hl { stroke: var(--danger) !important; stroke-width: 2.6 !important; }
+  .note-box.hl { stroke: var(--accent) !important; stroke-width: 2 !important; opacity: 1; }
+
+  .note-box {
+    fill: transparent;
+    stroke: var(--text-muted);
+    stroke-width: 1;
+    opacity: 0.7;
+    pointer-events: fill;
+  }
+
+  .fs-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font: inherit;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 10px;
+    cursor: pointer;
+    opacity: 0.85;
+    z-index: 2;
+  }
+  .fs-btn:hover { opacity: 1; }
+
+  figure:fullscreen {
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 28px;
+    border-radius: 0;
+  }
+  figure:fullscreen svg { max-height: 86vh; width: auto; max-width: 96vw; }
+  figure:fullscreen figcaption { max-width: 900px; font-size: 0.95rem; }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    margin: 12px 0 0;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+  .legend strong { color: var(--text); }
+
+  /* --- edição / impressão --- */
+  .wrap[contenteditable="true"] {
+    outline: 2px dashed var(--accent);
+    outline-offset: 8px;
+    border-radius: 8px;
+  }
+
+  #editToolbar {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 10px 8px 16px;
+    box-shadow: var(--shadow);
+    font-size: 0.85rem;
+  }
+  #editToolbar button {
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--bg);
+    background: var(--accent);
+    border: none;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  #editToolbar button.secondary {
+    color: var(--text);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+  }
+  #editToolbar #editStatus {
+    color: var(--text-muted);
+    max-width: 240px;
+  }
+
+  @media print {
+    #editToolbar, .fs-btn, .hint { display: none !important; }
+
+    @page {
+      size: A4;
+      margin: 18mm 16mm;
+    }
+
+    html, body { background: #ffffff !important; }
+    body { color: #1c1f26 !important; }
+
+    .wrap { max-width: none; padding: 0; }
+    .wrap[contenteditable] { outline: none; }
+
+    .tip, .hitlayer { display: none !important; }
+
+    .analogy, .compare-before, .compare-after, .advantage-card, .concept-block,
+    .callout, .origin-note, figure {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .analogy { background: #e7f2ec !important; }
+    .compare-before { background: #fbeeee !important; border-left-color: #a13a3a !important; }
+    .compare-after { background: #e7f2ec !important; border-left-color: #2f6f4f !important; }
+    .compare-before .compare-label { color: #a13a3a !important; }
+    .compare-after .compare-label { color: #2f6f4f !important; }
+    .advantage-card, .concept-block, .callout, .origin-note, figure, pre.code {
+      background: #ffffff !important;
+      border-color: #e2e4e9 !important;
+      box-shadow: none !important;
+    }
+    figure { background: #f6f7f9 !important; }
+    pre.code { background: #f6f7f9 !important; color: #1c1f26 !important; }
+    .eyebrow { color: #2f6f4f !important; }
+    .analogy .label, .concept-block .kicker { color: #1f5138 !important; }
+    p.lead, .subtitle, .advantage-card p, .callout, .origin-note, figcaption,
+    .glossary dd, footer, .legend, code.inline, .code-caption {
+      color: #5b616e !important;
+    }
+    h1, h2, h3, .glossary dt, code, strong { color: #1c1f26 !important; }
+    figure svg { color: #1c1f26 !important; }
+    .lane-icon circle { fill: #ffffff !important; stroke: #e2e4e9 !important; }
+
+    section { break-inside: avoid-page; }
+    figure { break-inside: avoid-page; }
+    .advantage-card, .concept-block { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="icon-controller" viewBox="0 0 24 24">
+      <rect x="5" y="3" width="14" height="19" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"></rect>
+      <rect x="9" y="1.3" width="6" height="3" rx="1" fill="none" stroke="currentColor" stroke-width="1.6"></rect>
+      <path d="M8.3 13 L10.8 15.5 L16 9.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+    </symbol>
+    <symbol id="icon-service" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+      <g stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+        <line x1="12" y1="2.3" x2="12" y2="5.2"></line>
+        <line x1="12" y1="18.8" x2="12" y2="21.7"></line>
+        <line x1="2.3" y1="12" x2="5.2" y2="12"></line>
+        <line x1="18.8" y1="12" x2="21.7" y2="12"></line>
+        <line x1="5.3" y1="5.3" x2="7.3" y2="7.3"></line>
+        <line x1="16.7" y1="16.7" x2="18.7" y2="18.7"></line>
+        <line x1="18.7" y1="5.3" x2="16.7" y2="7.3"></line>
+        <line x1="7.3" y1="16.7" x2="5.3" y2="18.7"></line>
+      </g>
+    </symbol>
+    <symbol id="icon-repo" viewBox="0 0 24 24">
+      <rect x="3" y="4" width="18" height="6" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.6"></rect>
+      <rect x="3" y="14" width="18" height="6" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.6"></rect>
+      <line x1="7" y1="7" x2="7" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+      <line x1="7" y1="17" x2="7" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+    </symbol>
+    <symbol id="icon-banco" viewBox="0 0 24 24">
+      <ellipse cx="12" cy="5.3" rx="8" ry="2.8" fill="none" stroke="currentColor" stroke-width="1.6"></ellipse>
+      <path d="M4 5.3 V18.3 A8 2.8 0 0 0 20 18.3 V5.3" fill="none" stroke="currentColor" stroke-width="1.6"></path>
+      <path d="M4 11.8 A8 2.8 0 0 0 20 11.8" fill="none" stroke="currentColor" stroke-width="1.6"></path>
+    </symbol>
+    <symbol id="icon-erro" viewBox="0 0 24 24">
+      <path d="M12 3 L22 20 H2 Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path>
+      <line x1="12" y1="9.3" x2="12" y2="14.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></line>
+      <circle cx="12" cy="17" r="1" fill="currentColor"></circle>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap" contenteditable="true">
+
+  <header class="hero">
+    <p class="eyebrow">PIVIC · Sistema ONG Animal · Material de estudo · 06/09/2026</p>
+    <h1>Garantia de unicidade de dados: validação na aplicação + índice único no banco</h1>
+    <p class="subtitle">Como o sistema garante que não existam duas raças com o mesmo nome para a mesma espécie — usando duas camadas de proteção diferentes, e por que uma sozinha não seria suficiente.</p>
+  </header>
+
+  <p class="origin-note">Este conceito foi estudado a partir da implementação que impede o cadastro de raças duplicadas por espécie (código do dia 06/09/2026). A coluna <code class="inline">ativo</code>, usada na condição do índice do banco explicado abaixo, foi introduzida anteriormente pela exclusão lógica — ver relatório <code class="inline">be-exclusao-logica-2026-08-23</code>.</p>
+
+  <section>
+    <h2>1. O que é</h2>
+    <div class="analogy">
+      <div class="label">Uma analogia</div>
+      <p>Imagine uma recepção de clube que não deixa cadastrar dois sócios com o mesmo apelido: o recepcionista confere na lista antes de anotar um nome novo. Mas e se dois recepcionistas, em guichês diferentes, cadastrarem dois sócios com o mesmo apelido ao mesmo tempo, cada um sem saber do outro? Para isso não acontecer de jeito nenhum, o clube também mantém um arquivo físico que fisicamente não aceita duas fichas com o mesmo apelido dentro dele — não importa quantos recepcionistas estejam trabalhando ao mesmo tempo.</p>
+      <p>Essa é a ideia por trás da <strong>garantia de unicidade de dados</strong>: impedir que duas informações "iguais" (segundo alguma regra) coexistam no sistema. Aqui ela é feita em duas camadas — uma checagem no código da aplicação (o recepcionista, rápido e com mensagem amigável) e uma constraint direto no banco de dados (o arquivo físico, mais lento de consultar, mas a prova de falhas). Quando essa segunda camada só se aplica a uma parte dos registros (por exemplo, ignorando os que foram excluídos), ela é chamada de <strong>índice único condicional</strong> ou <strong>parcial</strong>.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. Que problema resolve</h2>
+    <p class="lead">Cada uma das duas camadas, sozinha, deixa uma brecha diferente:</p>
+    <div class="grid-2">
+      <div class="compare-before">
+        <div class="compare-label">Só checagem na aplicação</div>
+        <p>Duas requisições de cadastro quase simultâneas podem, cada uma, checar o banco e não encontrar nada (porque a outra ainda não terminou de gravar) — e as duas seguem em frente achando que o nome está livre. Resultado: duas raças duplicadas salvas. Esse tipo de falha é chamado de <strong>condição de corrida</strong> (<em>race condition</em>).</p>
+      </div>
+      <div class="compare-after">
+        <div class="compare-label">Só constraint no banco</div>
+        <p>O banco impediria a duplicidade, mas a mensagem de erro seria crua e técnica (algo como "violação de índice único"), sem explicar ao usuário, em português, que já existe uma raça com aquele nome para aquela espécie.</p>
+      </div>
+    </div>
+    <p>Por isso as duas camadas coexistem: a checagem na aplicação cobre o caso comum com uma mensagem clara; a constraint no banco é a defesa final, que não depende de nenhum código da aplicação ter rodado corretamente — ela vale mesmo sob concorrência.</p>
+  </section>
+
+  <section>
+    <h2>3. Como funciona</h2>
+    <p class="lead">O trecho abaixo é real, do backend do Sistema ONG Animal (Spring Boot). Primeiro o service decide qual verificação de duplicidade rodar:</p>
+
+    <pre class="code">public Raca salvar(Raca raca) {
+
+    Long especieId = raca.getEspecie().getId();
+    Especie especie = especieService.buscarPorId(especieId);
+
+    raca.setEspecie(especie);
+
+    boolean nomeDuplicado = raca.getId() == null
+            ? racaRepository.existsByNomeIgnoreCaseAndEspecieId(raca.getNome(), especieId)
+            : racaRepository.existsByNomeIgnoreCaseAndEspecieIdAndIdNot(raca.getNome(), especieId, raca.getId());
+
+    if (nomeDuplicado) {
+        throw new RacaExistenteException(raca.getNome(), especie.getNome().name());
+    }
+
+    return racaRepository.save(raca);
+}</pre>
+    <p class="code-caption"><code class="inline">RacaService.salvar()</code> — o mesmo método atende tanto o cadastro (POST) quanto a edição (PUT) de uma raça, sem métodos separados para cada caso.</p>
+
+    <p>Linha a linha: <code class="inline">raca.getId() == null</code> é a condição que diferencia os dois cenários — se ainda não existe um identificador, é um cadastro novo; se já existe, é uma edição. No cadastro, a checagem (<code class="inline">existsByNomeIgnoreCaseAndEspecieId</code>) só precisa confirmar que nenhuma raça daquela espécie já usa aquele nome. Na edição, isso não seria suficiente: a própria raça sendo editada já existe no banco com aquele nome, então a variante <code class="inline">...AndIdNot</code> exclui o próprio registro da comparação — senão toda edição sem troca de nome seria barrada como "duplicada de si mesma". Se a checagem der positivo, o método lança <code class="inline">RacaExistenteException</code> antes de chegar perto do <code class="inline">save</code>.</p>
+
+    <p>Essas duas checagens não têm corpo escrito à mão — são <strong>query methods</strong> do Spring Data JPA, que gera a consulta SQL sozinho a partir do nome do método:</p>
+
+    <pre class="code">public interface RacaRepository extends JpaRepository&lt;Raca, Long&gt; {
+
+    boolean existsByNomeIgnoreCaseAndEspecieId(String nome, Long especieId);
+
+    boolean existsByNomeIgnoreCaseAndEspecieIdAndIdNot(String nome, Long especieId, Long id);
+}</pre>
+    <p class="code-caption"><code class="inline">RacaRepository</code> — a parte <code class="inline">IgnoreCase</code> do nome do método já instrui o Spring a comparar sem diferenciar maiúsculas/minúsculas (equivalente a comparar as duas strings em caixa baixa).</p>
+
+    <p>Se a raça for realmente duplicada, o sistema lança uma exceção específica, e não um erro genérico:</p>
+
+    <pre class="code">public class RacaExistenteException extends EntityExistsException {
+    public RacaExistenteException(String nome, String especieNome) {
+        this(String.format(
+            "Já existe uma raça chamada '%s' cadastrada para a espécie '%s'",
+            nome, especieNome));
+    }
+}</pre>
+    <p class="code-caption"><code class="inline">RacaExistenteException</code> — a mensagem já nasce pronta para ser lida por uma pessoa, citando o nome e a espécie em conflito.</p>
+
+    <p>Essa exceção é capturada por um tratador central único, que existe para todo o sistema (não só para raça), e vira uma resposta HTTP padronizada:</p>
+
+    <pre class="code">@ExceptionHandler(EntityExistsException.class)
+public ProblemDetail handleEntityExistsException(EntityExistsException ex) {
+    return createProblemDetail(HttpStatus.CONFLICT, ex.getMessage(),
+            "Entidade já existente", "https://pivic-ong/entidade-existente");
+}</pre>
+    <p class="code-caption"><code class="inline">ApiExceptionHandler</code> — qualquer exceção do tipo <code class="inline">EntityExistsException</code> (família à qual <code class="inline">RacaExistenteException</code> pertence) vira automaticamente uma resposta <strong>HTTP 409 Conflict</strong>, no formato padronizado <em>ProblemDetail</em> (RFC 7807).</p>
+
+    <p>Por fim, a defesa que não depende de nenhum código Java ter rodado: um índice único parcial, criado direto no banco por uma migração Flyway:</p>
+
+    <pre class="code">CREATE UNIQUE INDEX uq_raca_nome_especie
+ON raca (LOWER(nome), especie_id)
+WHERE ativo = true;</pre>
+    <p class="code-caption"><code class="inline">V011__adiciona_constraint_unica_raca_nome_especie.sql</code> — o banco recusa fisicamente gravar uma segunda linha com o mesmo <code class="inline">LOWER(nome)</code> e <code class="inline">especie_id</code> de uma linha já existente com <code class="inline">ativo = true</code>, não importa quantas requisições cheguem ao mesmo tempo.</p>
+
+    <p>O <code class="inline">WHERE ativo = true</code> existe porque a tabela <code class="inline">raca</code> usa exclusão lógica (soft delete): excluir uma raça só marca <code class="inline">ativo = false</code>, sem apagar a linha. Sem essa condição, o índice consideraria também as raças "excluídas" na comparação, e nunca mais seria possível cadastrar uma nova raça reaproveitando um nome que já foi usado por outra excluída — mesmo que ela não apareça mais para ninguém no sistema.</p>
+
+    <p class="lead">O fluxo completo, das duas camadas juntas:</p>
+
+    <p class="hint">Cada coluna é uma camada do backend, e o tempo passa de cima para baixo. Setas sólidas são o caminho de sucesso; setas tracejadas vermelhas são os pontos de desvio para erro. Passe o mouse (ou use Tab e depois as setas) sobre qualquer seta ou caixa para ver o porquê daquele passo.</p>
+
+    <div class="actor-key">
+      <span class="k"><span class="swatch" style="background:var(--accent)"><svg><use href="#icon-controller"></use></svg></span>Controller</span>
+      <span class="k"><span class="swatch" style="background:var(--role-service)"><svg><use href="#icon-service"></use></svg></span>Service</span>
+      <span class="k"><span class="swatch" style="background:var(--role-data)"><svg><use href="#icon-repo"></use></svg></span>Repository</span>
+      <span class="k"><span class="swatch" style="background:var(--role-data)"><svg><use href="#icon-banco"></use></svg></span>Banco</span>
+      <span class="k"><span class="swatch" style="background:var(--danger)"><svg><use href="#icon-erro"></use></svg></span>Tratador de erros</span>
+    </div>
+
+    <figure role="img" aria-label="Diagrama de sequência mostrando a validação de raça duplicada em duas camadas: o Controller chama o Service, que pergunta ao Repository se já existe uma raça com aquele nome na espécie; se existir, uma exceção é lançada e o tratador central devolve HTTP 409; se não existir, o Repository grava no banco, onde um índice único parcial serve como defesa final contra duplicidade sob concorrência.">
+      <button type="button" class="fs-btn" data-fs>⛶ Tela cheia</button>
+      <svg viewBox="0 -34 1140 470" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrowOk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"></path>
+          </marker>
+          <marker id="arrowErr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--danger)"></path>
+          </marker>
+        </defs>
+
+        <g class="lane-icon" style="color:var(--accent)"><circle cx="100" cy="-16" r="15"></circle><use href="#icon-controller" x="89" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="100" y="26">Controller</text>
+        <line x1="100" y1="36" x2="100" y2="440" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--role-service)"><circle cx="360" cy="-16" r="15"></circle><use href="#icon-service" x="349" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="360" y="26">Service</text>
+        <line x1="360" y1="36" x2="360" y2="440" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--role-data)"><circle cx="640" cy="-16" r="15"></circle><use href="#icon-repo" x="629" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="640" y="26">Repository</text>
+        <line x1="640" y1="36" x2="640" y2="440" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--role-data)"><circle cx="880" cy="-16" r="15"></circle><use href="#icon-banco" x="869" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="880" y="26">Banco</text>
+        <line x1="880" y1="36" x2="880" y2="440" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <g class="lane-icon" style="color:var(--danger)"><circle cx="1080" cy="-16" r="15"></circle><use href="#icon-erro" x="1069" y="-27" width="22" height="22"></use></g>
+        <text class="lane-name" x="1080" y="26">Tratador de erros</text>
+        <line x1="1080" y1="36" x2="1080" y2="440" stroke="currentColor" stroke-width="1" opacity="0.35"></line>
+
+        <!-- 1 Controller -> Service -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="100" y1="62" x2="360" y2="62" stroke-width="14"></line>
+          <line id="src1" class="main" x1="100" y1="62" x2="360" y2="62" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowOk)"></line>
+          <text x="230" y="53" font-size="11" text-anchor="middle">1. Controller solicita ao Service que salve a raça</text>
+          <g id="tip1" class="tip" transform="translate(230,22)">
+            <rect x="-130" y="-27" width="260" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Chamada interna</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">salvar(raca) — mesmo método atende POST</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">(criar) e PUT (atualizar)</text>
+          </g>
+        </g>
+
+        <!-- note: decide criação/atualização -->
+        <g class="note" tabindex="0">
+          <rect class="hit" x="279" y="72" width="162" height="46"></rect>
+          <rect id="src2" class="note-box" x="287" y="80" width="146" height="30" rx="4"></rect>
+          <text x="360" y="92.5" font-size="9.5" text-anchor="middle" opacity="0.85">raca.getId() == null ?</text>
+          <text x="360" y="103.5" font-size="9" text-anchor="middle" opacity="0.65">criação : atualização</text>
+          <g id="tip2" class="tip" transform="translate(150,110)">
+            <rect x="-130" y="-27" width="260" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Por que essa condição existe</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">decide qual dos dois métodos do</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">repository checar a duplicidade</text>
+          </g>
+        </g>
+
+        <!-- 2 Service -> Repository -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="360" y1="140" x2="640" y2="140" stroke-width="14"></line>
+          <line id="src3" class="main" x1="360" y1="140" x2="640" y2="140" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowOk)"></line>
+          <text x="500" y="131" font-size="11" text-anchor="middle">2. Service pergunta se já existe raça com esse nome nessa espécie</text>
+          <g id="tip3" class="tip" transform="translate(500,164)">
+            <rect x="-150" y="-27" width="300" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Um dos dois query methods</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">existsByNomeIgnoreCaseAndEspecieId(...) ou</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">...AndIdNot(...), conforme criação/atualização</text>
+          </g>
+        </g>
+
+        <!-- note: repository roda a query -->
+        <g class="note" tabindex="0">
+          <rect class="hit" x="561" y="174" width="158" height="46"></rect>
+          <rect id="src4" class="note-box" x="569" y="182" width="142" height="30" rx="4"></rect>
+          <text x="640" y="194.5" font-size="9.5" text-anchor="middle" opacity="0.85">Consulta gerada pelo</text>
+          <text x="640" y="205.5" font-size="9" text-anchor="middle" opacity="0.65">Spring Data JPA</text>
+          <g id="tip4" class="tip" transform="translate(880,196)">
+            <rect x="-135" y="-27" width="270" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">O que a consulta compara</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">LOWER(nome) e especie_id — sem</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">diferenciar maiúsculas de minúsculas</text>
+          </g>
+        </g>
+
+        <!-- 3 Repository -> Service (retorna) -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="640" y1="230" x2="360" y2="230" stroke-width="14"></line>
+          <line id="src5" class="main" x1="640" y1="230" x2="360" y2="230" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrowOk)"></line>
+          <text x="500" y="221" font-size="10" text-anchor="middle" opacity="0.75">3. Repository devolve verdadeiro ou falso</text>
+          <g id="tip5" class="tip" transform="translate(500,253)">
+            <rect x="-125" y="-27" width="250" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Retorno do exists...</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">true = já existe duplicata;</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">false = nome livre para essa espécie</text>
+          </g>
+        </g>
+
+        <!-- branch dashed: duplicado -> tratador -->
+        <g class="step tip-danger" tabindex="0">
+          <path class="hit" d="M380 246 C520 300, 900 300, 1080 42" stroke-width="14" fill="none"></path>
+          <path id="src6" class="main" d="M380 246 C520 300, 900 300, 1080 42" fill="none" stroke="var(--danger)" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrowErr)"></path>
+          <text x="760" y="304" font-size="9.5" text-anchor="middle" fill="var(--danger)">se verdadeiro → Service lança RacaExistenteException</text>
+          <g id="tip6" class="tip tip-danger" transform="translate(760,278)">
+            <rect x="-150" y="-27" width="300" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Desvio para o caminho de erro</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">o save() nem chega a ser chamado —</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">a mensagem já cita nome e espécie em conflito</text>
+          </g>
+        </g>
+
+        <!-- dashed: tratador -> controller (409) -->
+        <g class="step tip-danger" tabindex="0">
+          <line class="hit" x1="1080" y1="48" x2="100" y2="48" stroke-width="14"></line>
+          <line id="src7" class="main" x1="1080" y1="48" x2="100" y2="48" stroke="var(--danger)" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#arrowErr)"></line>
+          <text x="590" y="42" font-size="10" text-anchor="middle" fill="var(--danger)">4. Tratador central devolve HTTP 409 Conflict (ProblemDetail)</text>
+          <g id="tip7" class="tip tip-danger" transform="translate(590,74)">
+            <rect x="-150" y="-27" width="300" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">ApiExceptionHandler</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">trata toda a família EntityExistsException —</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">não é uma regra exclusiva de raça</text>
+          </g>
+        </g>
+
+        <!-- 5 Service -> Repository (save, caminho feliz) -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="360" y1="270" x2="640" y2="270" stroke-width="14"></line>
+          <line id="src8" class="main" x1="360" y1="270" x2="640" y2="270" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowOk)"></line>
+          <text x="500" y="261" font-size="11" text-anchor="middle">5. Se falso, Service manda o Repository gravar (save)</text>
+          <g id="tip8" class="tip" transform="translate(500,340)">
+            <rect x="-135" y="-27" width="270" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Neste ponto</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">a checagem da aplicação já passou —</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">agora entra a defesa do banco</text>
+          </g>
+        </g>
+
+        <!-- 6 Repository -> Banco -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="640" y1="305" x2="880" y2="305" stroke-width="14"></line>
+          <line id="src9" class="main" x1="640" y1="305" x2="880" y2="305" stroke="currentColor" stroke-width="1.6" marker-end="url(#arrowOk)"></line>
+          <text x="760" y="296" font-size="11" text-anchor="middle">6. Repository executa INSERT/UPDATE no banco</text>
+          <g id="tip9" class="tip" transform="translate(760,368)">
+            <rect x="-130" y="-27" width="260" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">O que o banco confere aqui</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">o índice único parcial uq_raca_nome_especie</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">é a última barreira contra duplicidade</text>
+          </g>
+        </g>
+
+        <!-- branch dashed: constraint violada sob concorrência -->
+        <g class="step tip-danger" tabindex="0">
+          <path class="hit" d="M900 296 C980 260, 1050 120, 1080 56" stroke-width="14" fill="none"></path>
+          <path id="src10" class="main" d="M900 296 C980 260, 1050 120, 1080 56" fill="none" stroke="var(--danger)" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrowErr)"></path>
+          <text x="1015" y="170" font-size="9" text-anchor="middle" fill="var(--danger)">gravação quase simultânea → índice recusa</text>
+          <g id="tip10" class="tip tip-danger" transform="translate(940,196)">
+            <rect x="-140" y="-27" width="280" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Por que isso ainda pode acontecer</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">condição de corrida: duas requisições</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">passaram na checagem da aplicação ao mesmo tempo</text>
+          </g>
+        </g>
+
+        <!-- 7 Banco -> Repository confirma -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="880" y1="340" x2="640" y2="340" stroke-width="14"></line>
+          <line id="src11" class="main" x1="880" y1="340" x2="640" y2="340" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrowOk)"></line>
+          <text x="760" y="331" font-size="10" text-anchor="middle" opacity="0.75">7. Banco confirma a gravação</text>
+          <g id="tip11" class="tip" transform="translate(760,363)">
+            <rect x="-110" y="-27" width="220" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Se chegou até aqui</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">nenhuma raça duplicada foi</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">salva — nas duas camadas</text>
+          </g>
+        </g>
+
+        <!-- 8 Repository -> Service -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="640" y1="374" x2="360" y2="374" stroke-width="14"></line>
+          <line id="src12" class="main" x1="640" y1="374" x2="360" y2="374" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrowOk)"></line>
+          <text x="500" y="365" font-size="10" text-anchor="middle" opacity="0.75">8. Repository devolve o registro salvo</text>
+          <g id="tip12" class="tip" transform="translate(500,397)">
+            <rect x="-115" y="-27" width="230" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">O que volta aqui</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">a entidade Raca completa,</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">já com id (se era criação)</text>
+          </g>
+        </g>
+
+        <!-- 9 Service -> Controller -->
+        <g class="step" tabindex="0">
+          <line class="hit" x1="360" y1="408" x2="100" y2="408" stroke-width="14"></line>
+          <line id="src13" class="main" x1="360" y1="408" x2="100" y2="408" stroke="currentColor" stroke-width="1.4" marker-end="url(#arrowOk)"></line>
+          <text x="230" y="399" font-size="10" text-anchor="middle" opacity="0.75">9. Service devolve o resultado ao Controller</text>
+          <g id="tip13" class="tip" transform="translate(230,431)">
+            <rect x="-120" y="-27" width="240" height="54" rx="6"></rect>
+            <text class="tip-label" x="0" y="-16.0" text-anchor="middle">Fim do fluxo de sucesso</text>
+            <text class="tip-detail" x="0" y="-1.0" text-anchor="middle">Controller converte para o</text>
+            <text class="tip-detail" x="0" y="12.0" text-anchor="middle">DTO de resposta e responde à tela</text>
+          </g>
+        </g>
+
+        <g class="hitlayer">
+          <line data-tip="tip1" x1="100" y1="62" x2="360" y2="62" stroke-width="14"></line>
+          <rect data-tip="tip2" x="279" y="72" width="162" height="46"></rect>
+          <line data-tip="tip3" x1="360" y1="140" x2="640" y2="140" stroke-width="14"></line>
+          <rect data-tip="tip4" x="561" y="174" width="158" height="46"></rect>
+          <line data-tip="tip5" x1="640" y1="230" x2="360" y2="230" stroke-width="14"></line>
+          <path data-tip="tip6" d="M380 246 C520 300, 900 300, 1080 42" stroke-width="14" fill="none"></path>
+          <line data-tip="tip7" x1="1080" y1="48" x2="100" y2="48" stroke-width="14"></line>
+          <line data-tip="tip8" x1="360" y1="270" x2="640" y2="270" stroke-width="14"></line>
+          <line data-tip="tip9" x1="640" y1="305" x2="880" y2="305" stroke-width="14"></line>
+          <path data-tip="tip10" d="M900 296 C980 260, 1050 120, 1080 56" stroke-width="14" fill="none"></path>
+          <line data-tip="tip11" x1="880" y1="340" x2="640" y2="340" stroke-width="14"></line>
+          <line data-tip="tip12" x1="640" y1="374" x2="360" y2="374" stroke-width="14"></line>
+          <line data-tip="tip13" x1="360" y1="408" x2="100" y2="408" stroke-width="14"></line>
+        </g>
+      </svg>
+      <figcaption>Setas sólidas: caminho de sucesso. Setas tracejadas vermelhas: pontos de desvio para o caminho de erro (na aplicação e no banco). Passe o mouse sobre qualquer seta ou caixa para ver detalhes.</figcaption>
+    </figure>
+
+    <div class="concept-block">
+      <div class="kicker">Arquitetura de software</div>
+      <p>A validação de duplicidade fica na camada de <strong>Service</strong>, onde vivem as regras de negócio do domínio (não no Controller, que só recebe e devolve requisições, nem no Repository, que só sabe conversar com o banco). O tratamento de erro é centralizado num único ponto (<code class="inline">ApiExceptionHandler</code>) para todo o sistema, em vez de cada Controller tratar sua própria exceção. Já a constraint no banco é a última linha de defesa da camada de <strong>persistência</strong> — ela não sabe nada sobre regras de negócio ou mensagens amigáveis, só garante a integridade dos dados fisicamente armazenados, mesmo que alguém escreva direto no banco por fora da aplicação.</p>
+    </div>
+
+    <div class="concept-block">
+      <div class="kicker">Padrões de nomenclatura</div>
+      <p>Algumas convenções usadas aqui aparecem com frequência em projetos Spring/JPA: classes de regra de negócio terminam em <code class="inline">*Service</code>; interfaces de acesso a dados terminam em <code class="inline">*Repository</code>; exceções de domínio recebem o sufixo do problema que representam, como <code class="inline">*ExistenteException</code> (ou, em inglês, <code class="inline">*ExistsException</code>); migrações Flyway seguem o padrão <code class="inline">V&lt;número sequencial&gt;__descrição_em_snake_case.sql</code>; e índices/constraints únicas no banco costumam usar o prefixo <code class="inline">uq_&lt;tabela&gt;_&lt;colunas&gt;</code>, deixando claro, só pelo nome, o que ele protege.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>4. Onde isso apareceu no projeto</h2>
+    <p class="lead">Esse mecanismo foi implementado no backend, na funcionalidade que impede o cadastro de raças duplicadas por espécie, tocando estes arquivos:</p>
+    <ul>
+      <li><strong>RacaService</strong> (camada de serviço) — método <code class="inline">salvar()</code>, com a checagem de duplicidade explicada acima.</li>
+      <li><strong>RacaRepository</strong> (camada de acesso a dados) — os dois query methods usados pela checagem.</li>
+      <li><strong>RacaExistenteException</strong> e <strong>EntityExistsException</strong> (camada de domínio/exceções) — a exceção específica de raça e sua superclasse compartilhada.</li>
+      <li><strong>ApiExceptionHandler</strong> (camada de API) — tratador central que converte a exceção em HTTP 409.</li>
+      <li>A migração Flyway <strong>V011</strong>, que cria o índice único parcial no banco.</li>
+    </ul>
+    <p>A cobertura de testes de integração (<code class="inline">RacaServiceIT</code>) inclui os dois cenários: tentar cadastrar uma raça com nome já usado na mesma espécie, e tentar atualizar uma raça para um nome já usado por <em>outra</em> raça da mesma espécie — os dois devem lançar <code class="inline">RacaExistenteException</code>.</p>
+    <p>O mesmo padrão (checagem no Service + índice único parcial condicionado a <code class="inline">ativo = true</code>) ainda não foi aplicado a outros cadastros do sistema, mas seria diretamente reaproveitável: por exemplo, se um dia for necessário impedir duas <strong>espécies</strong> com o mesmo nome, a receita seria a mesma — um <code class="inline">existsByNomeIgnoreCase</code> no <code class="inline">EspecieRepository</code>, mais um índice <code class="inline">uq_especie_nome</code> parcial no banco.</p>
+  </section>
+
+  <section>
+    <h2>5. Armadilhas comuns / boas práticas</h2>
+    <ul>
+      <li><strong>Confiar só na checagem da aplicação:</strong> sob concorrência (duas requisições quase ao mesmo tempo), a checagem sozinha não impede duplicidade — é exatamente o problema que o índice único no banco resolve.</li>
+      <li><strong>Esquecer o <code class="inline">...AndIdNot</code> na atualização:</strong> usar a mesma checagem do cadastro também na edição faria toda edição de uma raça (sem trocar o nome) ser barrada como "duplicada" — duplicada dela mesma.</li>
+      <li><strong>Índice sem considerar o soft delete:</strong> um índice único sem o <code class="inline">WHERE ativo = true</code> impediria reaproveitar um nome depois que a raça original foi excluída (logicamente), mesmo ela não aparecendo mais para ninguém.</li>
+      <li><strong>Descompasso entre a comparação da aplicação e a do banco:</strong> o <code class="inline">IgnoreCase</code> do método do repository e o <code class="inline">LOWER(nome)</code> do índice precisam representar a mesma regra de comparação — senão um dos dois lados pode aceitar algo que o outro rejeitaria.</li>
+    </ul>
+    <div class="advantage-card">
+      <h4>Boas práticas</h4>
+      <p>Sempre que uma tabela tiver exclusão lógica, qualquer constraint de unicidade sobre ela deveria ser parcial/condicionada ao campo de "ativo" — senão registros excluídos continuam "reservando" valores para sempre. E, de forma mais geral: validar na aplicação para dar uma mensagem clara a quem usa o sistema é importante, mas nunca deveria ser a única garantia quando existe risco real de concorrência — a constraint no banco é o que efetivamente impede o dado inconsistente de existir.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>6. Termos relacionados</h2>
+    <dl class="glossary">
+      <div><dt>Índice único parcial/condicional</dt><dd>Uma regra de unicidade no banco que só vale para os registros que satisfazem uma condição (aqui, <code class="inline">ativo = true</code>), em vez de valer para a tabela inteira.</dd></div>
+      <div><dt>Condição de corrida (race condition)</dt><dd>Falha que ocorre quando duas ações acontecem quase ao mesmo tempo e cada uma assume um estado do sistema que a outra ainda vai mudar.</dd></div>
+      <div><dt>Exclusão lógica (soft delete)</dt><dd>Marcar um registro como inativo (<code class="inline">ativo = false</code>) em vez de apagá-lo de fato do banco.</dd></div>
+      <div><dt>Query method</dt><dd>Método de uma interface de repositório (Spring Data JPA) cujo nome já descreve a consulta SQL que deve ser gerada, sem precisar escrever a query manualmente.</dd></div>
+      <div><dt>ProblemDetail / RFC 7807</dt><dd>Formato padronizado de resposta de erro em APIs REST, com campos como status, título e mensagem, em vez de cada erro ter um formato diferente.</dd></div>
+    </dl>
+  </section>
+
+  <p class="callout">Em resumo: garantir que um dado seja único costuma exigir duas camadas complementares — uma checagem no código da aplicação, para dar uma mensagem clara e rápida na maioria dos casos, e uma constraint no próprio banco de dados, que é a única garantia que resiste mesmo quando duas operações acontecem ao mesmo tempo. Quando a tabela usa exclusão lógica, essa constraint precisa ser parcial, considerando apenas os registros ainda ativos.</p>
+
+  <footer>
+    Material de estudo — projeto PIVIC, Sistema ONG Animal.
+  </footer>
+
+</div>
+
+<div id="editToolbar">
+  <span id="editStatus" style="color: var(--text-muted);">Use "Editar texto" para alterar o conteúdo.</span>
+  <button type="button" id="saveBtn" class="secondary" hidden>Salvar no arquivo</button>
+  <button type="button" id="pdfBtn" class="secondary">Salvar como PDF</button>
+  <button type="button" id="toggleEditBtn">Editar texto</button>
+</div>
+
+<script>
+(function () {
+  var wrap = document.querySelector('.wrap');
+  var editBtn = document.getElementById('toggleEditBtn');
+  var saveBtn = document.getElementById('saveBtn');
+  var statusEl = document.getElementById('editStatus');
+  var fileHandle = null;
+  var editing = false;
+
+  function setStatus(msg, isError) {
+    statusEl.textContent = msg || '';
+    statusEl.style.color = isError ? 'var(--danger)' : 'var(--text-muted)';
+  }
+
+  editBtn.addEventListener('click', function () {
+    editing = !editing;
+    wrap.setAttribute('contenteditable', editing ? 'true' : 'false');
+    editBtn.textContent = editing ? 'Parar edição' : 'Editar texto';
+    saveBtn.hidden = !editing;
+    setStatus(editing ? 'Clique no texto e edite. Depois use "Salvar no arquivo".' : 'Use "Editar texto" para alterar o conteúdo.');
+  });
+
+  function downloadFallback() {
+    var html = '<!doctype html>\n' + document.documentElement.outerHTML;
+    var blob = new Blob([html], { type: 'text/html' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'conceito-garantia-de-unicidade-validacao-e-indice-parcial-2026-09-06.html';
+    a.click();
+    URL.revokeObjectURL(url);
+    setStatus('Seu navegador não permite salvar direto no arquivo — foi baixada uma cópia editada.');
+  }
+
+  var pdfBtn = document.getElementById('pdfBtn');
+  pdfBtn.addEventListener('click', function () {
+    window.print();
+  });
+
+  saveBtn.addEventListener('click', async function () {
+    if (!('showSaveFilePicker' in window)) {
+      downloadFallback();
+      return;
+    }
+    try {
+      if (!fileHandle) {
+        fileHandle = await window.showSaveFilePicker({
+          suggestedName: 'conceito-garantia-de-unicidade-validacao-e-indice-parcial-2026-09-06.html',
+          types: [{ description: 'Página HTML', accept: { 'text/html': ['.html'] } }]
+        });
+      }
+      var writable = await fileHandle.createWritable();
+      var html = '<!doctype html>\n' + document.documentElement.outerHTML;
+      await writable.write(html);
+      await writable.close();
+      setStatus('Salvo com sucesso às ' + new Date().toLocaleTimeString('pt-BR') + '.');
+    } catch (err) {
+      if (err && err.name !== 'AbortError') {
+        setStatus('Não foi possível salvar: ' + err.message, true);
+      }
+    }
+  });
+
+  document.querySelectorAll('[data-tip]').forEach(function (hitEl) {
+    var tipId = hitEl.getAttribute('data-tip');
+    var tip = document.getElementById(tipId);
+    var src = document.getElementById('src' + tipId.replace('tip', ''));
+    if (!tip) return;
+    hitEl.setAttribute('tabindex', '0');
+    function show() {
+      tip.classList.add('show');
+      if (src) src.classList.add('hl');
+    }
+    function hide() {
+      tip.classList.remove('show');
+      if (src) src.classList.remove('hl');
+    }
+    hitEl.addEventListener('mouseenter', show);
+    hitEl.addEventListener('mouseleave', hide);
+    hitEl.addEventListener('focus', show);
+    hitEl.addEventListener('blur', hide);
+  });
+
+  document.querySelectorAll('[data-fs]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var figure = btn.closest('figure');
+      if (document.fullscreenElement === figure) {
+        document.exitFullscreen();
+        return;
+      }
+      if (figure.requestFullscreen) {
+        figure.requestFullscreen();
+      } else if (figure.webkitRequestFullscreen) {
+        figure.webkitRequestFullscreen();
+      }
+    });
+  });
+})();
+</script>
+
+</body></html>
